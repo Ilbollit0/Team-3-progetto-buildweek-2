@@ -111,13 +111,14 @@ I nomi sono in inglese, i commenti in italiano, come nello scheletro. Il caso de
 - I campi del JSON di iTunes restano come arrivano (`trackName`, `artworkUrl100`): li legge solo il costruttore del modello, che li passa ai nostri nomi (`title`, `cover`).
 - Un `data-*` scritto in `kebab-case` si legge in JS in `camelCase`: `data-track-id` diventa `element.dataset.trackId`.
 
-**Da decidere:** quale attributo marca card e righe per l'event delegation, uguale in tutte le pagine. Le tre opzioni:
+**Event delegation (opzione A, decisa il 23/11):** card e righe portano l'id di quello che rappresentano, con un attributo per tipo; il cuore dei preferiti si riconosce dalla classe `btn-fav`. Uguale in tutte le pagine.
 
-| # | Markup | Lettura nel listener del contenitore | Pro | Contro |
-| --- | --- | --- | --- | --- |
-| A | `data-track-id="123"`, `data-album-id="456"`, `data-artist-id="789"` | `event.target.closest("[data-track-id]")?.dataset.trackId` | Chiara: il nome dice cos'è | Il cuore dentro una card si distingue dal resto solo con una classe in più |
-| B | `data-type="track" data-id="123"` | `const item = event.target.closest("[data-id]")`, poi `switch (item.dataset.type)` | Un solo selettore e una sola logica per tutte le griglie | Il tipo è una stringa da scrivere sempre uguale |
-| C | `data-action="play"`, `"favourite"`, `"open-album"`, `"open-artist"` + `data-id="123"` | `const target = event.target.closest("[data-action]")`, poi `switch (target.dataset.action)` | Ogni elemento cliccabile (card, Play, cuore) dice cosa fa: un listener gestisce tutto | Un attributo in più su ogni bottone |
+| Elemento | Markup | Lettura nel listener del contenitore |
+| --- | --- | --- |
+| Card o riga di un brano | `data-track-id="123"` | `event.target.closest("[data-track-id]")?.dataset.trackId` |
+| Card di un album | `data-album-id="456"` | `event.target.closest("[data-album-id]")?.dataset.albumId` |
+| Card di un artista | `data-artist-id="789"` | `event.target.closest("[data-artist-id]")?.dataset.artistId` |
+| Cuore dei preferiti, dentro card o riga | `<button class="btn-fav">` | Si controlla per primo: `event.target.closest(".btn-fav")`; se c'è, si cambia il preferito e non parte il brano |
 
 ## 2. Speculate — cosa facciamo e quando
 
@@ -192,17 +193,17 @@ Dopo lo stand-up il TL aggiorna la colonna *Stato* del backlog e, se un lavoro s
 
 ### Esposizioni al docente
 
-Ogni pomeriggio il gruppo espone i progressi al docente, che fa da project manager. Lunedì espone il TL; da martedì a venerdì espongono Gabriel, Giovanbattista, Francesca e Alessandro, un giorno a testa. Quella di venerdì è l'esposizione finale di tutto il progetto.
+Ogni pomeriggio il gruppo espone i progressi al docente, che fa da project manager. Lunedì espone il TL; da martedì a venerdì espongono Giovanbattista, Alessandro, Gabriel e Francesca, un giorno a testa in quest'ordine. Quella di venerdì è l'esposizione finale di tutto il progetto.
 
 | Giorno | Chi espone | Cosa |
 | --- | --- | --- |
 | Lunedì 23/11 | Luca | Organizzazione, divisione del lavoro, piano della settimana |
-| Martedì 24/11 | _da definire_ | _da definire_ |
-| Mercoledì 25/11 | _da definire_ | _da definire_ |
-| Giovedì 26/11 | _da definire_ | _da definire_ |
-| Venerdì 27/11 | _da definire_ | Esposizione finale completa del progetto |
+| Martedì 24/11 | Giovanbattista | _da definire_ |
+| Mercoledì 25/11 | Alessandro | _da definire_ |
+| Giovedì 26/11 | Gabriel | _da definire_ |
+| Venerdì 27/11 | Francesca | Esposizione finale completa del progetto |
 
-**Da definire insieme:** chi espone in quale giorno, cosa porta, come si prepara e come si svolge l'esposizione finale di venerdì.
+**Da definire insieme:** cosa porta chi espone, come si prepara e come si svolge l'esposizione finale di venerdì.
 
 ## 5. Close — consegna e chiusura
 
