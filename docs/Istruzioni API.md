@@ -53,9 +53,8 @@ Esempio per partire: `trackName` → `title`, `artworkUrl100` → `cover`, `trac
 - **Tabella del punto 3:** si compila direttamente in questo file.
 - **Commit:** chi ha i file li committa sul suo branch, Gabriel apre la PR.
 
-## 5. Tre decisioni prima di chiudere (5 min)
+## 5. Due decisioni prima di chiudere (5 min)
 
-- Quale attributo usare per l'event delegation: A, B o C, in *Nomi nel codice* di [Project management](Project%20management.md).
 - Cosa mostrare al posto della foto dell'artista: la copertina di un suo brano oppure un segnaposto.
 - Se cercare solo nel catalogo italiano, aggiungendo `&country=it` alle chiamate.
 
@@ -64,4 +63,4 @@ Esempio per partire: `trackName` → `title`, `artworkUrl100` → `cover`, `trac
 - [ ] Le 5 chiamate della collection rispondono e `resultCount` è maggiore di 0.
 - [ ] I JSON salvati in `riferimenti/api-esempi/` si aprono senza errori.
 - [ ] La tabella del punto 3 ha tutti i campi di `Track`: `id`, `title`, `artist`, `album`, `albumId`, `artistId`, `cover`, `previewUrl`, `durationMs`.
-- [ ] Le tre decisioni sono prese.
+- [ ] Le due decisioni sono prese.

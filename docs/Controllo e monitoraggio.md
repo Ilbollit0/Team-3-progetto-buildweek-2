@@ -19,27 +19,32 @@ gantt
   Revisione e prova esposizione    :2026-11-27, 1d
 
   section Luca
-  Preferiti (7)                    :2026-11-24, 1d
-  Dettaglio album (6, 7)           :2026-11-24, 2d
+  Markup riga brano (con Francesca) :2026-11-24, 1d
+  Helper preferiti e cronologia (7, 10) :2026-11-24, 1d
+  Dettaglio album (6, 7)           :2026-11-25, 1d
+  Preferiti nella sidebar (7)      :2026-11-25, 1d
   README finito                    :2026-11-26, 1d
 
   section Gabriel
-  Struttura e sidebar (1)          :2026-11-24, 1d
-  CSS comune (2)                   :2026-11-24, 1d
-  Integrazione su main             :2026-11-25, 1d
+  Fondamenta (percorsi, Prettier, media) :2026-11-24, 1d
+  CSS comune (1, 2)                :2026-11-24, 1d
+  Merge e rifinitura responsive    :2026-11-25, 1d
 
   section Giovanbattista
+  Markup card (con Alessandro)     :2026-11-24, 1d
   CSS Home e Cerca (2)             :2026-11-24, 1d
   Home, preferiti, recenti (7, 8, 10) :2026-11-25, 1d
 
   section Francesca
+  Markup riga brano (con Luca)     :2026-11-24, 1d
   CSS Album e Artista (2)          :2026-11-24, 1d
   Dettaglio artista (11)           :2026-11-25, 1d
 
   section Alessandro
+  Markup card (con Giovanbattista) :2026-11-24, 1d
   Player (9)                       :2026-11-24, 1d
-  Cerca e ultima ricerca (4, 5)    :2026-11-24, 2d
-  Cronologia (10)                  :2026-11-25, 1d
+  Cerca e ultima ricerca (4, 5)    :2026-11-25, 1d
+  Brano in corso al cambio pagina  :2026-11-25, 1d
 
   section Scadenze
   Minimo completo                  :milestone, 2026-11-26, 0d
