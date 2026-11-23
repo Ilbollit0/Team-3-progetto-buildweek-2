@@ -10,13 +10,18 @@ L'API è **iTunes**: non serve una chiave e il browser la può chiamare direttam
 
 ## 1. Una chiamata di prova, tutti insieme (15 min)
 
-Si condivide lo schermo. In Postman si crea una nuova richiesta **GET**, si incolla questo indirizzo e si preme **Send**:
+Si condivide lo schermo. In Postman:
 
-```
-https://itunes.apple.com/search?term=coldplay&entity=song&limit=3
-```
+1. **New** → **HTTP Request**, con il metodo **GET**.
+2. Nella barra dell'indirizzo in alto si incolla l'indirizzo **completo**:
 
-Sotto compare il JSON. Si legge insieme:
+   [https://itunes.apple.com/search?term=coldplay&entity=song&limit=3](https://itunes.apple.com/search?term=coldplay&entity=song&limit=3)
+
+3. Postman mette da solo quello che viene dopo il `?` nella scheda **Params** sotto la barra (`term`, `entity`, `limit`): lì si cambia un valore senza riscrivere l'indirizzo.
+4. **Send**: la risposta compare in basso, nella scheda **Body**.
+5. **Save** (`Cmd+S`) salva la chiamata nella collection **EpiTunes**.
+
+Nella scheda Body compare il JSON. Si legge insieme:
 
 - `resultCount`: quanti risultati sono arrivati (qui 3);
 - `results`: l'array dei brani;
@@ -26,13 +31,15 @@ Sotto compare il JSON. Si legge insieme:
 
 A turno, ognuno prende la tastiera e prova la chiamata che userà nel suo codice. Tutte le chiamate si salvano in una collection di Postman chiamata **EpiTunes**.
 
-| Chi | Chiamata (dopo `https://itunes.apple.com/`) | Cosa notare |
+| Chi | Indirizzo da incollare in Postman | Cosa notare |
 | --- | --- | --- |
-| Giovanbattista (Home) | `search?term=pop&entity=song&limit=12` | Uguale a quella di prova |
-| Alessandro (Cerca) | `search?term=coldplay&entity=album&limit=8` | Gli album hanno `collectionId` |
-| Gabriel | `search?term=coldplay&entity=musicArtist&limit=8` | Gli artisti **non hanno immagine** |
-| Luca (Album) | `lookup?id=<un collectionId preso sopra>&entity=song` | Il primo risultato è l'album, gli altri sono i brani |
-| Francesca (Artista) | `lookup?id=<un artistId preso sopra>&entity=song&limit=15` | Il primo risultato è l'artista, gli altri sono i brani |
+| Giovanbattista (Home) | [https://itunes.apple.com/search?term=pop&entity=song&limit=12](https://itunes.apple.com/search?term=pop&entity=song&limit=12) | Uguale a quella di prova |
+| Alessandro (Cerca) | [https://itunes.apple.com/search?term=coldplay&entity=album&limit=8](https://itunes.apple.com/search?term=coldplay&entity=album&limit=8) | Gli album hanno `collectionId` |
+| Gabriel | [https://itunes.apple.com/search?term=coldplay&entity=musicArtist&limit=8](https://itunes.apple.com/search?term=coldplay&entity=musicArtist&limit=8) | Gli artisti **non hanno immagine** |
+| Luca (Album) | [https://itunes.apple.com/lookup?id=1122782080&entity=song](https://itunes.apple.com/lookup?id=1122782080&entity=song) | Il primo risultato è l'album, gli altri sono i brani |
+| Francesca (Artista) | [https://itunes.apple.com/lookup?id=471744&entity=song&limit=15](https://itunes.apple.com/lookup?id=471744&entity=song&limit=15) | Il primo risultato è l'artista, gli altri sono i brani |
+
+Nelle due chiamate `lookup` l'`id` è quello dell'album *Parachutes* (`1122782080`) e dell'artista Coldplay (`471744`), presi dalle risposte di Alessandro e Gabriel. Per provare altri album o artisti si sostituisce il numero dopo `id=` con un `collectionId` o un `artistId` copiato da un'altra risposta.
 
 ## 3. Campo dell'API → nome nel nostro codice (25 min)
 
