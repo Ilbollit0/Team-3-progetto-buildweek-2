@@ -9,10 +9,10 @@ Cosa va costruito sta in [Istruzioni progetto](Istruzioni%20progetto.md); qui c'
 | Fase | Quando | Cosa ne esce |
 | --- | --- | --- |
 | Envision | Lunedì 23/11, mattina | Visione, obiettivi, vincoli, ruoli, regole di lavoro |
-| Speculate | Lunedì 23/11, pomeriggio | Backlog con priorità, piano delle iterazioni, rischi |
-| Explore | Da martedì 24 a giovedì 26/11 | Minimo completo martedì e mercoledì, extra giovedì |
+| Speculate | Lunedì 23/11, pomeriggio | Backlog a step e rischi; prova dell'API (step 0) |
+| Explore | Da martedì 24 a giovedì 26/11 | Step 1–7: minimo martedì e mercoledì, extra giovedì |
 | Adapt | Ogni giorno, all'esposizione al docente e allo stand-up | Piano aggiornato per il giorno dopo |
-| Close | Venerdì 27/11 | Revisione, consegna, esposizione finale, retrospettiva |
+| Close | Venerdì 27/11 | Step 8: revisione, consegna, esposizione finale, retrospettiva |
 
 ## 1. Envision — cosa costruiamo e chi siamo
 
@@ -23,99 +23,27 @@ Cosa va costruito sta in [Istruzioni progetto](Istruzioni%20progetto.md); qui c'
 ### Obiettivi
 
 1. Il minimo richiesto funzionante e integrato su `main` entro mercoledì sera.
-2. Giovedì gli extra (vedi *Extra*), solo a minimo completo.
+2. Giovedì gli extra (step 7 del *Backlog*), solo a minimo completo.
 3. Un README che spiega cosa fa l'app e come, scritto man mano e finito giovedì sera.
 4. Venerdì tutto è già pronto: solo revisione e rilettura per l'esposizione finale.
 
 ### Vincoli
 
 - **Consegna:** venerdì 27/11 alle 16:30, poi la presentazione (orario della Build Week 1, da confermare).
-- **Tecnici:** almeno 4 pagine, niente SPA, niente Bootstrap, vincoli sul codice di *Istruzioni progetto* (1.3 e 2.6).
+- **Tecnici:** almeno 4 pagine, niente SPA, niente Bootstrap, mobile-first con breakpoint `md` da 768px e `lg` da 992px, vincoli sul codice di *Istruzioni progetto* (1.3 e 2.6).
 - **Venerdì Luca è assente:** quello che è suo (README, questo file, le sue voci) è finito giovedì sera.
 
 ### Team e ruoli
 
-Francesca, Gabriel, Giovanbattista, Alessandro e Luca (Team Leader).
+Francesca, Gabriel, Giovanbattista, Alessandro e Luca (Team Leader). Il lavoro si divide per oggetti dello scheletro: ognuno risponde delle sue classi, funzioni e file, e gli altri usano solo i loro metodi pubblici.
 
-| Persona | Ruolo |
-| --- | --- |
-| Luca | Team Leader e JS: coordina, tiene backlog e piano in questo file, conduce lo stand-up, tiene i contatti con il docente, cura il README, dà supporto tecnico a tutti |
-| Gabriel | Git manager e HTML/CSS: repo, branch, pull request e merge su `main` (li gestisce solo lui) |
-| Giovanbattista | HTML/CSS, poi JS quando ha finito |
-| Francesca | HTML/CSS, poi JS quando ha finito |
-| Alessandro | JS |
-
-### Assegnazione dei lavori
-
-Il lavoro si divide per oggetti dello scheletro: ognuno risponde delle sue classi, funzioni e file, e gli altri usano solo i loro metodi pubblici. Il JS è in `assets/js/`, il CSS in `assets/css/app.css`. I numeri tra parentesi sono le voci del *Backlog*.
-
-#### HTML e CSS
-
-Mobile-first con breakpoint nostri, `md` da 768px e `lg` da 992px: oggi `app.css` è scritto desktop-first (`max-width: 800px` e `540px`) e va girato.
-
-| Chi | Lavoro | File e selettori |
+| Persona | Ruolo | Parti del codice |
 | --- | --- | --- |
-| Gabriel | Struttura comune: percorsi di CSS e JS negli HTML (oggi puntano a `css/` e `js/`, i file sono in `assets/`), layout a tre zone, sidebar per device (assente su mobile, solo icone su `md`, completa su `lg`), stile del player (1, 2) | Le 4 pagine HTML, in `app.css` `.app`, `.sidebar`, `.main`, `.topbar`, `.player` |
-| Giovanbattista | Home e Cerca: righe, griglie e card, box di ricerca, alle tre larghezze (2) | `index.html`, `search.html`, in `app.css` `.home`, `.search`, `.row`, `.grid`, `.card` |
-| Francesca | Album e Artista: hero con copertina grande, tracklist, riga del brano in riproduzione (2) | `album.html`, `artist.html`, in `app.css` `.album-page`, `.artist-page`, `.tracklist`, `.track-row` |
-
-Le parti in comune del CSS (colori, font, `.app`, `.sidebar`, `.player`) le modifica solo Gabriel.
-
-#### JS
-
-| Chi | Lavoro | File e funzioni |
-| --- | --- | --- |
-| Tutti insieme | Prova dell'API, `fetchJSON` e modelli (3), vedi *Attività in comune* | `common.js`: `fetchJSON`, `Track`, `Album`, `Artist` |
-| Alessandro | Player: audio reale, Play e pausa, volume, barra di avanzamento, brano in corso al cambio pagina (9); card del brano | `common.js`: `Player` (`play`, `togglePlay`, `setVolume`, `seek`), `createTrackCard` |
-| Alessandro | Cerca: debounce, tre chiamate con `Promise.all`, risultati divisi, ultima ricerca (4, 5) | `search.js` |
-| Luca | Preferiti e cronologia in localStorage, lista dei preferiti nella sidebar (7, 10); riga del brano | `common.js`: `getFavourites`, `isFavourite`, `toggleFavourite`, `getHistory`, `addToHistory`, `#sidebar-favs` in `renderSidebar`, `createTrackRow` |
-| Luca | Dettaglio album con i suoi brani e il cuore dei preferiti (6, 7) | `album.js` |
-| Giovanbattista | Home: recenti, preferiti, tre righe di suggerimenti con `Promise.all` (8, 10) | `home.js` |
-| Francesca | Dettaglio artista con i brani più ascoltati (11) | `artist.js` |
-
-Giovanbattista e Francesca passano al JS sulle stesse pagine di cui hanno fatto il CSS. Il CSS va finito martedì, perché mercoledì sera il JS delle loro pagine deve essere pronto. Se martedì sera il loro CSS non è finito, `home.js` passa a Luca e `artist.js` ad Alessandro; il CSS resta a loro.
-
-`common.js` lo toccano tutti insieme (`fetchJSON` e modelli), Alessandro (`Player`, `createTrackCard`) e Luca (helper di localStorage, `renderSidebar`, `createTrackRow`), ognuno solo nella sua sezione del file: così i merge di Gabriel non vanno in conflitto.
-
-### Microprogettazione — chi fa cosa, in ordine o in contemporanea
-
-Finora il piano è macro: fasi, iterazioni, aree. Qui c'è il dettaglio dei compiti, step per step. Le righe dello stesso step si fanno **in contemporanea**; uno step marcato **in ordine** va su `main` prima che parta il successivo.
-
-Quasi tutto si fa da soli: le funzioni che collegano il lavoro di persone diverse esistono già vuote nello scheletro e non rompono niente (`player.play()`, `getHistory()` e `getFavourites()` restituiscono `[]`, `isFavourite()` restituisce `false`). Ognuno le chiama anche prima che siano finite; la sezione resta vuota finché non arriva il merge di chi le scrive.
-
-| Step | Quando | Chi | Compito | Come |
-| --- | --- | --- | --- | --- |
-| 0 | Lunedì pomeriggio | Tutti | Prova API con Postman ([Istruzioni API](Istruzioni%20API.md)) | Insieme |
-| 1 | Martedì, prima ora | Gabriel | Percorsi di CSS e JS negli HTML; Prettier su tutti i file; le due `@media` in fondo ad `app.css` spezzate nelle sezioni, già mobile-first → merge su `main` | **In ordine**: chi lavora su HTML e CSS parte dal suo merge |
-| 1 | Martedì, prima ora | Alessandro + Giovanbattista | Struttura HTML della card del brano (`createTrackCard`): classi, cover, titolo, artista, Play, cuore `btn-fav`, `data-track-id` | In coppia, in contemporanea a Gabriel |
-| 1 | Martedì, prima ora | Luca + Francesca | Struttura HTML della riga del brano (`createTrackRow`): numero, titolo, durata, cuore `btn-fav`, `data-track-id`, `.is-playing` | In coppia, in contemporanea a Gabriel |
-| 2 | Martedì, fino a mezzogiorno | Tutti | `fetchJSON`; costruttori di `Track`, `Album`, `Artist` dalla tabella di [Istruzioni API](Istruzioni%20API.md) | Insieme, **in ordine**: tutto il JS dopo lo usa |
-| 3 | Martedì pomeriggio | Gabriel | CSS comune: `.app` a tre zone, `.sidebar` assente / icone / completa, `.topbar`, `.player` (1, 2) | In contemporanea |
-| 3 | Martedì pomeriggio | Giovanbattista | CSS di `.home`, `.search`, `.row`, `.grid`, `.card` alle tre larghezze (2) | In contemporanea |
-| 3 | Martedì pomeriggio | Francesca | CSS di `.album-page`, `.artist-page`, hero, `.tracklist`, `.track-row` alle tre larghezze (2) | In contemporanea |
-| 3 | Martedì pomeriggio | Alessandro | `Player`: `constructor` ed eventi audio, `mount` con i click, `play`, `togglePlay`, `setVolume`, `seek` (9); `createTrackCard` | In contemporanea |
-| 3 | Martedì pomeriggio | Luca | `getFavourites`, `isFavourite`, `toggleFavourite`, `getHistory`, `addToHistory` (7, 10); `createTrackRow` | In contemporanea |
-| 4 | Mercoledì mattina | Alessandro | `search.js`: debounce, tre chiamate con `Promise.all`, righe Brani / Album / Artisti, ultima ricerca (4, 5) | In contemporanea |
-| 4 | Mercoledì mattina | Luca | `album.js`: id dalla query string, lookup, hero, tracklist con `createTrackRow` (6, 7) | In contemporanea |
-| 4 | Mercoledì mattina | Giovanbattista | `home.js`: `renderRow`, tre suggerimenti con `Promise.all`, righe recenti e preferiti (8, 10) | In contemporanea |
-| 4 | Mercoledì mattina | Francesca | `artist.js`: id dalla query string, lookup, hero, brani con `createTrackRow` (11) | In contemporanea |
-| 4 | Mercoledì mattina | Gabriel | Merge delle PR, rifinitura responsive | In contemporanea |
-| 5 | Mercoledì pomeriggio | Alessandro | Brano in corso mostrato al cambio pagina (primo della cronologia) | In contemporanea |
-| 5 | Mercoledì pomeriggio | Luca | Lista dei preferiti in `#sidebar-favs` | In contemporanea |
-| 5 | Mercoledì pomeriggio | Gli altri | Chiusura delle proprie voci, correzioni | In contemporanea |
-| 6 | Mercoledì sera | Tutti | Prova di `main` alle tre larghezze, zero errori in console (KPI K4, K5) | Insieme |
-| 7 | Giovedì | _da definire_ | Extra (vedi *Extra*); README finito (Luca) | — |
-| 8 | Venerdì | Tutti tranne Luca | Revisione e rilettura per l'esposizione finale | Insieme |
-
-Allo step 4 vale la regola di passaggio di `home.js` e `artist.js` scritta sopra, in *JS*.
-
-### Attività in comune
-
-API e JSON non sono di una persona sola: non tutti nel gruppo ci hanno ancora preso la mano, e ogni area dipende dalla forma dei dati. Si fanno insieme:
-
-- **Prova dell'API con Postman** (lunedì): tutti insieme, si leggono le risposte di iTunes per brani, album e artisti e si salva un JSON di esempio per ciascuno. Come si fa: [Istruzioni API](Istruzioni%20API.md).
-- **`fetchJSON` e costruttori dei modelli** (martedì mattina): scritti in gruppo, uno alla tastiera e gli altri che seguono, a turno. Dopo, le modifiche a `fetchJSON` e ai modelli passano da Luca, come per gli altri file comuni.
-- Chi si blocca su una chiamata o su un campo del JSON lo dice subito: si guarda insieme in Postman prima di cambiare il codice.
+| Luca | Team Leader e JS: coordina, tiene backlog e piano in questo file, conduce lo stand-up, tiene i contatti con il docente, cura il README, dà supporto tecnico a tutti | Preferiti e cronologia, riga del brano, `album.js` |
+| Gabriel | Git manager e HTML/CSS: repo, branch, pull request e merge su `main` (li gestisce solo lui) | Struttura comune delle 4 pagine, CSS comune |
+| Giovanbattista | HTML/CSS, poi JS quando ha finito | `index.html` e `search.html` con il loro CSS, poi `home.js` |
+| Francesca | HTML/CSS, poi JS quando ha finito | `album.html` e `artist.html` con il loro CSS, poi `artist.js` |
+| Alessandro | JS | `Player`, card del brano, `search.js` |
 
 ### Regole di lavoro
 
@@ -123,8 +51,8 @@ API e JSON non sono di una persona sola: non tutti nel gruppo ci hanno ancora pr
 - Le pull request verso `main` le apre e le unisce Gabriel, almeno una volta al giorno, prima dello stand-up. Chi ha finito una voce glielo dice su Discord.
 - Commit piccoli, con un messaggio di una riga che dice cosa cambia, per esempio «Aggiunge il volume al player».
 - Il codice si formatta con Prettier, con le impostazioni standard: indentazione a 2 spazi, virgolette doppie, punto e virgola, come nello scheletro.
-- I file comuni li modifica solo chi ne è responsabile, gli altri gli chiedono la modifica: Gabriel per l'HTML della struttura e il CSS di base, Luca per `fetchJSON` e modelli.
-- Si comunica su Discord; un blocco si dice subito, senza aspettare lo stand-up.
+- I file comuni li modifica solo chi ne è responsabile, gli altri gli chiedono la modifica: Gabriel per la struttura HTML delle 4 pagine, la topbar e il CSS comune (colori, font, `.app`, `.sidebar`, `.main`, `.topbar`, `.player`), Luca per `fetchJSON` e i modelli dopo lo step 2. In `common.js` ognuno scrive solo nella sua sezione, così i merge di Gabriel non vanno in conflitto.
+- Si comunica su Discord; un blocco si dice subito, senza aspettare lo stand-up. Se è su una chiamata o su un campo del JSON, lo si guarda insieme in Postman prima di cambiare il codice.
 
 ### Nomi nel codice
 
@@ -154,43 +82,66 @@ I nomi sono in inglese, i commenti in italiano, come nello scheletro. Il caso de
 
 ## 2. Speculate — cosa facciamo e quando
 
-### Backlog
+### Backlog — chi fa cosa, step per step
 
-**M** = minimo richiesto. **C** = miglioria, si fa solo a minimo completo. **Stato**: Da fare, In corso, Fatto.
+Il lavoro è diviso in nove step, dallo 0 all'8. Gli step da 1 a 6 portano al minimo richiesto, lo step 7 sono gli extra, che si fanno solo a minimo completo. Lunedì niente codice: c'è solo lo step 0.
 
-| # | Funzionalità | Chi | Priorità | Stato |
+**Gli step in breve**
+
+- **Step 0 · Prova dell'API** (lunedì pomeriggio): tutti insieme, con Postman.
+- **Step 1 · Fondamenta** (martedì, prima ora): Gabriel sistema i percorsi negli HTML e le `@media` di `app.css`, poi passa Prettier su tutti i file; le due coppie scrivono la struttura della card e della riga del brano.
+- **Step 2 · Dati** (martedì, fino a mezzogiorno): tutti insieme scrivono `fetchJSON` e i modelli `Track`, `Album`, `Artist`.
+- **Step 3 · Stile e funzioni comuni** (martedì pomeriggio): il CSS delle pagine, il player, preferiti e cronologia.
+- **Step 4 · Le pagine** (mercoledì mattina): il JS di Home, Cerca, Album e Artista; Gabriel unisce le PR e rifinisce il responsive.
+- **Step 5 · Collegamenti** (mercoledì pomeriggio): al cambio pagina il player mostra il brano in corso, i preferiti compaiono nella sidebar, gli altri chiudono le loro voci.
+- **Step 6 · Prova** (mercoledì sera): tutti provano `main` alle tre larghezze.
+- **Step 7 · Extra e README** (giovedì).
+- **Step 8 · Revisione** (venerdì): si prepara l'esposizione finale.
+
+**Come si va avanti**
+
+- Gli step seguono l'ordine della tabella, giorno per giorno. Le righe dello stesso step si fanno **in contemporanea**: ognuno fa la sua, nello stesso momento degli altri.
+- Due lavori devono essere su `main` prima dello step 3, perché tutto il resto parte da lì. Gabriel li unisce appena sono pronti, e chi comincia lo step 3 aggiorna prima il suo branch da `main`. I due lavori sono:
+  - **le fondamenta di Gabriel (step 1).** Senza i percorsi giusti le pagine non caricano né CSS né JS. E allo step 3 tre persone scrivono in `app.css` nello stesso momento, ognuna nelle sue sezioni: devono già essere quelle divise e formattate da Gabriel, se no i merge vanno in conflitto;
+  - **`fetchJSON` e i modelli (step 2).** Tutto il JS che viene dopo legge i dati come li danno i modelli, per esempio `track.title`, `track.cover`, `track.previewUrl`: se quei nomi cambiassero dopo, andrebbero cambiati in tutte le pagine.
+- Negli step 3, 4 e 5 ognuno lavora per conto suo, anche quando usa funzioni che scrive un altro. Nello scheletro quelle funzioni ci sono già, vuote, e non danno errori: si chiamano come se fossero finite, e quando arriva il merge di chi le scrive la pagina si riempie da sola. Fino ad allora:
+  - `player.play()`, di Alessandro, non fa niente: cliccando un brano non si sente nulla;
+  - `getHistory()` e `getFavourites()`, di Luca, restituiscono `[]`: in Home le righe dei recenti e dei preferiti restano vuote;
+  - `isFavourite()`, di Luca, restituisce `false` e `toggleFavourite()` non salva niente: il cuore resta vuoto.
+- `createTrackCard` e `createTrackRow` invece nello scheletro non ci sono: nascono allo step 1, così esistono già quando le pagine le usano allo step 4.
+- **Stato**: Da fare, In corso, Fatto.
+
+| Step | Quando | Chi | Compito | Stato |
 | --- | --- | --- | --- | --- |
-| 1 | Struttura a tre zone e sidebar per device | Gabriel | M | Da fare |
-| 2 | Tema scuro, card, stile delle liste | Gabriel (comune), Giovanbattista (Home e Cerca), Francesca (Album e Artista) | M | Da fare |
-| 3 | `fetchJSON`, chiamate API, modelli | Tutti insieme | M | Da fare |
-| 4 | Cerca: input con debounce ~400 ms, risultati divisi in Brani e Album | Alessandro | M | Da fare |
-| 5 | Last search: solo l'ultima ricerca | Alessandro | M | Da fare |
-| 6 | Dettaglio album con i suoi brani | Luca | M | Da fare |
-| 7 | Preferiti: aggiungi e rimuovi dall'album, lista in Home | Luca (helper e album), Giovanbattista (lista in Home) | M | Da fare |
-| 8 | Home: tre elenchi di suggerimenti | Giovanbattista | M | Da fare |
-| 9 | Player: audio reale, Play, volume | Alessandro | M | Da fare |
-| 10 | Riprodotti di recente in localStorage, mostrati in Home | Luca (salvataggio), Giovanbattista (lista in Home) | M | Da fare |
-| 11 | Quarta pagina: dettaglio artista | Francesca | M | Da fare |
-| 12 | Player completo: shuffle, precedente e successivo, ripeti | _da definire_ (vedi *Extra*) | C | Da fare |
-| 13 | Click su un preferito che avvia il brano | _da definire_ (vedi *Extra*) | C | Da fare |
-| 14 | Preferiti anche dai singoli brani nelle altre viste | _da definire_ (vedi *Extra*) | C | Da fare |
-| 15 | Login e playlist per utente | _da definire_ (vedi *Extra*) | C | Da fare |
+| 0 | Lunedì pomeriggio | Tutti | `riferimenti/api-esempi/`, `riferimenti/postman/` e [Istruzioni API](Istruzioni%20API.md): prova dell'API con Postman; si salvano le risposte di esempio, la collection EpiTunes e la tabella dei campi | Fatto |
+| 1 | Martedì, prima ora | Gabriel | Le 4 pagine HTML e `app.css`: fondamenta, cioè percorsi di CSS e JS negli HTML (oggi puntano a `css/` e `js/`, i file sono in `assets/`) e le due `@media` in fondo ad `app.css` spezzate nelle sezioni, già mobile-first; poi Prettier su tutti i file → merge su `main` | Da fare |
+| 1 | Martedì, prima ora | Alessandro + Giovanbattista | `common.js`: struttura HTML della card del brano (`createTrackCard`), cioè classi, cover, titolo, artista, Play, cuore `btn-fav`, `data-track-id` | Da fare |
+| 1 | Martedì, prima ora | Luca + Francesca | `common.js`: struttura HTML della riga del brano (`createTrackRow`), cioè numero, titolo, durata, cuore `btn-fav`, `data-track-id`, `.is-playing` | Da fare |
+| 2 | Martedì, fino a mezzogiorno | Tutti | `common.js`: `fetchJSON` e costruttori di `Track`, `Album`, `Artist` dalla tabella di [Istruzioni API](Istruzioni%20API.md), scritti insieme: uno alla tastiera e gli altri che seguono, a turno → merge su `main` | Da fare |
+| 3 | Martedì pomeriggio | Gabriel | `app.css`: CSS comune, cioè colori e font del tema scuro, `.app` a tre zone, `.sidebar` (assente su mobile, solo icone su `md`, completa su `lg`), `.main`, `.topbar`, `.player` | Da fare |
+| 3 | Martedì pomeriggio | Giovanbattista | `app.css`: CSS di Home e Cerca alle tre larghezze (`.home`, `.search`, `.row`, `.grid`, `.card`) | Da fare |
+| 3 | Martedì pomeriggio | Francesca | `app.css`: CSS di Album e Artista alle tre larghezze (`.album-page`, `.artist-page`, hero con copertina grande, `.tracklist`, `.track-row` con il brano in riproduzione) | Da fare |
+| 3 | Martedì pomeriggio | Alessandro | `common.js`: `Player` (`constructor` ed eventi audio, `mount` con i click, `play`, `togglePlay`, `setVolume`, `seek`) e `createTrackCard` | Da fare |
+| 3 | Martedì pomeriggio | Luca | `common.js`: preferiti e cronologia in localStorage (`getFavourites`, `isFavourite`, `toggleFavourite`, `getHistory`, `addToHistory`) e `createTrackRow` | Da fare |
+| 4 | Mercoledì mattina | Alessandro | `search.js`: debounce di ~400 ms, tre chiamate con `Promise.all`, righe Brani / Album / Artisti, ultima ricerca | Da fare |
+| 4 | Mercoledì mattina | Luca | `album.js`: id dalla query string, lookup, hero, tracklist con `createTrackRow` e cuore dei preferiti | Da fare |
+| 4 | Mercoledì mattina | Giovanbattista | `home.js`: `renderRow`, tre righe di suggerimenti con `Promise.all`, righe dei recenti e dei preferiti | Da fare |
+| 4 | Mercoledì mattina | Francesca | `artist.js`: id dalla query string, lookup, hero, brani più ascoltati con `createTrackRow` | Da fare |
+| 4 | Mercoledì mattina | Gabriel | `app.css`, parti comuni: rifinitura responsive; merge delle PR su GitHub | Da fare |
+| 5 | Mercoledì pomeriggio | Alessandro | `common.js` (`Player`): brano in corso mostrato al cambio pagina, cioè il primo della cronologia | Da fare |
+| 5 | Mercoledì pomeriggio | Luca | `common.js`: lista dei preferiti nella sidebar, in `#sidebar-favs` di `renderSidebar` | Da fare |
+| 5 | Mercoledì pomeriggio | Gabriel, Giovanbattista, Francesca | I file delle proprie voci: chiusura delle voci aperte, correzioni | Da fare |
+| 6 | Mercoledì sera | Tutti | Le 4 pagine da `main`: prova alle tre larghezze, zero errori in console (KPI K4, K5); le correzioni le fa chi risponde del file | Da fare |
+| 7 | Giovedì | _da definire_ | `common.js` (`Player`): player completo, cioè shuffle, precedente e successivo, ripeti | Da fare |
+| 7 | Giovedì | _da definire_ | `home.js` e `common.js` (`renderSidebar`): click su un preferito che avvia il brano | Da fare |
+| 7 | Giovedì | _da definire_ | `home.js`, `search.js` e `artist.js`: preferiti anche dai singoli brani nelle altre viste | Da fare |
+| 7 | Giovedì | _da definire_ | Una pagina nuova con il suo JS, le 4 pagine HTML (`user-pill`), `common.js` e `app.css`: login e playlist per utente | Da fare |
+| 7 | Giovedì | Luca | `README.md`: chiusura del README, che spiega cosa fa l'app e come | Da fare |
+| 8 | Venerdì | Tutti tranne Luca | Nessun file da toccare: revisione e rilettura per l'esposizione finale | Da fare |
 
-### Iterazioni
+**Extra, da definire oggi:** quali si fanno e chi fa ciascuno. Si scelgono tra le righe dello step 7 o se ne aggiungono altre.
 
-| Giorno | Iterazione | Obiettivo | Voci del backlog |
-| --- | --- | --- | --- |
-| Lunedì 23/11 | — | Solo pianificazione e organizzazione, niente codice: Envision e Speculate, assegnazione dei lavori, prova dell'API con Postman tutti insieme | — |
-| Martedì 24/11 | 1 | Prima ora: fondamenta di Gabriel e markup di card e riga. Mattina: `fetchJSON` e modelli scritti insieme entro mezzogiorno. Pomeriggio: CSS mobile-first finito, il player suona un brano, helper di preferiti e cronologia | 1, 2, 3, 9, helper di 7 e 10 |
-| Mercoledì 25/11 | 2 | Minimo completo: le quattro pagine in JS, brano in corso al cambio pagina, preferiti nella sidebar; tutto integrato su `main` e provato alle tre larghezze entro sera | 4, 5, 6, 7, 8, 10, 11 |
-| Giovedì 26/11 | 3 | Extra (vedi *Extra*), README finito, tutto su `main` entro sera | Voci scelte tra 12–15 |
-| Venerdì 27/11 | — | Solo revisione e rilettura per l'esposizione finale, niente codice nuovo (vedi *5. Close*) | — |
-
-### Extra
-
-Giovedì è dedicato agli extra. Si scelgono tra le migliorie del backlog (12–15) o se ne aggiungono altre.
-
-**Da definire oggi:** quali extra si fanno e chi fa ciascuno.
+**Regola di passaggio:** allo step 4 Giovanbattista e Francesca scrivono il JS delle pagine di cui hanno fatto il CSS, quindi il CSS va finito martedì. Se martedì sera non è finito, `home.js` passa a Luca e `artist.js` ad Alessandro; il CSS resta a loro.
 
 ### Rischi
 
@@ -201,12 +152,12 @@ Giovedì è dedicato agli extra. Si scelgono tra le migliorie del backlog (12–
 | Il layout responsive senza Bootstrap richiede più tempo | Mobile-first da martedì mattina: prima la struttura, poi la rifinitura |
 | L'HTML comune ripetuto nelle pagine diverge | Sidebar e player li genera `common.js`, uguali per tutte; la topbar, ripetuta nelle 4 pagine, la modifica solo Gabriel (vedi *Regole di lavoro*) |
 | L'API risponde diversamente dal previsto (campi, limiti) | Lunedì la si prova con Postman; i modelli isolano il resto del codice dai campi dell'API |
-| Parte del team non è ancora sicura con API e JSON | Postman, `fetchJSON` e modelli si fanno insieme (vedi *Attività in comune*) |
-| Due soli giorni per il minimo | CSS finito martedì, regola del passaggio di `home.js` e `artist.js` (vedi *Assegnazione dei lavori*); quello che manca mercoledì sera si chiude giovedì mattina, prima degli extra |
+| Parte del team non è ancora sicura con API e JSON | Postman, `fetchJSON` e modelli si fanno insieme (step 0 e 2 del *Backlog*) |
+| Due soli giorni per il minimo | CSS finito martedì, regola di passaggio di `home.js` e `artist.js` (vedi *Backlog*); quello che manca mercoledì sera si chiude giovedì mattina, prima degli extra |
 
 ## 3. Explore — come lavoriamo nelle iterazioni
 
-- La mattina ognuno prende dal backlog le sue voci per l'iterazione del giorno.
+- La mattina ognuno prende dal backlog le sue voci del giorno.
 - Commit piccoli, una voce alla volta; il merge su `main` prima dello stand-up permette di provare ogni giorno l'app integrata.
 - Una voce è **fatta** quando:
   - funziona su mobile, `md` e `lg`;
