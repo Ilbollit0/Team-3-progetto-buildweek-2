@@ -66,16 +66,48 @@ Le parti in comune del CSS (colori, font, `.app`, `.sidebar`, `.player`) le modi
 | Chi | Lavoro | File e funzioni |
 | --- | --- | --- |
 | Tutti insieme | Prova dell'API, `fetchJSON` e modelli (3), vedi *Attività in comune* | `common.js`: `fetchJSON`, `Track`, `Album`, `Artist` |
-| Alessandro | Player: audio reale, Play e pausa, volume, barra di avanzamento, cronologia in localStorage (9, 10) | `common.js`: `Player` (`play`, `togglePlay`, `setVolume`, `seek`), `getHistory`, `addToHistory` |
+| Alessandro | Player: audio reale, Play e pausa, volume, barra di avanzamento, brano in corso al cambio pagina (9); card del brano | `common.js`: `Player` (`play`, `togglePlay`, `setVolume`, `seek`), `createTrackCard` |
 | Alessandro | Cerca: debounce, tre chiamate con `Promise.all`, risultati divisi, ultima ricerca (4, 5) | `search.js` |
-| Luca | Preferiti: aggiungi, togli, lista nella sidebar (7) | `common.js`: `getFavourites`, `isFavourite`, `toggleFavourite`, `#sidebar-favs` in `renderSidebar` |
+| Luca | Preferiti e cronologia in localStorage, lista dei preferiti nella sidebar (7, 10); riga del brano | `common.js`: `getFavourites`, `isFavourite`, `toggleFavourite`, `getHistory`, `addToHistory`, `#sidebar-favs` in `renderSidebar`, `createTrackRow` |
 | Luca | Dettaglio album con i suoi brani e il cuore dei preferiti (6, 7) | `album.js` |
 | Giovanbattista | Home: recenti, preferiti, tre righe di suggerimenti con `Promise.all` (8, 10) | `home.js` |
 | Francesca | Dettaglio artista con i brani più ascoltati (11) | `artist.js` |
 
 Giovanbattista e Francesca passano al JS sulle stesse pagine di cui hanno fatto il CSS. Il CSS va finito martedì, perché mercoledì sera il JS delle loro pagine deve essere pronto. Se martedì sera il loro CSS non è finito, `home.js` passa a Luca e `artist.js` ad Alessandro; il CSS resta a loro.
 
-`common.js` lo toccano in tre (tutti insieme, Alessandro, Luca), ognuno solo nella sua sezione del file: così i merge di Gabriel non vanno in conflitto.
+`common.js` lo toccano tutti insieme (`fetchJSON` e modelli), Alessandro (`Player`, `createTrackCard`) e Luca (helper di localStorage, `renderSidebar`, `createTrackRow`), ognuno solo nella sua sezione del file: così i merge di Gabriel non vanno in conflitto.
+
+### Microprogettazione — chi fa cosa, in ordine o in contemporanea
+
+Finora il piano è macro: fasi, iterazioni, aree. Qui c'è il dettaglio dei compiti, step per step. Le righe dello stesso step si fanno **in contemporanea**; uno step marcato **in ordine** va su `main` prima che parta il successivo.
+
+Quasi tutto si fa da soli: le funzioni che collegano il lavoro di persone diverse esistono già vuote nello scheletro e non rompono niente (`player.play()`, `getHistory()` e `getFavourites()` restituiscono `[]`, `isFavourite()` restituisce `false`). Ognuno le chiama anche prima che siano finite; la sezione resta vuota finché non arriva il merge di chi le scrive.
+
+| Step | Quando | Chi | Compito | Come |
+| --- | --- | --- | --- | --- |
+| 0 | Lunedì pomeriggio | Tutti | Prova API con Postman ([Istruzioni API](Istruzioni%20API.md)) | Insieme |
+| 1 | Martedì, prima ora | Gabriel | Percorsi di CSS e JS negli HTML; Prettier su tutti i file; le due `@media` in fondo ad `app.css` spezzate nelle sezioni, già mobile-first → merge su `main` | **In ordine**: chi lavora su HTML e CSS parte dal suo merge |
+| 1 | Martedì, prima ora | Alessandro + Giovanbattista | Struttura HTML della card del brano (`createTrackCard`): classi, cover, titolo, artista, Play, cuore `btn-fav`, `data-track-id` | In coppia, in contemporanea a Gabriel |
+| 1 | Martedì, prima ora | Luca + Francesca | Struttura HTML della riga del brano (`createTrackRow`): numero, titolo, durata, cuore `btn-fav`, `data-track-id`, `.is-playing` | In coppia, in contemporanea a Gabriel |
+| 2 | Martedì, fino a mezzogiorno | Tutti | `fetchJSON`; costruttori di `Track`, `Album`, `Artist` dalla tabella di [Istruzioni API](Istruzioni%20API.md) | Insieme, **in ordine**: tutto il JS dopo lo usa |
+| 3 | Martedì pomeriggio | Gabriel | CSS comune: `.app` a tre zone, `.sidebar` assente / icone / completa, `.topbar`, `.player` (1, 2) | In contemporanea |
+| 3 | Martedì pomeriggio | Giovanbattista | CSS di `.home`, `.search`, `.row`, `.grid`, `.card` alle tre larghezze (2) | In contemporanea |
+| 3 | Martedì pomeriggio | Francesca | CSS di `.album-page`, `.artist-page`, hero, `.tracklist`, `.track-row` alle tre larghezze (2) | In contemporanea |
+| 3 | Martedì pomeriggio | Alessandro | `Player`: `constructor` ed eventi audio, `mount` con i click, `play`, `togglePlay`, `setVolume`, `seek` (9); `createTrackCard` | In contemporanea |
+| 3 | Martedì pomeriggio | Luca | `getFavourites`, `isFavourite`, `toggleFavourite`, `getHistory`, `addToHistory` (7, 10); `createTrackRow` | In contemporanea |
+| 4 | Mercoledì mattina | Alessandro | `search.js`: debounce, tre chiamate con `Promise.all`, righe Brani / Album / Artisti, ultima ricerca (4, 5) | In contemporanea |
+| 4 | Mercoledì mattina | Luca | `album.js`: id dalla query string, lookup, hero, tracklist con `createTrackRow` (6, 7) | In contemporanea |
+| 4 | Mercoledì mattina | Giovanbattista | `home.js`: `renderRow`, tre suggerimenti con `Promise.all`, righe recenti e preferiti (8, 10) | In contemporanea |
+| 4 | Mercoledì mattina | Francesca | `artist.js`: id dalla query string, lookup, hero, brani con `createTrackRow` (11) | In contemporanea |
+| 4 | Mercoledì mattina | Gabriel | Merge delle PR, rifinitura responsive | In contemporanea |
+| 5 | Mercoledì pomeriggio | Alessandro | Brano in corso mostrato al cambio pagina (primo della cronologia) | In contemporanea |
+| 5 | Mercoledì pomeriggio | Luca | Lista dei preferiti in `#sidebar-favs` | In contemporanea |
+| 5 | Mercoledì pomeriggio | Gli altri | Chiusura delle proprie voci, correzioni | In contemporanea |
+| 6 | Mercoledì sera | Tutti | Prova di `main` alle tre larghezze, zero errori in console (KPI K4, K5) | Insieme |
+| 7 | Giovedì | _da definire_ | Extra (vedi *Extra*); README finito (Luca) | — |
+| 8 | Venerdì | Tutti tranne Luca | Revisione e rilettura per l'esposizione finale | Insieme |
+
+Allo step 4 vale la regola di passaggio di `home.js` e `artist.js` scritta sopra, in *JS*.
 
 ### Attività in comune
 
@@ -137,7 +169,7 @@ I nomi sono in inglese, i commenti in italiano, come nello scheletro. Il caso de
 | 7 | Preferiti: aggiungi e rimuovi dall'album, lista in Home | Luca (helper e album), Giovanbattista (lista in Home) | M | Da fare |
 | 8 | Home: tre elenchi di suggerimenti | Giovanbattista | M | Da fare |
 | 9 | Player: audio reale, Play, volume | Alessandro | M | Da fare |
-| 10 | Riprodotti di recente in localStorage, mostrati in Home | Alessandro (salvataggio), Giovanbattista (lista in Home) | M | Da fare |
+| 10 | Riprodotti di recente in localStorage, mostrati in Home | Luca (salvataggio), Giovanbattista (lista in Home) | M | Da fare |
 | 11 | Quarta pagina: dettaglio artista | Francesca | M | Da fare |
 | 12 | Player completo: shuffle, precedente e successivo, ripeti | _da definire_ (vedi *Extra*) | C | Da fare |
 | 13 | Click su un preferito che avvia il brano | _da definire_ (vedi *Extra*) | C | Da fare |
@@ -149,8 +181,8 @@ I nomi sono in inglese, i commenti in italiano, come nello scheletro. Il caso de
 | Giorno | Iterazione | Obiettivo | Voci del backlog |
 | --- | --- | --- | --- |
 | Lunedì 23/11 | — | Solo pianificazione e organizzazione, niente codice: Envision e Speculate, assegnazione dei lavori, prova dell'API con Postman tutti insieme | — |
-| Martedì 24/11 | 1 | Mattina: `fetchJSON` e modelli scritti insieme entro mezzogiorno. Tutto il giorno: percorsi negli HTML, layout e CSS mobile-first finiti, il player suona un brano. Pomeriggio: Cerca, preferiti e dettaglio album avviati | 1, 2, 3, 9, avvio di 4, 6, 7 |
-| Mercoledì 25/11 | 2 | Minimo completo: Home, recenti, ultima ricerca, artista; tutto integrato su `main` e provato alle tre larghezze entro sera | 4, 5, 6, 7, 8, 10, 11 |
+| Martedì 24/11 | 1 | Prima ora: fondamenta di Gabriel e markup di card e riga. Mattina: `fetchJSON` e modelli scritti insieme entro mezzogiorno. Pomeriggio: CSS mobile-first finito, il player suona un brano, helper di preferiti e cronologia | 1, 2, 3, 9, helper di 7 e 10 |
+| Mercoledì 25/11 | 2 | Minimo completo: le quattro pagine in JS, brano in corso al cambio pagina, preferiti nella sidebar; tutto integrato su `main` e provato alle tre larghezze entro sera | 4, 5, 6, 7, 8, 10, 11 |
 | Giovedì 26/11 | 3 | Extra (vedi *Extra*), README finito, tutto su `main` entro sera | Voci scelte tra 12–15 |
 | Venerdì 27/11 | — | Solo revisione e rilettura per l'esposizione finale, niente codice nuovo (vedi *5. Close*) | — |
 
