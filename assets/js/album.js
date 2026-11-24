@@ -89,6 +89,33 @@ const renderAlbumHero = (album, tracks) => {
    }
 };
 
+//Francesca: renderizza tutte le righe della tracklist dell'album
+const renderAlbumTracklist = (tracks) => {
+   clearElement(tracklist);
+   tracks.forEach((track, idx) => {
+      tracklist.appendChild(createTrackRow(track, idx));
+   });
+   //Francesca: l'eventuale brano attualmente in riproduzione
+   player.highlightPlayingRow();
+};
+
+//Francesca: event delegation sulla tracklist
+tracklist.addEventListener("click", (event) => {
+   const row = event.target.closest("[data-track-id]");
+   if(!row) return;
+
+   const track = albumTracks.find((t) => String(t.id) === String(row.dataset.trackId));
+   if(!track) return;
+
+   const favBtn = event.target.closest(".btn-fav");
+   if(favBtn) {
+      toggleFavourite(track);
+      renderTopTracks(artistTracks);
+      return;
+   }
+   player.play(track, albumTracks);
+})
+
 //Francesca: carica i dati dell'album dall'API
 const loadAlbum = async () => {
   const params = new URLSearchParams(window.location.search);
