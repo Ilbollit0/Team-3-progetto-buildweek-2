@@ -17,7 +17,7 @@ Appunti dal meeting EPICODE di presentazione del progetto.
 
 ### 1.3 Framework CSS e responsive
 
-> **Decisione: niente Bootstrap.** Il CSS lo scriviamo a mano, con media query nostre per i breakpoint `md` e `lg` (in Bootstrap partono da 768px e 992px).
+> **Decisione del 24/11: Bootstrap 5.3** in tutte e 4 le pagine, caricato prima di `app.css`, così a parità di selettore vincono le nostre regole. I breakpoint sono i suoi: `md` da 768px e `lg` da 992px.
 
 - Il docente consiglia fortemente **Bootstrap** per il layout responsive e i breakpoint, in particolare `md` e `lg`: «così non vi importate un CSS che non finisce mai».
 - Approccio **mobile-first**:

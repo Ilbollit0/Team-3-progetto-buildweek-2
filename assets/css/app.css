@@ -1,17 +1,23 @@
 /* ============================================================
-   EpiTunes — CSS base
-   Layout 3 zone (sidebar / main / player) responsive con Grid.
-   Palette scura ispirata a Spotify, accenti gialli brand Epicode.
-   Lo studente NON deve modificare questo file salvo voglia
-   personalizzare l'aspetto. Tutto il lavoro è in HTML e JS.
+   EpiTunes — CSS dell'app
+   Layout a tre zone (sidebar, main, player) con Grid, tema scuro
+   ispirato a Spotify, accenti gialli Epicode. Bootstrap si carica
+   prima di questo file: a parità di selettore vincono queste regole.
 
    RESPONSIVE (mobile-first)
    - Stile base = mobile (sotto i 768px)
    - @media (min-width: 768px) = md, tablet
    - @media (min-width: 992px) = lg, desktop
-   Ogni sezione ha le sue media query subito sotto le sue regole.
+   Le media query stanno dentro il blocco che modificano.
+
+   CSS annidato: l'indentazione segue l'HTML.
+   Ordine: token, base, layout, sidebar, topbar, pagine, cerca,
+   righe e griglia, card, hero, tracklist, player, caricamento.
    ============================================================ */
 
+/* ============================ Token ============================ */
+
+/* Colori, raggi e ombre del tema scuro */
 :root {
   --bg-base: #121212;
   --bg-elev: #181818;
@@ -33,11 +39,15 @@
   --shadow: 0 6px 24px rgba(0, 0, 0, 0.5);
 }
 
+/* ============================ Base ============================ */
+
+/* Reset */
 * {
   box-sizing: border-box;
 }
 
-html,s
+/* Pagina a tutto schermo: scorre solo il main */
+html,
 body {
   height: 100%;
   margin: 0;
@@ -50,11 +60,13 @@ body {
   overflow: hidden;
 }
 
+/* Link senza sottolineatura, col colore del contesto */
 a {
   color: inherit;
   text-decoration: none;
 }
 
+/* Bottoni col font della pagina */
 button {
   font-family: inherit;
   cursor: pointer;
@@ -71,16 +83,22 @@ button {
     "main"
     "player";
   height: 100vh;
+
+  /* md: sidebar stretta, solo icone */
+  @media (min-width: 768px) {
+    grid-template-columns: 80px 1fr;
+    grid-template-areas:
+      "sidebar main"
+      "player  player";
+  }
+
+  /* lg: sidebar completa */
+  @media (min-width: 992px) {
+    grid-template-columns: 240px 1fr;
+  }
 }
 
-.sidebar {
-  grid-area: sidebar;
-  display: none;
-  background: var(--bg-sidebar);
-  padding: 24px 16px;
-  overflow-y: auto;
-}
-
+/* Main: l'unica zona che scorre */
 .main {
   grid-area: main;
   background: linear-gradient(180deg, #1f1f1f 0%, var(--bg-base) 280px);
@@ -88,147 +106,145 @@ button {
   position: relative;
 }
 
-.player {
-  grid-area: player;
-  background: var(--bg-player);
-  border-top: 1px solid var(--border);
-  padding: 12px 16px;
-}
-
-/* md: sidebar stretta, solo icone */
-@media (min-width: 768px) {
-  .app {
-    grid-template-columns: 80px 1fr;
-    grid-template-areas:
-      "sidebar main"
-      "player  player";
-  }
-  .sidebar {
-    display: block;
-  }
-}
-
-/* lg: sidebar completa */
-@media (min-width: 992px) {
-  .app {
-    grid-template-columns: 240px 1fr;
-  }
-}
-
 /* ============================ Sidebar ============================ */
 
-.brand {
-  display: flex;
-  align-items: center;
-  gap: 10px;
-  padding: 0 8px 24px 8px;
-  font-weight: 700;
-  font-size: 18px;
-  letter-spacing: 0.5px;
-}
-.brand-mark {
-  width: 28px;
-  height: 28px;
-  border-radius: 6px;
-  background: var(--accent);
-  color: #000;
-  display: grid;
-  place-items: center;
-  font-weight: 900;
-}
-
-.sidebar-nav {
-  display: flex;
-  flex-direction: column;
-  gap: 4px;
-  margin-bottom: 24px;
-}
-.sidebar-nav a {
-  display: flex;
-  align-items: center;
-  gap: 14px;
-  padding: 8px 12px;
-  border-radius: var(--radius-sm);
-  color: var(--text-secondary);
-  font-weight: 600;
-}
-.sidebar-nav a:hover {
-  color: var(--text-primary);
-  background: var(--bg-elev-hover);
-}
-.sidebar-nav a.active {
-  color: var(--text-primary);
-  background: var(--bg-elev);
-}
-.sidebar-nav a .ico {
-  font-size: 18px;
-  width: 22px;
-  text-align: center;
-}
-
-.sidebar-section-title {
-  text-transform: uppercase;
-  font-size: 11px;
-  letter-spacing: 1px;
-  color: var(--text-secondary);
-  padding: 16px 12px 8px 12px;
-  margin: 0;
-}
-
-.sidebar-list {
-  display: flex;
-  flex-direction: column;
-  gap: 2px;
-  padding: 0 4px;
-  list-style: none;
-  margin: 0;
-}
-.sidebar-list li {
-  padding: 6px 8px;
-  font-size: 13px;
-  color: var(--text-secondary);
-  border-radius: 4px;
-  white-space: nowrap;
-  overflow: hidden;
-  text-overflow: ellipsis;
-}
-.sidebar-list li:hover {
-  color: var(--text-primary);
-  background: var(--bg-elev);
-}
-
-/* Gabriel: fino a lg la sidebar (visibile da md) mostra solo le icone */
-.brand-text,
-.sidebar-section-title,
-.sidebar-list,
-.sidebar-nav a span:not(.ico) {
+/* Gabriel: assente su mobile, solo icone da md, completa da lg */
+.sidebar {
+  grid-area: sidebar;
   display: none;
-}
-.sidebar-nav a {
-  justify-content: center;
-  padding: 10px 0;
-}
+  background: var(--bg-sidebar);
+  padding: 24px 16px;
+  overflow-y: auto;
 
-/* lg: icone + testi + preferiti */
-@media (min-width: 992px) {
-  .brand-text,
-  .sidebar-nav a span:not(.ico) {
-    display: inline;
-  }
-  .sidebar-section-title {
+  @media (min-width: 768px) {
     display: block;
   }
-  .sidebar-list {
+
+  /* Logo: il nome compare da lg */
+  .brand {
     display: flex;
+    align-items: center;
+    gap: 10px;
+    padding: 0 8px 24px;
+    font-weight: 700;
+    font-size: 18px;
+    letter-spacing: 0.5px;
+
+    .brand-mark {
+      width: 28px;
+      height: 28px;
+      border-radius: 6px;
+      background: var(--accent);
+      color: #000;
+      display: grid;
+      place-items: center;
+      font-weight: 900;
+    }
+
+    .brand-text {
+      display: none;
+
+      @media (min-width: 992px) {
+        display: inline;
+      }
+    }
   }
-  .sidebar-nav a {
-    justify-content: flex-start;
-    padding: 8px 12px;
+
+  /* Navigazione: Home e Cerca, i testi compaiono da lg */
+  .sidebar-nav {
+    display: flex;
+    flex-direction: column;
+    gap: 4px;
+    margin-bottom: 24px;
+
+    a {
+      display: flex;
+      align-items: center;
+      justify-content: center;
+      gap: 14px;
+      padding: 10px 0;
+      border-radius: var(--radius-sm);
+      color: var(--text-secondary);
+      font-weight: 600;
+
+      @media (min-width: 992px) {
+        justify-content: flex-start;
+        padding: 8px 12px;
+      }
+
+      &:hover {
+        color: var(--text-primary);
+        background: var(--bg-elev-hover);
+      }
+
+      &.active {
+        color: var(--text-primary);
+        background: var(--bg-elev);
+      }
+
+      .ico {
+        font-size: 18px;
+        width: 22px;
+        text-align: center;
+      }
+
+      span:not(.ico) {
+        display: none;
+
+        @media (min-width: 992px) {
+          display: inline;
+        }
+      }
+    }
+  }
+
+  /* Preferiti: titolo e lista, solo da lg */
+  .sidebar-section-title {
+    display: none;
+    text-transform: uppercase;
+    font-size: 11px;
+    letter-spacing: 1px;
+    color: var(--text-secondary);
+    padding: 16px 12px 8px;
+    margin: 0;
+
+    @media (min-width: 992px) {
+      display: block;
+    }
+  }
+
+  .sidebar-list {
+    display: none;
+    flex-direction: column;
+    gap: 2px;
+    padding: 0 4px;
+    list-style: none;
+    margin: 0;
+
+    @media (min-width: 992px) {
+      display: flex;
+    }
+
+    li {
+      padding: 6px 8px;
+      font-size: 13px;
+      color: var(--text-secondary);
+      border-radius: 4px;
+      white-space: nowrap;
+      overflow: hidden;
+      text-overflow: ellipsis;
+
+      &:hover {
+        color: var(--text-primary);
+        background: var(--bg-elev);
+      }
+    }
   }
 }
 
 /* ============================ Topbar ============================ */
 
+/* Topbar: frecce e utente, ferma in cima mentre il main scorre */
 .topbar {
   position: sticky;
   top: 0;
@@ -239,62 +255,89 @@ button {
   align-items: center;
   justify-content: space-between;
   padding: 14px 24px;
-}
-.topbar-nav {
-  display: flex;
-  gap: 8px;
-}
-.nav-btn {
-  width: 32px;
-  height: 32px;
-  border-radius: 50%;
-  border: none;
-  background: rgba(0, 0, 0, 0.6);
-  color: #fff;
-  font-size: 18px;
-  line-height: 1;
-}
-.user-pill {
-  background: rgba(0, 0, 0, 0.6);
-  padding: 6px 12px;
-  border-radius: 999px;
-  font-weight: 600;
-  font-size: 13px;
+
+  .topbar-nav {
+    display: flex;
+    gap: 8px;
+
+    .nav-btn {
+      width: 32px;
+      height: 32px;
+      border-radius: 50%;
+      border: none;
+      background: rgba(0, 0, 0, 0.6);
+      color: #fff;
+      font-size: 18px;
+      line-height: 1;
+    }
+  }
+
+  .user-pill {
+    background: rgba(0, 0, 0, 0.6);
+    padding: 6px 12px;
+    border-radius: 999px;
+    font-weight: 600;
+    font-size: 13px;
+  }
 }
 
-/* ============================ Sezioni / Rows ============================ */
+/* ============================ Pagine ============================ */
 
+/* Margini interni delle quattro pagine */
 .home,
 .search,
 .album-page,
 .artist-page {
-  padding: 16px 24px 32px 24px;
+  padding: 16px 24px 32px;
 }
 
+/* ============================ Cerca ============================ */
+
+/* Campo di ricerca */
+.search-box {
+  margin-top: 8px;
+  margin-bottom: 16px;
+
+  .search-input {
+    width: 100%;
+    max-width: 480px;
+    padding: 12px 16px;
+    border-radius: 999px;
+    border: none;
+    background: var(--bg-input);
+    color: var(--text-input);
+    font-size: 14px;
+    outline: none;
+  }
+}
+
+/* ============================ Righe e griglia ============================ */
+
+/* Riga di Home e Cerca: titolo e griglia di card */
 .row {
   margin-top: 24px;
-}
-.row h2 {
-  margin: 0 0 12px 0;
-  font-size: 22px;
-  font-weight: 700;
-}
 
-.grid {
-  display: grid;
-  grid-template-columns: repeat(auto-fill, minmax(140px, 1fr));
-  gap: 16px;
-}
+  h2 {
+    margin: 0 0 12px;
+    font-size: 22px;
+    font-weight: 700;
+  }
 
-/* Gabriel: md, card più larghe */
-@media (min-width: 768px) {
+  /* Gabriel: da md card più larghe */
   .grid {
-    grid-template-columns: repeat(auto-fill, minmax(180px, 1fr));
+    display: grid;
+    grid-template-columns: repeat(auto-fill, minmax(140px, 1fr));
+    gap: 16px;
+
+    @media (min-width: 768px) {
+      grid-template-columns: repeat(auto-fill, minmax(180px, 1fr));
+    }
   }
 }
 
 /* ============================ Card ============================ */
 
+/* Card di brano, album o artista */
 .card {
   background: var(--bg-elev);
   border-radius: var(--radius-md);
@@ -302,191 +345,215 @@ button {
   transition: background 0.18s ease;
   position: relative;
   cursor: pointer;
-}
-.card:hover {
-  background: var(--bg-elev-hover);
-}
-.card-image-wrap {
-  position: relative;
-  width: 100%;
-  aspect-ratio: 1 / 1;
-  border-radius: var(--radius-sm);
-  overflow: hidden;
-  margin-bottom: 12px;
-  background: #000;
-}
-.card-image-wrap img {
-  width: 100%;
-  height: 100%;
-  object-fit: cover;
-  display: block;
-}
-.card-image-wrap.round {
-  border-radius: 50%;
-}
-.card-title {
-  font-weight: 700;
-  font-size: 14px;
-  margin: 0 0 4px 0;
-  overflow: hidden;
-  text-overflow: ellipsis;
-  white-space: nowrap;
-}
-.card-sub {
-  color: var(--text-secondary);
-  font-size: 12px;
-  margin: 0;
-  overflow: hidden;
-  text-overflow: ellipsis;
-  white-space: nowrap;
-}
 
-.card-play {
-  position: absolute;
-  right: 22px;
-  bottom: 82px;
-  width: 48px;
-  height: 48px;
-  border-radius: 50%;
-  background: var(--success);
-  color: #000;
-  border: none;
-  font-size: 20px;
-  display: grid;
-  place-items: center;
-  box-shadow: var(--shadow);
-  opacity: 0;
-  transform: translateY(8px);
-  transition:
-    opacity 0.2s,
-    transform 0.2s;
-}
-.card:hover .card-play {
-  opacity: 1;
-  transform: translateY(0);
-}
+  &:hover {
+    background: var(--bg-elev-hover);
+  }
 
-.card-fav {
-  position: absolute;
-  top: 8px;
-  right: 8px;
-  width: 32px;
-  height: 32px;
-  border-radius: 50%;
-  background: rgba(0, 0, 0, 0.5);
-  color: #fff;
-  border: none;
-  font-size: 16px;
-  display: grid;
-  place-items: center;
-  opacity: 0;
-  transition: opacity 0.2s;
-}
-.card:hover .card-fav,
-.card-fav.is-fav {
-  opacity: 1;
-}
-.card-fav.is-fav {
-  color: var(--danger);
+  /* Copertina quadrata, tonda con .round */
+  .card-image-wrap {
+    position: relative;
+    width: 100%;
+    aspect-ratio: 1 / 1;
+    border-radius: var(--radius-sm);
+    overflow: hidden;
+    margin-bottom: 12px;
+    background: #000;
+
+    &.round {
+      border-radius: 50%;
+    }
+
+    img {
+      width: 100%;
+      height: 100%;
+      object-fit: cover;
+      display: block;
+    }
+  }
+
+  .card-title {
+    font-weight: 700;
+    font-size: 14px;
+    margin: 0 0 4px;
+    overflow: hidden;
+    text-overflow: ellipsis;
+    white-space: nowrap;
+  }
+
+  .card-sub {
+    color: var(--text-secondary);
+    font-size: 12px;
+    margin: 0;
+    overflow: hidden;
+    text-overflow: ellipsis;
+    white-space: nowrap;
+  }
+
+  /* Play: sale e compare al passaggio sulla card */
+  .card-play {
+    position: absolute;
+    right: 22px;
+    bottom: 82px;
+    width: 48px;
+    height: 48px;
+    border-radius: 50%;
+    background: var(--success);
+    color: #000;
+    border: none;
+    font-size: 20px;
+    display: grid;
+    place-items: center;
+    box-shadow: var(--shadow);
+    opacity: 0;
+    transform: translateY(8px);
+    transition:
+      opacity 0.2s,
+      transform 0.2s;
+
+    .card:hover & {
+      opacity: 1;
+      transform: translateY(0);
+    }
+  }
+
+  /* Cuore: compare al passaggio, resta acceso sui preferiti */
+  .card-fav {
+    position: absolute;
+    top: 8px;
+    right: 8px;
+    width: 32px;
+    height: 32px;
+    border-radius: 50%;
+    background: rgba(0, 0, 0, 0.5);
+    color: #fff;
+    border: none;
+    font-size: 16px;
+    display: grid;
+    place-items: center;
+    opacity: 0;
+    transition: opacity 0.2s;
+
+    .card:hover & {
+      opacity: 1;
+    }
+
+    &.is-fav {
+      opacity: 1;
+      color: var(--danger);
+    }
+  }
 }
 
 /* ============================ Hero album / artista ============================ */
 
-/* Gabriel: hero mobile-first. Mobile: cover sopra, testi sotto */
+/* Gabriel: hero mobile-first. Mobile: cover sopra, testi sotto; da md affiancati */
 .album-hero,
 .artist-hero {
   display: flex;
   flex-direction: column;
   gap: 24px;
   align-items: flex-start;
-  padding: 24px 0 16px 0;
-}
-.album-cover {
-  width: 160px;
-  height: 160px;
-  border-radius: var(--radius-md);
-  overflow: hidden;
-  background: #000;
-  box-shadow: var(--shadow);
-  flex-shrink: 0;
-}
-.album-cover img {
-  width: 100%;
-  height: 100%;
-  object-fit: cover;
-  display: block;
-}
-.hero-meta {
-  display: flex;
-  flex-direction: column;
-  gap: 8px;
-  min-width: 0;
-}
-.hero-kicker {
-  font-size: 12px;
-  text-transform: uppercase;
-  letter-spacing: 1px;
-  font-weight: 700;
-}
-.hero-title {
-  font-size: clamp(32px, 6vw, 72px);
-  font-weight: 900;
-  margin: 0;
-  line-height: 1.05;
-}
-.hero-sub {
-  color: var(--text-secondary);
-  font-size: 14px;
-  margin: 0;
-}
+  padding: 24px 0 16px;
 
-/* md: cover e testi affiancati, cover grande */
-@media (min-width: 768px) {
-  .album-hero,
-  .artist-hero {
+  @media (min-width: 768px) {
     flex-direction: row;
     align-items: flex-end;
   }
+
+  /* Copertina: grande da md */
   .album-cover {
-    width: 220px;
-    height: 220px;
+    width: 160px;
+    height: 160px;
+    border-radius: var(--radius-md);
+    overflow: hidden;
+    background: #000;
+    box-shadow: var(--shadow);
+    flex-shrink: 0;
+
+    @media (min-width: 768px) {
+      width: 220px;
+      height: 220px;
+    }
+
+    img {
+      width: 100%;
+      height: 100%;
+      object-fit: cover;
+      display: block;
+    }
+  }
+
+  /* Testi: tipo, titolo, sottotitolo */
+  .hero-meta {
+    display: flex;
+    flex-direction: column;
+    gap: 8px;
+    min-width: 0;
+  }
+
+  .hero-kicker {
+    font-size: 12px;
+    text-transform: uppercase;
+    letter-spacing: 1px;
+    font-weight: 700;
+  }
+
+  .hero-title {
+    font-size: clamp(32px, 6vw, 72px);
+    font-weight: 900;
+    margin: 0;
+    line-height: 1.05;
+  }
+
+  .hero-sub {
+    color: var(--text-secondary);
+    font-size: 14px;
+    margin: 0;
   }
 }
 
+/* Azioni sotto l'hero: Play grande e cuore */
 .hero-actions {
   display: flex;
   align-items: center;
   gap: 16px;
-  padding: 16px 0 24px 0;
-}
-.btn-play-big {
-  width: 56px;
-  height: 56px;
-  border-radius: 50%;
-  background: var(--success);
-  color: #000;
-  border: none;
-  font-size: 24px;
-}
-.btn-fav-big {
-  width: 36px;
-  height: 36px;
-  border-radius: 50%;
-  background: transparent;
-  border: 1px solid var(--text-secondary);
-  color: var(--text-secondary);
-  font-size: 18px;
-}
-.btn-fav-big.is-fav {
-  color: var(--danger);
-  border-color: var(--danger);
+  padding: 16px 0 24px;
+
+  .btn-play-big {
+    width: 56px;
+    height: 56px;
+    border-radius: 50%;
+    background: var(--success);
+    color: #000;
+    border: none;
+    font-size: 24px;
+  }
+
+  .btn-fav-big {
+    width: 36px;
+    height: 36px;
+    border-radius: 50%;
+    background: transparent;
+    border: 1px solid var(--text-secondary);
+    color: var(--text-secondary);
+    font-size: 18px;
+
+    &.is-fav {
+      color: var(--danger);
+      border-color: var(--danger);
+    }
+  }
 }
 
 /* ============================ Tracklist ============================ */
 
+/* Tracklist dell'album */
 .tracklist {
   margin-top: 8px;
 }
+
+/* Riga del brano, in Album e Artista: numero, titolo, durata, cuore */
 .track-row {
   display: grid;
   grid-template-columns: 32px 1fr 80px 48px;
@@ -496,193 +563,199 @@ button {
   border-radius: var(--radius-sm);
   cursor: pointer;
   transition: background 0.15s;
-}
-.track-row:hover {
-  background: var(--bg-elev);
-}
-.track-row.is-playing {
-  color: var(--success);
-}
-.track-num {
-  color: var(--text-secondary);
-  text-align: center;
-}
-.track-title {
-  font-weight: 600;
-  overflow: hidden;
-  text-overflow: ellipsis;
-  white-space: nowrap;
-}
-.track-time {
-  color: var(--text-secondary);
-  text-align: right;
-}
-.track-fav {
-  background: transparent;
-  border: none;
-  color: var(--text-secondary);
-  font-size: 16px;
-}
-.track-fav.is-fav {
-  color: var(--danger);
-}
 
-/* ============================ Search ============================ */
+  &:hover {
+    background: var(--bg-elev);
+  }
 
-.search-box {
-  margin-top: 8px;
-  margin-bottom: 16px;
-}
-.search-input {
-  width: 100%;
-  max-width: 480px;
-  padding: 12px 16px;
-  border-radius: 999px;
-  border: none;
-  background: var(--bg-input);
-  color: var(--text-input);
-  font-size: 14px;
-  outline: none;
+  &.is-playing {
+    color: var(--success);
+  }
+
+  .track-num {
+    color: var(--text-secondary);
+    text-align: center;
+  }
+
+  .track-title {
+    font-weight: 600;
+    overflow: hidden;
+    text-overflow: ellipsis;
+    white-space: nowrap;
+  }
+
+  .track-time {
+    color: var(--text-secondary);
+    text-align: right;
+  }
+
+  .track-fav {
+    background: transparent;
+    border: none;
+    color: var(--text-secondary);
+    font-size: 16px;
+
+    &.is-fav {
+      color: var(--danger);
+    }
+  }
 }
 
 /* ============================ Player ============================ */
 
-/* Gabriel: player mobile-first. Mobile: brano + controlli, niente volume */
+/* Gabriel: player mobile-first. Mobile: brano e controlli; da md tre colonne col volume */
 .player {
+  grid-area: player;
+  background: var(--bg-player);
+  border-top: 1px solid var(--border);
+  padding: 12px 16px;
   display: grid;
   grid-template-columns: 1fr 1fr;
   align-items: center;
   gap: 8px;
-}
-.player-track {
-  display: flex;
-  align-items: center;
-  gap: 12px;
-  min-width: 0;
-}
-.player-cover {
-  width: 56px;
-  height: 56px;
-  border-radius: 4px;
-  background: #000;
-  overflow: hidden;
-  flex-shrink: 0;
-}
-.player-cover img {
-  width: 100%;
-  height: 100%;
-  object-fit: cover;
-  display: block;
-}
-.player-meta {
-  min-width: 0;
-}
-.player-title {
-  font-size: 13px;
-  font-weight: 600;
-  white-space: nowrap;
-  overflow: hidden;
-  text-overflow: ellipsis;
-  margin: 0;
-}
-.player-artist {
-  font-size: 11px;
-  color: var(--text-secondary);
-  white-space: nowrap;
-  overflow: hidden;
-  text-overflow: ellipsis;
-  margin: 0;
-}
 
-.player-center {
-  display: flex;
-  flex-direction: column;
-  align-items: center;
-  gap: 6px;
-}
-.player-controls {
-  display: flex;
-  align-items: center;
-  gap: 16px;
-}
-.btn-ctrl {
-  background: transparent;
-  border: none;
-  color: var(--text-secondary);
-  font-size: 16px;
-}
-.btn-ctrl:hover {
-  color: var(--text-primary);
-}
-.btn-play {
-  width: 36px;
-  height: 36px;
-  border-radius: 50%;
-  background: #fff;
-  color: #000;
-  border: none;
-  font-size: 14px;
-}
-
-.player-progress {
-  display: flex;
-  align-items: center;
-  gap: 8px;
-  width: 100%;
-  max-width: 600px;
-  font-size: 11px;
-  color: var(--text-secondary);
-}
-.progress-bar,
-.volume-bar {
-  flex: 1;
-  height: 4px;
-  background: #4d4d4d;
-  border-radius: 2px;
-  overflow: hidden;
-  cursor: pointer;
-  position: relative;
-}
-.progress-fill,
-.volume-fill {
-  height: 100%;
-  width: 0%;
-  background: var(--text-primary);
-  border-radius: 2px;
-}
-.progress-bar:hover .progress-fill,
-.volume-bar:hover .volume-fill {
-  background: var(--success);
-}
-
-.player-right {
-  display: none;
-  align-items: center;
-  justify-content: flex-end;
-  gap: 10px;
-}
-.volume-bar {
-  width: 120px;
-}
-
-/* md: tre colonne con il volume a destra */
-@media (min-width: 768px) {
-  .player {
+  @media (min-width: 768px) {
     grid-template-columns: 1fr 2fr 1fr;
     gap: 16px;
   }
-  .player-right {
+
+  /* Brano in corso: copertina, titolo, artista */
+  .player-track {
     display: flex;
+    align-items: center;
+    gap: 12px;
+    min-width: 0;
+
+    .player-cover {
+      width: 56px;
+      height: 56px;
+      border-radius: 4px;
+      background: #000;
+      overflow: hidden;
+      flex-shrink: 0;
+
+      img {
+        width: 100%;
+        height: 100%;
+        object-fit: cover;
+        display: block;
+      }
+    }
+
+    .player-meta {
+      min-width: 0;
+
+      .player-title {
+        font-size: 13px;
+        font-weight: 600;
+        white-space: nowrap;
+        overflow: hidden;
+        text-overflow: ellipsis;
+        margin: 0;
+      }
+
+      .player-artist {
+        font-size: 11px;
+        color: var(--text-secondary);
+        white-space: nowrap;
+        overflow: hidden;
+        text-overflow: ellipsis;
+        margin: 0;
+      }
+    }
+  }
+
+  /* Controlli e avanzamento del brano */
+  .player-center {
+    display: flex;
+    flex-direction: column;
+    align-items: center;
+    gap: 6px;
+
+    .player-controls {
+      display: flex;
+      align-items: center;
+      gap: 16px;
+
+      .btn-ctrl {
+        background: transparent;
+        border: none;
+        color: var(--text-secondary);
+        font-size: 16px;
+
+        &:hover {
+          color: var(--text-primary);
+        }
+      }
+
+      .btn-play {
+        width: 36px;
+        height: 36px;
+        border-radius: 50%;
+        background: #fff;
+        color: #000;
+        border: none;
+        font-size: 14px;
+      }
+    }
+
+    .player-progress {
+      display: flex;
+      align-items: center;
+      gap: 8px;
+      width: 100%;
+      max-width: 600px;
+      font-size: 11px;
+      color: var(--text-secondary);
+    }
+  }
+
+  /* Volume: compare da md */
+  .player-right {
+    display: none;
+    align-items: center;
+    justify-content: flex-end;
+    gap: 10px;
+
+    @media (min-width: 768px) {
+      display: flex;
+    }
+
+    .volume-bar {
+      width: 120px;
+    }
+  }
+
+  /* Barre di avanzamento e volume: la parte piena diventa verde al passaggio */
+  .progress-bar,
+  .volume-bar {
+    flex: 1;
+    height: 4px;
+    background: #4d4d4d;
+    border-radius: 2px;
+    overflow: hidden;
+    cursor: pointer;
+    position: relative;
+
+    .progress-fill,
+    .volume-fill {
+      height: 100%;
+      width: 0%;
+      background: var(--text-primary);
+      border-radius: 2px;
+
+      .progress-bar:hover &,
+      .volume-bar:hover & {
+        background: var(--success);
+      }
+    }
   }
 }
 
-/* ============================ Loading / empty ============================ */
+/* ============================ Caricamento e vuoto ============================ */
 
-.loader {
-  padding: 32px;
-  text-align: center;
-  color: var(--text-secondary);
-}
+/* Messaggi di caricamento e di lista vuota */
+.loader,
 .empty {
   padding: 32px;
   text-align: center;
