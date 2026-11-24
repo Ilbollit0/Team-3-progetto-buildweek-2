@@ -31,8 +31,21 @@ const albumActions = document.querySelector("#album-actions");
 
 let albumTracks = [];
 
+//Francesca: svuota un elemento DOM rimuovendo tutti i suoi nodi
+const clearElement = (el) => {
+  if (!el) return;
+  while (el.firstChild) el.removeChild(el.firstChild);
+};
+
+//Francesca: svuota il contenitore e mostra un messaggio di caricamento o di errore
+const renderMessage = (container, text) => {
+  if (!container) return;
+  clearElement(container);
+  container.appendChild(buildElement("p", "loader", text));
+};
+
 //Francesca: costruisce la sezione hero dell'album
-const renderAlbumHero = (album, tracks) => {
+const renderAlbumHero = (album, tracks, artistId) => {
   clearElement(albumHero);
   clearElement(albumActions);
 
@@ -40,7 +53,7 @@ const renderAlbumHero = (album, tracks) => {
   coverWrap.className = "album-cover";
 
   const img = document.createElement("img");
-  img.src = album.cover;
+  img.src = bigArt(album.cover);
   img.alt = album.title;
   coverWrap.appendChild(img);
 
@@ -60,13 +73,13 @@ const renderAlbumHero = (album, tracks) => {
 
    const artistLink = document.createElement("a");
    artistLink.className = "hero-artist-link";
-   artistLink.href = `artist.html?id=${encodeURIComponent(album.artistId)}`;
+   artistLink.href = `artist.html?id=${encodeURIComponent(artistId)}`;
    artistLink.textContent = album.artist;
 
    const totalMs = tracks.reduce((acc, t) => acc + (t.durationMs || 0), 0);
 
    const details = document.createElement("span");
-   details.textContent = `· ${album.releaseYear} · ${tracks.length} brani · ${formatTime(totalMs)}`;
+   details.textContent = `· ${album.year} · ${tracks.length} brani · ${formatTime(totalMs)}`;
 
    sub.appendChild(artistLink);
    sub.appendChild(details);
@@ -78,14 +91,14 @@ const renderAlbumHero = (album, tracks) => {
    albumHero.appendChild(coverWrap);
    albumHero.appendChild(meta);
 
-   if(tracks.length > 0) {
+   if(tracks.length > 0 && albumActions) {
       const bigPlayBtn = document.createElement("button");
       bigPlayBtn.type = "button";
       bigPlayBtn.className = "btn-play-big";
       bigPlayBtn.textContent = "▶️"; //da modificare
       bigPlayBtn.setAttribute("aria-label", "Riproduzione album");
       bigPlayBtn.addEventListener("click", () => player.play(tracks[0], tracks));
-      artistaActions.appendChild(bigPlayBtn);
+      albumActions.appendChild(bigPlayBtn);
    }
 };
 
@@ -110,7 +123,7 @@ tracklist.addEventListener("click", (event) => {
    const favBtn = event.target.closest(".btn-fav");
    if(favBtn) {
       toggleFavourite(track);
-      renderTopTracks(artistTracks);
+      renderTopTracks(albumTracks);
       return;
    }
    player.play(track, albumTracks);
@@ -143,8 +156,9 @@ const loadAlbum = async () => {
     }
     const album = new Album(rawCollection);
     albumTracks = rawTracks.map((raw) => Track(raw));
+    const artistId = rawCollection.artistId || albumTracks[0]?.artistId || "";
 
-    renderAlbumHero(album, albumTracks);
+    renderAlbumHero(album, albumTracks, artistId);
     renderAlbumTracklist(albumTracks);
   } catch (error) {
     console.error("Errore nel caricamento dell'album:", error);
