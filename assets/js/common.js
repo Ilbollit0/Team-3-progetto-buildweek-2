@@ -1,62 +1,19 @@
-/* ============================================================
-   common.js — codice condiviso tra tutte le pagine
-   ============================================================
+/*
+  common.js — codice comune a tutte le pagine
+  Ogni pagina chiama initPage(), che monta sidebar e player.
 
-   REGOLE GENERALI
-   - Solo const e let (mai var)
-   - DOM: querySelector / querySelectorAll
-   - Eventi: addEventListener (mai onclick inline)
-   - fetch + async/await + try/catch
-   - localStorage: setItem / getItem / removeItem (salva sempre stringhe)
-   - Pattern OOP: classi Track, Album, Artist, Player
-
-   COSA CONTIENE QUESTO FILE
-   1) Costanti (URL base API, chiavi localStorage)
-   2) Helpers (fetchJSON, formatTime, bigArt, debounce)
-   3) Classi modello: Track, Album, Artist
-   4) Classe Player (gestisce <audio>)
-   5) localStorage helpers (history, favourites)
-   6) Render sidebar e player footer
-   7) Inizializzazione al DOMContentLoaded
-
-   ESEMPIO USO DELL'ELEMENTO <audio>
-   --------------------------------
-     const audio = document.querySelector("#audio-element");
-     audio.src = "https://...preview.m4a"; // URL della preview MP3
-     audio.play();                         // avvia la riproduzione
-     audio.pause();                        // mette in pausa
-     audio.currentTime = 10;               // salta a 10 secondi
-     audio.duration;                       // durata in secondi
-     audio.volume = 0.5;                   // volume tra 0 e 1
-
-     audio.addEventListener("timeupdate", () => {
-       // chiamato continuamente durante la riproduzione
-       const percent = (audio.currentTime / audio.duration) * 100;
-     });
-
-     audio.addEventListener("ended", () => {
-       // brano finito
-     });
-
-   ESEMPIO USO DELL'API iTunes
-   ---------------------------
-     // Ricerca brani
-     fetch("https://itunes.apple.com/search?term=eminem&entity=song&limit=10")
-
-     // Ricerca album
-     fetch("https://itunes.apple.com/search?term=pink+floyd&entity=album&limit=10")
-
-     // Ricerca artisti
-     fetch("https://itunes.apple.com/search?term=jovanotti&entity=musicArtist&limit=5")
-
-     // Dettagli album (con tracce)
-     fetch("https://itunes.apple.com/lookup?id=1440831203&entity=song")
-
-     // Top tracks artista
-     fetch("https://itunes.apple.com/lookup?id=909253&entity=song&limit=10")
+  Sezioni, in quest'ordine:
+  1. Costanti: URL dell'API, chiavi di localStorage
+  2. Helpers: fetchJSON, bigArt, formatTime, debounce, buildElement, clickRatio
+  3. Modelli: Track, Album, Artist
+  4. Player
+  5. Cronologia e preferiti in localStorage
+  6. Card e riga del brano
+  7. Sidebar
+  8. Inizializzazione: initPage
 */
 
-/* ============================ 1. Costanti ============================ */
+// 1. Costanti
 
 const API_BASE = "https://itunes.apple.com";
 const STORAGE_KEY_HISTORY = "epitunes_history";
@@ -64,36 +21,28 @@ const STORAGE_KEY_FAVOURITES = "epitunes_favourites";
 const STORAGE_KEY_LAST_SEARCH = "epitunes_last_search";
 const MAX_HISTORY = 12;
 
-/* ============================ 2. Helpers ============================ */
+// 2. Helpers
 
-/*
-  fetchJSON(url)
-  - Fa una richiesta GET e ritorna i dati JSON
-  - Gestisce errori HTTP e di rete con try/catch
-  - In caso di errore ritorna { results: [], resultCount: 0 } per semplificare i chiamanti
-*/
+// Chiamata GET all'API: su un errore lo scrive in console e ritorna una risposta vuota.
+// Niente header: una GET non manda dati, e un Content-Type farebbe partire una richiesta CORS in più
 const fetchJSON = async (url) => {
-  // TODO: implementare con try/catch + await response.json()
-  // - Se response.ok è false, lancia un Error
-  // - Se la chiamata fallisce per rete, ritorna oggetto vuoto e logga l'errore
-  return { results: [], resultCount: 0 };
+  try {
+    const response = await fetch(url);
+    if (!response.ok) throw new Error(`Risposta HTTP ${response.status}`);
+    return await response.json();
+  } catch (error) {
+    console.error("Chiamata all'API non riuscita:", url, error);
+    return { results: [], resultCount: 0 };
+  }
 };
 
-/*
-  bigArt(url)
-  - L'API iTunes ritorna artwork 100x100 (artworkUrl100)
-  - Sostituisce "100x100bb" con "600x600bb" per avere una cover più grande
-*/
+// Copertina 600x600 al posto della 100x100 di artworkUrl100
 const bigArt = (url) => {
   if (!url) return "";
   return url.replace("100x100", "600x600");
 };
 
-/*
-  formatTime(ms)
-  - Converte millisecondi in stringa "m:ss"
-  - Esempio: 65000 -> "1:05"
-*/
+// Millisecondi in "m:ss": 65000 -> "1:05"
 const formatTime = (ms) => {
   if (!ms) return "0:00";
   const totalSec = Math.floor(ms / 1000);
@@ -102,11 +51,7 @@ const formatTime = (ms) => {
   return `${min}:${String(sec).padStart(2, "0")}`;
 };
 
-/*
-  debounce(fn, ms)
-  - Restituisce una nuova funzione che chiama fn solo dopo "ms" millisecondi
-    di pausa rispetto all'ultima chiamata. Usata per la ricerca al type.
-*/
+// Chiama fn solo dopo ms millisecondi senza nuove chiamate: la ricerca mentre si scrive
 const debounce = (fn, ms) => {
   let timerId = null;
   return (...args) => {
@@ -115,74 +60,93 @@ const debounce = (fn, ms) => {
   };
 };
 
-/* ============================ 3. Classi modello ============================ */
+// Elemento con classe e testo: il testo entra con textContent, così i dati dell'API non diventano HTML
+const buildElement = (tag, className, text = "") => {
+  const element = document.createElement(tag);
+  element.className = className;
+  element.textContent = text;
+  return element;
+};
 
-/*
-  Classe Track
-  Modella un brano restituito dall'API iTunes (wrapperType === "track").
-  Campi utili dell'API: trackId, trackName, artistName, collectionName,
-  collectionId, artistId, artworkUrl100, previewUrl, trackTimeMillis.
-*/
+// Punto del click su una barra (avanzamento, volume): 0 all'inizio, 1 alla fine
+const clickRatio = (event) => {
+  const bar = event.currentTarget.getBoundingClientRect();
+  return (event.clientX - bar.left) / bar.width;
+};
+
+// 3. Modelli
+
+// Solo i modelli leggono i nomi dei campi di iTunes; le pagine usano i nostri.
+// Gli id diventano stringhe, come quelli di dataset e query string: così si confrontano con ===
+
+// Brano (wrapperType "track"): cover è la 100x100, per una più grande c'è bigArt
 class Track {
   constructor(raw) {
-    // TODO: assegna alle property di this i valori da raw
-    // (id, title, artist, album, albumId, artistId, cover, previewUrl, durationMs)
+    this.id = String(raw.trackId);
+    this.title = raw.trackName;
+    this.artist = raw.artistName;
+    this.album = raw.collectionName;
+    this.albumId = String(raw.collectionId);
+    this.artistId = String(raw.artistId);
+    this.cover = raw.artworkUrl100;
+    this.previewUrl = raw.previewUrl;
+    this.durationMs = raw.trackTimeMillis; 
   }
 }
 
-/*
-  Classe Album
-  Modella un album (wrapperType === "collection").
-  Campi utili: collectionId, collectionName, artistName, artworkUrl100,
-  releaseDate, trackCount.
-*/
+// Album (wrapperType "collection"): year è l'anno di releaseDate, "2000-07-10T07:00:00Z" -> "2000"
 class Album {
   constructor(raw) {
-    // TODO: come sopra
+    this.id = String(raw.collectionId);
+    this.title = raw.collectionName;
+    this.artist = raw.artistName;
+    this.cover = raw.artworkUrl100;
+    this.year = raw.releaseDate?.slice(0, 4) ?? "";
+    this.trackCount = raw.trackCount;
   }
 }
 
-/*
-  Classe Artist
-  Modella un artista (wrapperType === "artist").
-  Campi utili: artistId, artistName, primaryGenreName.
-*/
+// Artista (wrapperType "artist"): iTunes non dà la sua foto, quindi niente cover
 class Artist {
   constructor(raw) {
-    // TODO: come sopra
+    this.id = String(raw.artistId);
+    this.name = raw.artistName;
+    this.genre = raw.primaryGenreName;
   }
 }
 
-/* ============================ 4. Classe Player ============================ */
+// 4. Player
 
-/*
-  Classe Player
-  Gestisce la riproduzione audio e la UI del player footer.
-
-  Stato interno:
-    - currentTrack: Track corrente (null se nessun brano)
-    - isPlaying: true/false
-
-  Metodi pubblici:
-    - mount()        -> rende la UI del player nel footer (.player)
-    - play(track)    -> imposta currentTrack, src audio, avvia, salva in history
-    - togglePlay()   -> alterna play/pause sul brano corrente
-    - setVolume(v)   -> v tra 0 e 1
-    - seek(percent)  -> sposta currentTime a percent% della durata
-
-  Eventi audio da agganciare:
-    - "timeupdate" per aggiornare la progress bar
-    - "ended" per fermarsi a fine brano
-*/
+// Player: suona le anteprime nell'<audio> della pagina e disegna il footer.
+// Per le pagine: play(track), togglePlay(), setVolume(0-1), seek(0-1), highlightPlayingRow()
 class Player {
   constructor() {
     this.audio = document.querySelector("#audio-element");
     this.currentTrack = null;
     this.isPlaying = false;
-    // TODO: salva i riferimenti agli elementi del footer (.player-cover, .player-title, ...)
-    // TODO: aggancia eventi audio (timeupdate, ended)
+
+    // Eventi audio: scrivono negli elementi del footer, che mount() salva prima del primo play.
+    // La durata arriva da loadedmetadata perché l'anteprima dura 30 secondi, non quanto il brano;
+    // "pause" arriva anche a fine brano, quindi l'icona torna ▶ da sola
+    this.audio.addEventListener("timeupdate", () => {
+      const ratio = this.audio.currentTime / this.audio.duration || 0;
+      this.progressFill.style.width = `${ratio * 100}%`;
+      this.timeCurrent.textContent = formatTime(this.audio.currentTime * 1000);
+    });
+    this.audio.addEventListener("loadedmetadata", () => {
+      this.timeTotal.textContent = formatTime(this.audio.duration * 1000);
+    });
+    this.audio.addEventListener("play", () => {
+      this.isPlaying = true;
+      this.toggleButton.textContent = "⏸";
+    });
+    this.audio.addEventListener("pause", () => {
+      this.isPlaying = false;
+      this.toggleButton.textContent = "▶";
+    });
   }
 
+  // Footer del player: markup, elementi da aggiornare, click, volume iniziale
   mount() {
     const footer = document.querySelector(".player");
     if (!footer) return;
@@ -220,73 +184,185 @@ class Player {
       </div>
     `;
 
-    // TODO: aggancia eventi click su #btn-toggle, click su #progress-bar (seek),
-    //       click su #volume-bar (setVolume), volume iniziale (this.audio.volume = 0.8).
+    this.coverImg = footer.querySelector("#player-cover-img");
+    this.titleText = footer.querySelector("#player-title");
+    this.artistText = footer.querySelector("#player-artist");
+    this.toggleButton = footer.querySelector("#btn-toggle");
+    this.progressFill = footer.querySelector("#progress-fill");
+    this.timeCurrent = footer.querySelector("#time-current");
+    this.timeTotal = footer.querySelector("#time-total");
+    this.volumeFill = footer.querySelector("#volume-fill");
+
+    this.toggleButton.addEventListener("click", () => this.togglePlay());
+    footer
+      .querySelector("#progress-bar")
+      .addEventListener("click", (event) => this.seek(clickRatio(event)));
+    footer
+      .querySelector("#volume-bar")
+      .addEventListener("click", (event) => this.setVolume(clickRatio(event)));
+
+    this.setVolume(0.8);
   }
 
+  // Brano nuovo: audio, footer, cronologia, riga in riproduzione
   play(track) {
-    // TODO:
-    // 1) salva track in this.currentTrack
-    // 2) this.audio.src = track.previewUrl
-    // 3) this.audio.play()
-    // 4) aggiorna UI (cover, titolo, artista, durata totale, icona play -> "⏸")
-    // 5) chiama addToHistory(track)
-    // 6) marca .track-row.is-playing se siamo nella tracklist
+    // Alcuni brani di iTunes non hanno l'anteprima: non c'è niente da suonare
+    if (!track?.previewUrl) return;
+    this.currentTrack = track;
+    this.audio.src = track.previewUrl;
+    this.start();
+
+    // La durata resta a zero finché non arriva loadedmetadata
+    this.coverImg.src = track.cover;
+    this.titleText.textContent = track.title;
+    this.artistText.textContent = track.artist;
+    this.timeTotal.textContent = "0:00";
+
+    addToHistory(track);
+    this.highlightPlayingRow();
   }
 
+  // Avvio dell'audio: AbortError vuol dire che è partito un altro brano prima di questo, non è un errore
+  start() {
+    this.audio.play().catch((error) => {
+      if (error.name !== "AbortError") {
+        console.error("Riproduzione non riuscita:", error);
+      }
+    });
+  }
+
+  // Play/pausa sul brano corrente
   togglePlay() {
-    // TODO: alterna play/pause + aggiorna icona del button
+    if (!this.currentTrack) return;
+    if (this.audio.paused) this.start();
+    else this.audio.pause();
   }
 
+  // Volume tra 0 e 1, anche se il valore esce dalla scala
   setVolume(v) {
-    // TODO: this.audio.volume = v; aggiorna #volume-fill style.width
+    const volume = Math.min(Math.max(v, 0), 1);
+    this.audio.volume = volume;
+    this.volumeFill.style.width = `${volume * 100}%`;
   }
 
-  seek(percent) {
-    // TODO: this.audio.currentTime = this.audio.duration * percent
+  // Salto nel brano: ratio tra 0 (inizio) e 1 (fine)
+  seek(ratio) {
+    if (!this.audio.duration) return;
+    this.audio.currentTime = this.audio.duration * ratio;
+  }
+
+  // .is-playing sulla riga del brano corrente: le pagine la richiamano quando ridisegnano le righe
+  highlightPlayingRow() {
+    document.querySelectorAll(".track-row").forEach((row) => {
+      row.classList.toggle(
+        "is-playing",
+        row.dataset.trackId === this.currentTrack?.id,
+      );
+    });
   }
 }
 
-/* ============================ 5. localStorage helpers ============================ */
+// 5. Cronologia e preferiti
 
-/*
-  getHistory() -> array di Track (al più MAX_HISTORY)
-  addToHistory(track) -> aggiunge in testa, rimuove duplicati, taglia a MAX_HISTORY
-  getFavourites() -> array di Track
-  isFavourite(trackId) -> bool
-  toggleFavourite(track) -> aggiunge o rimuove
-*/
-
-const getHistory = () => {
-  // TODO: leggi STORAGE_KEY_HISTORY, JSON.parse, ritorna array (vuoto se assente)
-  return [];
+// Lista di Track salvata in localStorage: vuota se manca o se il valore è rovinato (modificato a mano)
+const readList = (key) => {
+  try {
+    return JSON.parse(localStorage.getItem(key)) ?? [];
+  } catch {
+    return [];
+  }
 };
+
+// Cronologia: l'ultimo brano in testa, senza doppioni, al più MAX_HISTORY
+const getHistory = () => readList(STORAGE_KEY_HISTORY);
 
 const addToHistory = (track) => {
-  // TODO: array = getHistory(); rimuovi eventuale duplicato (per id);
-  //       metti track in testa; tronca a MAX_HISTORY; salva
+  const history = getHistory().filter((item) => item.id !== track.id);
+  history.unshift(track);
+  localStorage.setItem(
+    STORAGE_KEY_HISTORY,
+    JSON.stringify(history.slice(0, MAX_HISTORY)),
+  );
 };
 
-const getFavourites = () => {
-  // TODO: come getHistory ma con STORAGE_KEY_FAVOURITES
-  return [];
-};
+// Preferiti: l'ultimo aggiunto in testa
+const getFavourites = () => readList(STORAGE_KEY_FAVOURITES);
 
-const isFavourite = (trackId) => {
-  // TODO: return getFavourites().some(t => t.id === trackId)
-  return false;
-};
+const isFavourite = (trackId) =>
+  getFavourites().some((track) => track.id === trackId);
 
+// Aggiunge o toglie il brano; ritorna true se adesso è tra i preferiti
 const toggleFavourite = (track) => {
-  // TODO: se presente per id -> rimuovi; altrimenti aggiungi in testa; salva
+  const wasFavourite = isFavourite(track.id);
+  const others = getFavourites().filter((item) => item.id !== track.id);
+  const favourites = wasFavourite ? others : [track, ...others];
+  localStorage.setItem(STORAGE_KEY_FAVOURITES, JSON.stringify(favourites));
+  return !wasFavourite;
 };
 
-/* ============================ 6. Render sidebar ============================ */
+// 6. Card e riga del brano
 
-/*
-  renderSidebar(activePage)
-  - activePage: "home" | "search" | "library" (per evidenziare il link attivo)
-*/
+// Card e righe portano data-track-id e il cuore .btn-fav, uguali in tutte le pagine (event delegation, opzione A)
+
+// Cuore dei preferiti, lo stesso in card e riga: pieno e con .is-fav se il brano è già tra i preferiti
+const createFavButton = (track, className) => {
+  const isFav = isFavourite(track.id);
+  const button = buildElement(
+    "button",
+    `${className} btn-fav${isFav ? " is-fav" : ""}`,
+    isFav ? "♥" : "♡",
+  );
+  button.type = "button";
+  button.setAttribute(
+    "aria-label",
+    isFav ? "Togli dai preferiti" : "Aggiungi ai preferiti",
+  );
+  return button;
+};
+
+// Card del brano per le griglie; copertina 600x600 perché la card è più larga dei 100px di artworkUrl100
+const createTrackCard = (track) => {
+  const card = buildElement("div", "card");
+  card.dataset.trackId = track.id;
+
+  const imageWrap = buildElement("div", "card-image-wrap");
+  const img = document.createElement("img");
+  img.src = bigArt(track.cover);
+  img.alt = "";
+  img.loading = "lazy";
+  imageWrap.appendChild(img);
+
+  const playButton = buildElement("button", "card-play", "▶");
+  playButton.type = "button";
+  playButton.setAttribute("aria-label", `Riproduci ${track.title}`);
+
+  card.append(
+    imageWrap,
+    buildElement("p", "card-title", track.title),
+    buildElement("p", "card-sub", track.artist),
+    playButton,
+    createFavButton(track, "card-fav"),
+  );
+  return card;
+};
+
+// Riga del brano per tracklist e brani popolari: index parte da 0, quindi il numero è index + 1.
+// .is-playing non la mette la riga ma player.highlightPlayingRow()
+const createTrackRow = (track, index) => {
+  const row = buildElement("div", "track-row");
+  row.dataset.trackId = track.id;
+  row.append(
+    buildElement("span", "track-num", index + 1),
+    buildElement("span", "track-title", track.title),
+    buildElement("span", "track-time", formatTime(track.durationMs)),
+    createFavButton(track, "track-fav"),
+  );
+  return row;
+};
+
+// 7. Sidebar
+
+// Sidebar: logo, link (activePage "home" o "search" evidenzia il suo) e preferiti
 const renderSidebar = (activePage) => {
   const sidebar = document.querySelector(".sidebar");
   if (!sidebar) return;
@@ -305,13 +381,9 @@ const renderSidebar = (activePage) => {
   // TODO (opzionale): popola #sidebar-favs con i titoli dei preferiti
 };
 
-/* ============================ 7. Inizializzazione ============================ */
+// 8. Inizializzazione
 
-/*
-  initPage(activePage)
-  - Chiamata da home.js / search.js / album.js / artist.js
-  - Monta sidebar, monta player, restituisce il player per essere usato.
-*/
+// La chiama ogni pagina: monta sidebar e player e ritorna il player, che resta anche in window.player
 const initPage = (activePage) => {
   renderSidebar(activePage);
   const player = new Player();
