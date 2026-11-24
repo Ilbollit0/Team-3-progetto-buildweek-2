@@ -90,7 +90,7 @@ class Track {
     this.artistId = String(raw.artistId);
     this.cover = raw.artworkUrl100;
     this.previewUrl = raw.previewUrl;
-    this.durationMs = raw.trackTimeMillis; 
+    this.durationMs = raw.trackTimeMillis;
   }
 }
 
@@ -118,16 +118,17 @@ class Artist {
 // 4. Player
 
 // Player: suona le anteprime nell'<audio> della pagina e disegna il footer.
-// Per le pagine: play(track), togglePlay(), setVolume(0-1), seek(0-1), highlightPlayingRow()
+// Per le pagine: play(track, queue), togglePlay(), setVolume(0-1), seek(0-1), highlightPlayingRow()
 class Player {
   constructor() {
     this.audio = document.querySelector("#audio-element");
     this.currentTrack = null;
+    this.queue = [];
     this.isPlaying = false;
 
     // Eventi audio: scrivono negli elementi del footer, che mount() salva prima del primo play.
     // La durata arriva da loadedmetadata perché l'anteprima dura 30 secondi, non quanto il brano;
-    // "pause" arriva anche a fine brano, quindi l'icona torna ▶ da sola
+    // "pause" arriva anche a fine brano, quindi l'icona torna ▶ da sola; poi "ended" passa al successivo
     this.audio.addEventListener("timeupdate", () => {
       const ratio = this.audio.currentTime / this.audio.duration || 0;
       this.progressFill.style.width = `${ratio * 100}%`;
@@ -144,6 +145,7 @@ class Player {
       this.isPlaying = false;
       this.toggleButton.textContent = "▶";
     });
+    this.audio.addEventListener("ended", () => this.skip(1));
   }
 
   // Footer del player: markup, elementi da aggiornare, click, volume iniziale
@@ -195,6 +197,12 @@ class Player {
 
     this.toggleButton.addEventListener("click", () => this.togglePlay());
     footer
+      .querySelector("#btn-prev")
+      .addEventListener("click", () => this.skip(-1));
+    footer
+      .querySelector("#btn-next")
+      .addEventListener("click", () => this.skip(1));
+    footer
       .querySelector("#progress-bar")
       .addEventListener("click", (event) => this.seek(clickRatio(event)));
     footer
@@ -204,11 +212,13 @@ class Player {
     this.setVolume(0.8);
   }
 
-  // Brano nuovo: audio, footer, cronologia, riga in riproduzione
-  play(track) {
-    // Alcuni brani di iTunes non hanno l'anteprima: non c'è niente da suonare
+  // Brano nuovo: audio, footer, cronologia, riga in riproduzione.
+  // queue sono i brani della stessa riga o tracklist, nell'ordine in cui si vedono; se manca, il solo track
+  play(track, queue = [track]) {
+    // Alcuni brani di iTunes non hanno l'anteprima: non c'è niente da suonare, e in coda si saltano
     if (!track?.previewUrl) return;
     this.currentTrack = track;
+    this.queue = queue.filter((item) => item.previewUrl);
     this.audio.src = track.previewUrl;
     this.start();
 
@@ -229,6 +239,15 @@ class Player {
         console.error("Riproduzione non riuscita:", error);
       }
     });
+  }
+
+  // Brano precedente (-1) o successivo (+1) nella coda: ai due capi non fa niente
+  skip(step) {
+    const index = this.queue.findIndex(
+      (item) => item.id === this.currentTrack?.id,
+    );
+    const track = this.queue[index + step];
+    if (track) this.play(track, this.queue);
   }
 
   // Play/pausa sul brano corrente

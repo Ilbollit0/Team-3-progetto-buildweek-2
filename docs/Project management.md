@@ -116,14 +116,15 @@ Il lavoro è diviso in nove step, dallo 0 all'8. Gli step da 1 a 6 portano al mi
 | 0 | Lunedì pomeriggio | Tutti | `riferimenti/api-esempi/`, `riferimenti/postman/` e [Istruzioni API](Istruzioni%20API.md): prova dell'API con Postman; si salvano le risposte di esempio, la collection EpiTunes e la tabella dei campi | Fatto |
 | 1 | Martedì, prima ora | Gabriel | Le 4 pagine HTML e `app.css`: fondamenta, cioè percorsi di CSS e JS negli HTML (da `css/` e `js/` ad `assets/`) e le due `@media` in fondo ad `app.css` spezzate nelle sezioni, già mobile-first; poi Prettier su tutti i file → merge su `main` | In corso |
 | 1 | Martedì mattina | Luca | `app.css`: riordino, cioè CSS annidato che segue l'HTML, ogni `@media` dentro il blocco che modifica, blocchi doppi uniti, refuso `html,s` corretto; lo stile delle pagine resta identico → merge su `main` | Fatto |
-| 1 | Martedì, prima ora | Alessandro + Giovanbattista | `common.js`: struttura HTML della card del brano (`createTrackCard`), cioè classi, cover, titolo, artista, Play, cuore `btn-fav`, `data-track-id` | Da fare |
-| 1 | Martedì, prima ora | Luca + Francesca | `common.js`: struttura HTML della riga del brano (`createTrackRow`), cioè numero, titolo, durata, cuore `btn-fav`, `data-track-id`, `.is-playing` | Da fare |
-| 2 | Martedì, fino a mezzogiorno | Tutti | `common.js`: `fetchJSON` e costruttori di `Track`, `Album`, `Artist` dalla tabella di [Istruzioni API](Istruzioni%20API.md), scritti insieme: uno alla tastiera e gli altri che seguono, a turno → merge su `main` | Da fare |
+| 1 | Martedì, prima ora | Alessandro + Giovanbattista | `common.js`: struttura HTML della card del brano (`createTrackCard`), cioè classi, cover, titolo, artista, Play, cuore `btn-fav`, `data-track-id` | Fatto |
+| 1 | Martedì, prima ora | Luca + Francesca | `common.js`: struttura HTML della riga del brano (`createTrackRow`), cioè numero, titolo, durata, cuore `btn-fav`, `data-track-id`, `.is-playing` | Fatto |
+| 2 | Martedì, fino a mezzogiorno | Tutti | `common.js`: `fetchJSON` e costruttori di `Track`, `Album`, `Artist` dalla tabella di [Istruzioni API](Istruzioni%20API.md), scritti insieme: uno alla tastiera e gli altri che seguono, a turno → merge su `main` | Fatto |
 | 3 | Martedì pomeriggio | Gabriel | `app.css`: CSS comune, cioè colori e font del tema scuro, `.app` a tre zone, `.sidebar` (assente su mobile, solo icone su `md`, completa su `lg`), `.main`, `.topbar`, `.player` | Da fare |
 | 3 | Martedì pomeriggio | Giovanbattista | `index.html`, `search.html` (classi di Bootstrap) e `app.css`: CSS di Home e Cerca alle tre larghezze (`.home`, `.search`, `.row`, `.grid`, `.card`) | In corso |
 | 3 | Martedì pomeriggio | Francesca | `album.html`, `artist.html` (classi di Bootstrap) e `app.css`: CSS di Album e Artista alle tre larghezze (`.album-page`, `.artist-page`, hero con copertina grande, `.tracklist`, `.track-row` con il brano in riproduzione) | In corso |
-| 3 | Martedì pomeriggio | Alessandro | `common.js`: `Player` (`constructor` ed eventi audio, `mount` con i click, `play`, `togglePlay`, `setVolume`, `seek`) e `createTrackCard` | Da fare |
-| 3 | Martedì pomeriggio | Luca | `common.js`: preferiti e cronologia in localStorage (`getFavourites`, `isFavourite`, `toggleFavourite`, `getHistory`, `addToHistory`) e `createTrackRow` | Da fare |
+| 3 | Martedì pomeriggio | Alessandro | `common.js`: `Player` (`constructor` ed eventi audio, `mount` con i click, `play(track, queue)`, `togglePlay`, `setVolume`, `seek`) e `createTrackCard` | Fatto |
+| 3 | Martedì pomeriggio | Luca | **Extra** · `common.js` (`Player`): precedente e successivo nella coda di `play(track, queue)`, e a fine brano parte il successivo; allo step 4 ogni pagina passa come `queue` i brani della riga o della tracklist cliccata, nell'ordine in cui si vedono | Fatto |
+| 3 | Martedì pomeriggio | Luca | `common.js`: preferiti e cronologia in localStorage (`getFavourites`, `isFavourite`, `toggleFavourite`, `getHistory`, `addToHistory`) e `createTrackRow` | Fatto |
 | 4 | Mercoledì mattina | Alessandro | `search.js`: debounce di ~400 ms, tre chiamate con `Promise.all`, righe Brani / Album / Artisti, ultima ricerca | Da fare |
 | 4 | Mercoledì mattina | Luca | `album.js`: id dalla query string, lookup, hero, tracklist con `createTrackRow` e cuore dei preferiti | Da fare |
 | 4 | Mercoledì mattina | Giovanbattista | `home.js`: `renderRow`, tre righe di suggerimenti con `Promise.all`, righe dei recenti e dei preferiti | Da fare |
@@ -133,7 +134,7 @@ Il lavoro è diviso in nove step, dallo 0 all'8. Gli step da 1 a 6 portano al mi
 | 5 | Mercoledì pomeriggio | Luca | `common.js`: lista dei preferiti nella sidebar, in `#sidebar-favs` di `renderSidebar` | Da fare |
 | 5 | Mercoledì pomeriggio | Gabriel, Giovanbattista, Francesca | I file delle proprie voci: chiusura delle voci aperte, correzioni | Da fare |
 | 6 | Mercoledì sera | Tutti | Le 4 pagine da `main`: prova alle tre larghezze, zero errori in console (KPI K4, K5); le correzioni le fa chi risponde del file | Da fare |
-| 7 | Giovedì | _da definire_ | `common.js` (`Player`): player completo, cioè shuffle, precedente e successivo, ripeti | Da fare |
+| 7 | Giovedì | _da definire_ | `common.js` (`Player`): player completo, cioè shuffle e ripeti | Da fare |
 | 7 | Giovedì | _da definire_ | `home.js` e `common.js` (`renderSidebar`): click su un preferito che avvia il brano | Da fare |
 | 7 | Giovedì | _da definire_ | `home.js`, `search.js` e `artist.js`: preferiti anche dai singoli brani nelle altre viste | Da fare |
 | 7 | Giovedì | _da definire_ | Una pagina nuova con il suo JS, le 4 pagine HTML (`user-pill`), `common.js` e `app.css`: login e playlist per utente | Da fare |
