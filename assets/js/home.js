@@ -39,3 +39,43 @@ const loadHome = async () => {
 };
 
 loadHome();
+
+
+/*-----------------------------*/
+const preferiti = document.querySelector("#preferiti");
+
+function creaCard(canzone) {
+  // creo div per card 
+  const col = document.createElement('div');
+  col.classList.add('col-6', 'col-md-4', 'col-lg-3');
+
+  //creo card
+  const card = document.createElement('div');
+  card.classList.add('card', 'h-100');
+
+  //creo immagine card
+  const img = document.createElement('img');
+  img.src = canzone.artworkUrl100;
+  img.classList.add('card-img-top');
+
+  //creo scritte sotto card
+  const body = document.createElement('div');
+  body.classList.add('card-body');
+
+  //creo nome artista 
+  const artistName = document.createElement('p');
+  artistName.classList.add('fw-bold', 'mb-2');
+  artistName.textContent = canzone.artistName;
+
+  //creo nome canzone
+  const title = document.createElement('p');
+  title.classList.add("mb-2");
+  titolo.textContent = canzone.trackName;
+
+//appendo.
+  body.appendChild(artistName);
+  body.appendChild(title);
+  card.appendChild(img);
+  card.appendChild(body);  
+}
+
