@@ -4,7 +4,7 @@ Strumenti per seguire l'avanzamento della Build Week. Chi fa cosa e lo stato di 
 
 ## Gantt
 
-Chi fa quale voce del backlog (numero tra parentesi) e in quale giorno. Si aggiorna dopo lo stand-up quando un lavoro slitta.
+Chi fa cosa e in quale giorno; tra parentesi lo step del backlog. Si aggiorna dopo lo stand-up quando un lavoro slitta.
 
 ```mermaid
 gantt
@@ -13,38 +13,39 @@ gantt
   axisFormat %a %d
 
   section Tutti insieme
-  Prova API con Postman            :2026-11-23, 1d
-  fetchJSON e modelli (3)          :2026-11-24, 1d
-  Extra (12–15, da definire)       :2026-11-26, 1d
-  Revisione e prova esposizione    :2026-11-27, 1d
+  Prova API con Postman (step 0)   :2026-11-23, 1d
+  fetchJSON e modelli (step 2)     :2026-11-24, 1d
+  Prova di main (step 6)           :2026-11-25, 1d
+  Extra (step 7, da definire)      :2026-11-26, 1d
+  Revisione e prova esposizione (step 8) :2026-11-27, 1d
 
   section Luca
-  Markup riga brano (con Francesca) :2026-11-24, 1d
-  Helper preferiti e cronologia (7, 10) :2026-11-24, 1d
-  Dettaglio album (6, 7)           :2026-11-25, 1d
-  Preferiti nella sidebar (7)      :2026-11-25, 1d
-  README finito                    :2026-11-26, 1d
+  Markup riga brano (step 1, con Francesca) :2026-11-24, 1d
+  Helper preferiti e cronologia (step 3) :2026-11-24, 1d
+  Dettaglio album (step 4)         :2026-11-25, 1d
+  Preferiti nella sidebar (step 5) :2026-11-25, 1d
+  README finito (step 7)           :2026-11-26, 1d
 
   section Gabriel
-  Fondamenta (percorsi, Prettier, media) :2026-11-24, 1d
-  CSS comune (1, 2)                :2026-11-24, 1d
-  Merge e rifinitura responsive    :2026-11-25, 1d
+  Fondamenta (step 1)              :2026-11-24, 1d
+  CSS comune (step 3)              :2026-11-24, 1d
+  Merge e rifinitura responsive (step 4) :2026-11-25, 1d
 
   section Giovanbattista
-  Markup card (con Alessandro)     :2026-11-24, 1d
-  CSS Home e Cerca (2)             :2026-11-24, 1d
-  Home, preferiti, recenti (7, 8, 10) :2026-11-25, 1d
+  Markup card (step 1, con Alessandro) :2026-11-24, 1d
+  CSS Home e Cerca (step 3)        :2026-11-24, 1d
+  Home, preferiti, recenti (step 4) :2026-11-25, 1d
 
   section Francesca
-  Markup riga brano (con Luca)     :2026-11-24, 1d
-  CSS Album e Artista (2)          :2026-11-24, 1d
-  Dettaglio artista (11)           :2026-11-25, 1d
+  Markup riga brano (step 1, con Luca) :2026-11-24, 1d
+  CSS Album e Artista (step 3)     :2026-11-24, 1d
+  Dettaglio artista (step 4)       :2026-11-25, 1d
 
   section Alessandro
-  Markup card (con Giovanbattista) :2026-11-24, 1d
-  Player (9)                       :2026-11-24, 1d
-  Cerca e ultima ricerca (4, 5)    :2026-11-25, 1d
-  Brano in corso al cambio pagina  :2026-11-25, 1d
+  Markup card (step 1, con Giovanbattista) :2026-11-24, 1d
+  Player (step 3)                  :2026-11-24, 1d
+  Cerca e ultima ricerca (step 4)  :2026-11-25, 1d
+  Brano in corso al cambio pagina (step 5) :2026-11-25, 1d
 
   section Scadenze
   Minimo completo                  :milestone, 2026-11-26, 0d
@@ -57,7 +58,7 @@ Pochi indicatori, tutti misurabili in pochi minuti dopo lo stand-up. Li rileva i
 
 | # | KPI | Come si misura | Obiettivo |
 | --- | --- | --- | --- |
-| K1 | Avanzamento del minimo | Voci **M** a «Fatto» nel backlog, su 11 | Martedì sera 4 (1, 2, 3, 9); mercoledì sera 11 |
+| K1 | Avanzamento del minimo | Step da 1 a 6 chiusi nel backlog (tutte le loro voci a «Fatto»), su 6 | Martedì sera 3 (step 1–3); mercoledì sera 6 |
 | K2 | Rispetto del Gantt | Voci chiuse nel giorno previsto, su quelle previste quel giorno | 100%; sotto l'80% si ripianifica allo stand-up |
 | K3 | Integrazione su `main` | Pull request unite da Gabriel nel giorno, e persone con almeno una PR unita | Almeno una PR per chi ha scritto codice, ogni giorno |
 | K4 | Errori in console | Errori nella console del browser aprendo le 4 pagine da `main` | 0 |
@@ -72,10 +73,10 @@ Un grafico per KPI: le **barre** sono il valore reale, la **linea** l'obiettivo.
 
 ```mermaid
 xychart-beta
-  title "Voci M fatte, su 11"
+  title "Step del minimo chiusi, su 6"
   x-axis ["Mar 24", "Mer 25", "Gio 26", "Ven 27"]
-  y-axis "Voci" 0 --> 11
-  line [4, 11, 11, 11]
+  y-axis "Step" 0 --> 6
+  line [3, 6, 6, 6]
   bar [0, 0, 0, 0]
 ```
 
@@ -97,9 +98,11 @@ xychart-beta
   title "Persone con almeno una PR unita"
   x-axis ["Mar 24", "Mer 25", "Gio 26", "Ven 27"]
   y-axis "Persone" 0 --> 5
-  line [5, 5, 5, 0]
+  line [5, 5, 5, 4]
   bar [0, 0, 0, 0]
 ```
+
+Venerdì l'obiettivo è 4 e non 5: Luca è assente.
 
 ### K4 — Errori in console
 
