@@ -1,28 +1,34 @@
 <!doctype html>
 <html lang="it">
+  <head>
+    <meta charset="UTF-8" />
+    <meta name="viewport" content="width=device-width, initial-scale=1.0" />
+    <title>EpiTunes — Artista</title>
+    <!-- Francesca: link BOOTSTRAP/ -->
+    <link
+      href="https://cdn.jsdelivr.net/npm/bootstrap@5.3.9/dist/css/bootstrap.min.css"
+      rel="stylesheet"
+      integrity="sha384-yEPZ7jP9S0QKiUQ0m3jjsO4ProIW7wvR9gXkI7JOGa2XVsw53Yke2bsdkBbjmmiX"
+      crossorigin="anonymous"
+    />
+    <!-- Francesca: percorso CSS aggiornato alla cartella assets/ -->
+    <link rel="stylesheet" href="assets/css/app.css" />
+  </head>
 
-<head>
-  <meta charset="UTF-8" />
-  <meta name="viewport" content="width=device-width, initial-scale=1.0" />
-  <title>EpiTunes — Artista</title>
-  <!-- Gabriel: percorsi di CSS e JS aggiornati alla cartella assets/ -->
-  <link rel="stylesheet" href="assets/css/app.css" />
-</head>
+  <body>
+    <div class="app">
+      <aside class="sidebar"></aside>
 
-<body>
-  <div class="app">
-    <aside class="sidebar"></aside>
+      <main class="main">
+        <header class="topbar">
+          <div class="topbar-nav">
+            <button class="nav-btn" aria-label="Indietro">‹</button>
+            <button class="nav-btn" aria-label="Avanti">›</button>
+          </div>
+          <div class="user-pill">Studente Epicode</div>
+        </header>
 
-    <main class="main">
-      <header class="topbar">
-        <div class="topbar-nav">
-          <button class="nav-btn" aria-label="Indietro">‹</button>
-          <button class="nav-btn" aria-label="Avanti">›</button>
-        </div>
-        <div class="user-pill">Studente Epicode</div>
-      </header>
-
-      <!--
+        <!--
           COSTRUISCI IN artist.js:
           - Leggi l'id dalla query string con URLSearchParams
           - fetch lookup?id=NNN&entity=song&limit=10
@@ -30,19 +36,33 @@
           - Hero: titolo artista grande + genere + numero ascoltatori (inventato/random)
           - Lista popolare di top tracks; click su brano -> Player
         -->
-      <section class="artist-page">
-        <div class="artist-hero" id="artist-hero"></div>
-        <div class="top-tracks" id="top-tracks"></div>
-      </section>
-    </main>
+        <section class="artist-page container-fluid px-3 px-md-4 pb-4">
+          <div
+            class="artist-hero d-flex flex-column flex-md-row align-items-start align-items-md-end gap-3 gap-md-4 py-3 py-md-4"
+            id="artist-hero"
+          ></div>
+          <div class="top-tracks mt-2" id="top-tracks"></div>
+        </section>
+      </main>
 
-    <footer class="player"></footer>
-  </div>
+      <footer class="player"></footer>
+    </div>
 
-  <audio id="audio-element"></audio>
+    <audio id="audio-element"></audio>
 
-  <script src="assets/js/common.js"></script>
-  <script src="assets/js/artist.js"></script>
-</body>
-
+    <!-- Francesca: script BOOTSTRAP/ -->
+    <script
+      src="https://cdn.jsdelivr.net/npm/@popperjs/core@2.11.8/dist/umd/popper.min.js"
+      integrity="sha384-I7E8VVD/ismYTF4hNIPjVp/Zjvgyol6VFvRkX/vR+Vc4jQkC+hVqc2pM8ODewa9r"
+      crossorigin="anonymous"
+    ></script>
+    <script
+      src="https://cdn.jsdelivr.net/npm/bootstrap@5.3.9/dist/js/bootstrap.min.js"
+      integrity="sha384-89aa4glufciPv46aKltztWQEmk+Tu9W2RhzXr6VcnUUEub7F8+06RcL2RYLCOHUq"
+      crossorigin="anonymous"
+    ></script>
+    <!-- Francesca: percorsi JS aggiornati alla cartella assets/ -->
+    <script src="assets/js/common.js"></script>
+    <script src="assets/js/artist.js"></script>
+  </body>
 </html>
