@@ -25,7 +25,7 @@ Cosa va costruito sta in [Istruzioni progetto](Istruzioni%20progetto.md); qui c'
 1. Il minimo richiesto funzionante e integrato su `main` entro mercoledì sera.
 2. Giovedì gli extra (step 7 del *Backlog*), solo a minimo completo.
 3. Un README che spiega cosa fa l'app e come, scritto man mano e finito giovedì sera.
-4. Venerdì tutto è già pronto: solo revisione e rilettura per l'esposizione finale.
+4. Venerdì tutto è già pronto: solo piccole correzioni, revisione e rilettura per l'esposizione finale.
 
 ### Vincoli
 
@@ -96,7 +96,7 @@ Il lavoro è diviso in nove step, dallo 0 all'8. Gli step da 1 a 6 portano al mi
 - **Step 5 · Collegamenti** (mercoledì pomeriggio): al cambio pagina il player mostra il brano in corso, i preferiti compaiono nella sidebar, gli altri chiudono le loro voci.
 - **Step 6 · Prova** (mercoledì sera): tutti provano `main` alle tre larghezze.
 - **Step 7 · Extra e README** (giovedì).
-- **Step 8 · Revisione** (venerdì): si prepara l'esposizione finale.
+- **Step 8 · Revisione** (venerdì): piccole correzioni e ritocchi, poi si prepara l'esposizione finale.
 
 **Come si va avanti**
 
@@ -137,7 +137,7 @@ Il lavoro è diviso in nove step, dallo 0 all'8. Gli step da 1 a 6 portano al mi
 | 7 | Giovedì | _da definire_ | `home.js`, `search.js` e `artist.js`: preferiti anche dai singoli brani nelle altre viste | Da fare |
 | 7 | Giovedì | _da definire_ | Una pagina nuova con il suo JS, le 4 pagine HTML (`user-pill`), `common.js` e `app.css`: login e playlist per utente | Da fare |
 | 7 | Giovedì | Luca | `README.md`: chiusura del README, che spiega cosa fa l'app e come | Da fare |
-| 8 | Venerdì | Tutti tranne Luca | Nessun file da toccare: revisione e rilettura per l'esposizione finale | Da fare |
+| 8 | Venerdì | Tutti tranne Luca | I file delle proprie voci, solo per piccole correzioni e ritocchi: revisione e rilettura per l'esposizione finale | Da fare |
 
 **Extra, da definire oggi:** quali si fanno e chi fa ciascuno. Si scelgono tra le righe dello step 7 o se ne aggiungono altre.
 
@@ -190,7 +190,7 @@ Ogni pomeriggio il gruppo espone i progressi al docente, che fa da project manag
 
 ## 5. Close — consegna e chiusura
 
-- Venerdì niente codice nuovo: tutto è già su `main` da giovedì sera. Si rilegge il progetto, si prova l'app alle tre larghezze e si prepara l'esposizione finale.
+- Venerdì niente funzioni nuove: tutto è già su `main` da giovedì sera. Piccole correzioni e ritocchi si fanno ancora, con push e PR come gli altri giorni, e Gabriel li unisce prima della consegna delle 16:30. Si rilegge il progetto, si prova l'app alle tre larghezze e si prepara l'esposizione finale.
 - Luca è assente. **Da definire:** chi coordina la giornata.
 - Il Git manager carica in piattaforma il link della repo.
 - Alla scadenza consegna ed esposizione finale (vedi *Esposizioni al docente*).

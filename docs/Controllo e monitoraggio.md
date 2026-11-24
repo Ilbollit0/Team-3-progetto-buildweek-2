@@ -98,9 +98,11 @@ xychart-beta
   title "Persone con almeno una PR unita"
   x-axis ["Mar 24", "Mer 25", "Gio 26", "Ven 27"]
   y-axis "Persone" 0 --> 5
-  line [5, 5, 5, 0]
+  line [5, 5, 5, 4]
   bar [0, 0, 0, 0]
 ```
+
+Venerdì l'obiettivo è 4 e non 5: Luca è assente.
 
 ### K4 — Errori in console
 
