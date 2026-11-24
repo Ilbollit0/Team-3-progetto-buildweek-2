@@ -23,17 +23,23 @@
 
 const player = initPage("search");
 
-const input        = document.querySelector("#search-input");
-const rowTracks    = document.querySelector("#row-tracks");
-const rowAlbums    = document.querySelector("#row-albums");
-const rowArtists   = document.querySelector("#row-artists");
-const gridTracks   = document.querySelector("#grid-tracks");
-const gridAlbums   = document.querySelector("#grid-albums");
-const gridArtists  = document.querySelector("#grid-artists");
+const input = document.querySelector("#search-input");
+const rowTracks = document.querySelector("#row-tracks");
+const rowAlbums = document.querySelector("#row-albums");
+const rowArtists = document.querySelector("#row-artists");
+const gridTracks = document.querySelector("#grid-tracks");
+const gridAlbums = document.querySelector("#grid-albums");
+const gridArtists = document.querySelector("#grid-artists");
 
-const renderTrackCard  = (track)  => { /* TODO */ };
-const renderAlbumCard  = (album)  => { /* TODO */ };
-const renderArtistCard = (artist) => { /* TODO */ };
+const renderTrackCard = (track) => {
+  /* TODO */
+};
+const renderAlbumCard = (album) => {
+  /* TODO */
+};
+const renderArtistCard = (artist) => {
+  /* TODO */
+};
 
 const doSearch = async (term) => {
   // TODO: implementare come da elenco sopra (Promise.all)

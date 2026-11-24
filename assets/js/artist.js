@@ -20,7 +20,7 @@
 const player = initPage("home");
 
 const artistHero = document.querySelector("#artist-hero");
-const topTracks  = document.querySelector("#top-tracks");
+const topTracks = document.querySelector("#top-tracks");
 
 const loadArtist = async () => {
   // TODO: implementare come da elenco sopra

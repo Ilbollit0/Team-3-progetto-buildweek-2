@@ -4,6 +4,12 @@
    Palette scura ispirata a Spotify, accenti gialli brand Epicode.
    Lo studente NON deve modificare questo file salvo voglia
    personalizzare l'aspetto. Tutto il lavoro è in HTML e JS.
+
+   RESPONSIVE (mobile-first)
+   - Stile base = mobile (sotto i 768px)
+   - @media (min-width: 768px) = md, tablet
+   - @media (min-width: 992px) = lg, desktop
+   Ogni sezione ha le sue media query subito sotto le sue regole.
    ============================================================ */
 
 :root {
@@ -16,9 +22,9 @@
   --text-primary: #ffffff;
   --text-secondary: #b3b3b3;
   --text-input: #000000;
-  --accent: #f7d800;        /* giallo Epicode */
+  --accent: #f7d800; /* giallo Epicode */
   --accent-dark: #d6ba00;
-  --success: #1ed760;       /* verde "play" */
+  --success: #1ed760; /* verde "play" */
   --danger: #e25555;
   --border: #2a2a2a;
   --radius-sm: 6px;
@@ -31,13 +37,15 @@
   box-sizing: border-box;
 }
 
-html,
+html,s
 body {
   height: 100%;
   margin: 0;
   background: var(--bg-base);
   color: var(--text-primary);
-  font-family: -apple-system, BlinkMacSystemFont, "Segoe UI", Roboto, "Helvetica Neue", Arial, sans-serif;
+  font-family:
+    -apple-system, BlinkMacSystemFont, "Segoe UI", Roboto, "Helvetica Neue",
+    Arial, sans-serif;
   font-size: 14px;
   overflow: hidden;
 }
@@ -54,18 +62,20 @@ button {
 
 /* ============================ Layout 3 zone ============================ */
 
+/* Gabriel: layout mobile-first. Mobile: niente sidebar, solo main + player */
 .app {
   display: grid;
-  grid-template-columns: 240px 1fr;
+  grid-template-columns: 1fr;
   grid-template-rows: 1fr 90px;
   grid-template-areas:
-    "sidebar main"
-    "player  player";
+    "main"
+    "player";
   height: 100vh;
 }
 
 .sidebar {
   grid-area: sidebar;
+  display: none;
   background: var(--bg-sidebar);
   padding: 24px 16px;
   overflow-y: auto;
@@ -83,6 +93,26 @@ button {
   background: var(--bg-player);
   border-top: 1px solid var(--border);
   padding: 12px 16px;
+}
+
+/* md: sidebar stretta, solo icone */
+@media (min-width: 768px) {
+  .app {
+    grid-template-columns: 80px 1fr;
+    grid-template-areas:
+      "sidebar main"
+      "player  player";
+  }
+  .sidebar {
+    display: block;
+  }
+}
+
+/* lg: sidebar completa */
+@media (min-width: 992px) {
+  .app {
+    grid-template-columns: 240px 1fr;
+  }
 }
 
 /* ============================ Sidebar ============================ */
@@ -167,6 +197,36 @@ button {
   background: var(--bg-elev);
 }
 
+/* Gabriel: fino a lg la sidebar (visibile da md) mostra solo le icone */
+.brand-text,
+.sidebar-section-title,
+.sidebar-list,
+.sidebar-nav a span:not(.ico) {
+  display: none;
+}
+.sidebar-nav a {
+  justify-content: center;
+  padding: 10px 0;
+}
+
+/* lg: icone + testi + preferiti */
+@media (min-width: 992px) {
+  .brand-text,
+  .sidebar-nav a span:not(.ico) {
+    display: inline;
+  }
+  .sidebar-section-title {
+    display: block;
+  }
+  .sidebar-list {
+    display: flex;
+  }
+  .sidebar-nav a {
+    justify-content: flex-start;
+    padding: 8px 12px;
+  }
+}
+
 /* ============================ Topbar ============================ */
 
 .topbar {
@@ -222,8 +282,15 @@ button {
 
 .grid {
   display: grid;
-  grid-template-columns: repeat(auto-fill, minmax(180px, 1fr));
+  grid-template-columns: repeat(auto-fill, minmax(140px, 1fr));
   gap: 16px;
+}
+
+/* Gabriel: md, card più larghe */
+@media (min-width: 768px) {
+  .grid {
+    grid-template-columns: repeat(auto-fill, minmax(180px, 1fr));
+  }
 }
 
 /* ============================ Card ============================ */
@@ -290,7 +357,9 @@ button {
   box-shadow: var(--shadow);
   opacity: 0;
   transform: translateY(8px);
-  transition: opacity 0.2s, transform 0.2s;
+  transition:
+    opacity 0.2s,
+    transform 0.2s;
 }
 .card:hover .card-play {
   opacity: 1;
@@ -323,16 +392,18 @@ button {
 
 /* ============================ Hero album / artista ============================ */
 
+/* Gabriel: hero mobile-first. Mobile: cover sopra, testi sotto */
 .album-hero,
 .artist-hero {
   display: flex;
+  flex-direction: column;
   gap: 24px;
-  align-items: flex-end;
+  align-items: flex-start;
   padding: 24px 0 16px 0;
 }
 .album-cover {
-  width: 220px;
-  height: 220px;
+  width: 160px;
+  height: 160px;
   border-radius: var(--radius-md);
   overflow: hidden;
   background: #000;
@@ -367,6 +438,19 @@ button {
   color: var(--text-secondary);
   font-size: 14px;
   margin: 0;
+}
+
+/* md: cover e testi affiancati, cover grande */
+@media (min-width: 768px) {
+  .album-hero,
+  .artist-hero {
+    flex-direction: row;
+    align-items: flex-end;
+  }
+  .album-cover {
+    width: 220px;
+    height: 220px;
+  }
 }
 
 .hero-actions {
@@ -463,11 +547,12 @@ button {
 
 /* ============================ Player ============================ */
 
+/* Gabriel: player mobile-first. Mobile: brano + controlli, niente volume */
 .player {
   display: grid;
-  grid-template-columns: 1fr 2fr 1fr;
+  grid-template-columns: 1fr 1fr;
   align-items: center;
-  gap: 16px;
+  gap: 8px;
 }
 .player-track {
   display: flex;
@@ -571,13 +656,24 @@ button {
 }
 
 .player-right {
-  display: flex;
+  display: none;
   align-items: center;
   justify-content: flex-end;
   gap: 10px;
 }
 .volume-bar {
   width: 120px;
+}
+
+/* md: tre colonne con il volume a destra */
+@media (min-width: 768px) {
+  .player {
+    grid-template-columns: 1fr 2fr 1fr;
+    gap: 16px;
+  }
+  .player-right {
+    display: flex;
+  }
 }
 
 /* ============================ Loading / empty ============================ */
@@ -591,50 +687,4 @@ button {
   padding: 32px;
   text-align: center;
   color: var(--text-secondary);
-}
-
-/* ============================ Responsive ============================ */
-
-@media (max-width: 800px) {
-  .app {
-    grid-template-columns: 80px 1fr;
-  }
-  .brand-text,
-  .sidebar-section-title,
-  .sidebar-list,
-  .sidebar-nav a span:not(.ico) {
-    display: none;
-  }
-  .sidebar-nav a {
-    justify-content: center;
-    padding: 10px 0;
-  }
-  .album-hero,
-  .artist-hero {
-    flex-direction: column;
-    align-items: flex-start;
-  }
-  .album-cover {
-    width: 160px;
-    height: 160px;
-  }
-}
-
-@media (max-width: 540px) {
-  .app {
-    grid-template-columns: 0 1fr;
-  }
-  .sidebar {
-    display: none;
-  }
-  .player {
-    grid-template-columns: 1fr 1fr;
-    gap: 8px;
-  }
-  .player-right {
-    display: none;
-  }
-  .grid {
-    grid-template-columns: repeat(auto-fill, minmax(140px, 1fr));
-  }
 }

@@ -296,7 +296,7 @@ const renderSidebar = (activePage) => {
       <span class="brand-text">EpiTunes</span>
     </div>
     <nav class="sidebar-nav">
-      <a href="index.html"  data-page="home"   ${activePage === "home"   ? 'class="active"' : ""}><span class="ico">🏠</span><span>Home</span></a>
+      <a href="index.html"  data-page="home"   ${activePage === "home" ? 'class="active"' : ""}><span class="ico">🏠</span><span>Home</span></a>
       <a href="search.html" data-page="search" ${activePage === "search" ? 'class="active"' : ""}><span class="ico">🔍</span><span>Cerca</span></a>
     </nav>
     <p class="sidebar-section-title">I tuoi preferiti</p>
