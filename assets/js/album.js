@@ -27,9 +27,102 @@ const player = initPage("home");
 
 const albumHero = document.querySelector("#album-hero");
 const tracklist = document.querySelector("#tracklist");
+const albumActions = document.querySelector("#album-actions");
 
+let albumTracks = [];
+
+//Francesca: costruisce la sezione hero dell'album
+const renderAlbumHero = (album, tracks) => {
+  clearElement(albumHero);
+  clearElement(albumActions);
+
+  const coverWrap = document.createElement("div");
+  coverWrap.className = "album-cover";
+
+  const img = document.createElement("img");
+  img.src = album.cover;
+  img.alt = album.title;
+  coverWrap.appendChild(img);
+
+  const meta = document.createElement("div");
+  meta.className = "hero-meta";
+
+   const kicker = document.createElement("span");
+   kicker.className = "hero-kicker";
+   kicker.textContent = "ALBUM";
+
+   const title = document.createElement("h1");
+   title.className = "hero-title";
+   title.textContent = album.title;
+
+   const sub = document.createElement("p");
+   sub.className = "hero-sub";
+
+   const artistLink = document.createElement("a");
+   artistLink.className = "hero-artist-link";
+   artistLink.href = `artist.html?id=${encodeURIComponent(album.artistId)}`;
+   artistLink.textContent = album.artist;
+
+   const totalMs = tracks.reduce((acc, t) => acc + (t.durationMs || 0), 0);
+
+   const details = document.createElement("span");
+   details.textContent = `· ${album.releaseYear} · ${tracks.length} brani · ${formatTime(totalMs)}`;
+
+   sub.appendChild(artistLink);
+   sub.appendChild(details);
+
+   meta.appendChild(kicker);
+   meta.appendChild(title);
+   meta.appendChild(sub);
+
+   albumHero.appendChild(coverWrap);
+   albumHero.appendChild(meta);
+
+   if(tracks.length > 0) {
+      const bigPlayBtn = document.createElement("button");
+      bigPlayBtn.type = "button";
+      bigPlayBtn.className = "btn-play-big";
+      bigPlayBtn.textContent = "▶️"; //da modificare
+      bigPlayBtn.setAttribute("aria-label", "Riproduzione album");
+      bigPlayBtn.addEventListener("click", () => player.play(tracks[0], tracks));
+      artistaActions.appendChild(bigPlayBtn);
+   }
+};
+
+//Francesca: carica i dati dell'album dall'API
 const loadAlbum = async () => {
-   
+  const params = new URLSearchParams(window.location.search);
+  const albumId = params.get("id");
+
+  if (!albumId) {
+    renderMessage(albumHero, "Album non trovato.");
+    return;
+  }
+  renderMessage(albumHero, "Caricamento album...");
+
+  try {
+    const url = `${API_BASE}/lookup?id=${encodeURIComponent(albumId)}&entity=song`;
+    const data = await fetchJSON(url);
+    const results = data.results || [];
+
+    const rawCollection = results.find(
+      (item) => item.wrapperType === "collection",
+    );
+    const rawTracks = results.filter((item) => item.wrapperType === "track");
+
+    if (!rawCollection) {
+      renderMessage(albumHero, "Album non trovato.");
+      return;
+    }
+    const album = new Album(rawCollection);
+    albumTracks = rawTracks.map((raw) => Track(raw));
+
+    renderAlbumHero(album, albumTracks);
+    renderAlbumTracklist(albumTracks);
+  } catch (error) {
+    console.error("Errore nel caricamento dell'album:", error);
+    renderMessage(albumHero, "Errore durante il caricamento dell'album.");
+  }
 };
 
 loadAlbum();

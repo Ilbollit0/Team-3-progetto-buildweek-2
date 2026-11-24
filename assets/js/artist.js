@@ -21,7 +21,7 @@ const player = initPage("home");
 
 const artistHero = document.querySelector("#artist-hero");
 const topTracks = document.querySelector("#top-tracks");
-const artistaActions = document.querySelector("artist-actions");
+const artistaActions = document.querySelector("#artist-actions");
 
 let artistTracks = [];
 
