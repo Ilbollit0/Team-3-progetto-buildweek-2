@@ -18,7 +18,7 @@ Cosa va costruito sta in [Istruzioni progetto](Istruzioni%20progetto.md); qui c'
 
 ### Visione
 
-> Una web app tipo Spotify, su più pagine, in HTML, CSS e JavaScript vanilla senza Bootstrap: si cerca musica da un'API e la si ascolta davvero dal player.
+> Una web app tipo Spotify, su più pagine, in HTML, CSS con Bootstrap e JavaScript vanilla: si cerca musica da un'API e la si ascolta davvero dal player.
 
 ### Obiettivi
 
@@ -30,7 +30,7 @@ Cosa va costruito sta in [Istruzioni progetto](Istruzioni%20progetto.md); qui c'
 ### Vincoli
 
 - **Consegna:** venerdì 27/11 alle 16:30, poi la presentazione (orario della Build Week 1, da confermare).
-- **Tecnici:** almeno 4 pagine, niente SPA, niente Bootstrap, mobile-first con breakpoint `md` da 768px e `lg` da 992px, vincoli sul codice di *Istruzioni progetto* (1.3 e 2.6).
+- **Tecnici:** almeno 4 pagine, niente SPA, Bootstrap 5.3 in ogni pagina, mobile-first con breakpoint `md` da 768px e `lg` da 992px, vincoli sul codice di *Istruzioni progetto* (1.3 e 2.6).
 - **Venerdì Luca è assente:** quello che è suo (README, questo file, le sue voci) è finito giovedì sera.
 
 ### Team e ruoli
@@ -114,19 +114,20 @@ Il lavoro è diviso in nove step, dallo 0 all'8. Gli step da 1 a 6 portano al mi
 | Step | Quando | Chi | Compito | Stato |
 | --- | --- | --- | --- | --- |
 | 0 | Lunedì pomeriggio | Tutti | `riferimenti/api-esempi/`, `riferimenti/postman/` e [Istruzioni API](Istruzioni%20API.md): prova dell'API con Postman; si salvano le risposte di esempio, la collection EpiTunes e la tabella dei campi | Fatto |
-| 1 | Martedì, prima ora | Gabriel | Le 4 pagine HTML e `app.css`: fondamenta, cioè percorsi di CSS e JS negli HTML (oggi puntano a `css/` e `js/`, i file sono in `assets/`) e le due `@media` in fondo ad `app.css` spezzate nelle sezioni, già mobile-first; poi Prettier su tutti i file → merge su `main` | Da fare |
+| 1 | Martedì, prima ora | Gabriel | Le 4 pagine HTML e `app.css`: fondamenta, cioè percorsi di CSS e JS negli HTML (da `css/` e `js/` ad `assets/`) e le due `@media` in fondo ad `app.css` spezzate nelle sezioni, già mobile-first; poi Prettier su tutti i file → merge su `main` | In corso |
+| 1 | Martedì mattina | Luca | `app.css`: riordino, cioè CSS annidato che segue l'HTML, ogni `@media` dentro il blocco che modifica, blocchi doppi uniti, refuso `html,s` corretto; lo stile delle pagine resta identico → merge su `main` | Fatto |
 | 1 | Martedì, prima ora | Alessandro + Giovanbattista | `common.js`: struttura HTML della card del brano (`createTrackCard`), cioè classi, cover, titolo, artista, Play, cuore `btn-fav`, `data-track-id` | Da fare |
 | 1 | Martedì, prima ora | Luca + Francesca | `common.js`: struttura HTML della riga del brano (`createTrackRow`), cioè numero, titolo, durata, cuore `btn-fav`, `data-track-id`, `.is-playing` | Da fare |
 | 2 | Martedì, fino a mezzogiorno | Tutti | `common.js`: `fetchJSON` e costruttori di `Track`, `Album`, `Artist` dalla tabella di [Istruzioni API](Istruzioni%20API.md), scritti insieme: uno alla tastiera e gli altri che seguono, a turno → merge su `main` | Da fare |
 | 3 | Martedì pomeriggio | Gabriel | `app.css`: CSS comune, cioè colori e font del tema scuro, `.app` a tre zone, `.sidebar` (assente su mobile, solo icone su `md`, completa su `lg`), `.main`, `.topbar`, `.player` | Da fare |
-| 3 | Martedì pomeriggio | Giovanbattista | `app.css`: CSS di Home e Cerca alle tre larghezze (`.home`, `.search`, `.row`, `.grid`, `.card`) | Da fare |
-| 3 | Martedì pomeriggio | Francesca | `app.css`: CSS di Album e Artista alle tre larghezze (`.album-page`, `.artist-page`, hero con copertina grande, `.tracklist`, `.track-row` con il brano in riproduzione) | Da fare |
+| 3 | Martedì pomeriggio | Giovanbattista | `index.html`, `search.html` (classi di Bootstrap) e `app.css`: CSS di Home e Cerca alle tre larghezze (`.home`, `.search`, `.row`, `.grid`, `.card`) | In corso |
+| 3 | Martedì pomeriggio | Francesca | `album.html`, `artist.html` (classi di Bootstrap) e `app.css`: CSS di Album e Artista alle tre larghezze (`.album-page`, `.artist-page`, hero con copertina grande, `.tracklist`, `.track-row` con il brano in riproduzione) | In corso |
 | 3 | Martedì pomeriggio | Alessandro | `common.js`: `Player` (`constructor` ed eventi audio, `mount` con i click, `play`, `togglePlay`, `setVolume`, `seek`) e `createTrackCard` | Da fare |
 | 3 | Martedì pomeriggio | Luca | `common.js`: preferiti e cronologia in localStorage (`getFavourites`, `isFavourite`, `toggleFavourite`, `getHistory`, `addToHistory`) e `createTrackRow` | Da fare |
 | 4 | Mercoledì mattina | Alessandro | `search.js`: debounce di ~400 ms, tre chiamate con `Promise.all`, righe Brani / Album / Artisti, ultima ricerca | Da fare |
 | 4 | Mercoledì mattina | Luca | `album.js`: id dalla query string, lookup, hero, tracklist con `createTrackRow` e cuore dei preferiti | Da fare |
 | 4 | Mercoledì mattina | Giovanbattista | `home.js`: `renderRow`, tre righe di suggerimenti con `Promise.all`, righe dei recenti e dei preferiti | Da fare |
-| 4 | Mercoledì mattina | Francesca | `artist.js`: id dalla query string, lookup, hero, brani più ascoltati con `createTrackRow` | Da fare |
+| 4 | Mercoledì mattina | Francesca | `artist.js`: id dalla query string, lookup, hero, brani più ascoltati con `createTrackRow` | In corso |
 | 4 | Mercoledì mattina | Gabriel | `app.css`, parti comuni: rifinitura responsive; merge delle PR su GitHub | Da fare |
 | 5 | Mercoledì pomeriggio | Alessandro | `common.js` (`Player`): brano in corso mostrato al cambio pagina, cioè il primo della cronologia | Da fare |
 | 5 | Mercoledì pomeriggio | Luca | `common.js`: lista dei preferiti nella sidebar, in `#sidebar-favs` di `renderSidebar` | Da fare |
@@ -149,7 +150,6 @@ Il lavoro è diviso in nove step, dallo 0 all'8. Gli step da 1 a 6 portano al mi
 | --- | --- |
 | Cambiando pagina l'audio si ferma (è multipagina, non SPA) | Lo accettiamo; il player della pagina nuova mostra il brano in corso, cioè il primo della cronologia in localStorage (Alessandro) |
 | Le pagine e il player dipendono da API e layout, pronti solo martedì | Lunedì si salva da Postman un JSON di esempio; fino a martedì a mezzogiorno si lavora su quello |
-| Il layout responsive senza Bootstrap richiede più tempo | Mobile-first da martedì mattina: prima la struttura, poi la rifinitura |
 | L'HTML comune ripetuto nelle pagine diverge | Sidebar e player li genera `common.js`, uguali per tutte; la topbar, ripetuta nelle 4 pagine, la modifica solo Gabriel (vedi *Regole di lavoro*) |
 | L'API risponde diversamente dal previsto (campi, limiti) | Lunedì la si prova con Postman; i modelli isolano il resto del codice dai campi dell'API |
 | Parte del team non è ancora sicura con API e JSON | Postman, `fetchJSON` e modelli si fanno insieme (step 0 e 2 del *Backlog*) |
