@@ -29,7 +29,7 @@ const albumHero = document.querySelector("#album-hero");
 const tracklist = document.querySelector("#tracklist");
 
 const loadAlbum = async () => {
-  // TODO: implementare come da elenco sopra
+   
 };
 
 loadAlbum();

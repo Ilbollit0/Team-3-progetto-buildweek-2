@@ -77,6 +77,39 @@ const renderArtistHero = (artist, tracks, fallbackCover) => {
    }
 };
 
+//Francesca: renderizza l'intestazione "Popolari" e tutte le righe dei brani
+const renderTopTracks = (tracks) => {
+   clearElement(topTracks);
+
+   const heading = document.createElement("h2");
+   heading.className = "h4 fw-bold mb-3";
+   heading.textContent = "Popolari";
+   topTracks.appendChild(heading);
+
+   tracks.forEach((track, idx) => {
+      topTracks.appendChild(createTrackRow(track, idx));
+   });
+   //Francesca: l'eventuale brano attualmente in riproduzione
+   player.highlightPlayingRow();
+};
+
+//Francesca: event delegation sulla lista dei brani popolari
+topTracks.addEventListener("click", (event) => {
+   const row = event.target.closest("[data-track-id]");
+   if(!row) return;
+
+   const track = artistTracks.find((t) => String(t.id) === String(row.dataset.trackId));
+   if(!track) return;
+
+   //Francesca: gestisce il click sul cuore preferiti
+   const favBtn = event.target.closest(".btn-fav");
+   if(favBtn) {
+      toggleFavourite(track);
+      renderTopTracks(artistTracks);
+      return;
+   }
+   player.play(track, artistTracks);
+})
 
 //Francesca: carica i dati dell'artista dall'API 
 const loadArtist = async () => {
