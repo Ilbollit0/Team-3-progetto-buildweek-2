@@ -1,20 +1,6 @@
 /* ============================================================
    artist.js — pagina dettaglio artista
    ============================================================
-
-   COSA DEVI FARE
-   1) initPage("home")
-   2) Leggi l'id dell'artista dalla query string (URLSearchParams).
-   3) Se manca l'id -> messaggio "Artista non trovato" e stop.
-   4) fetch /lookup?id=ID&entity=song&limit=15
-      - results[0] è l'artist
-      - results[1..] sono le top track
-   5) Costruisci #artist-hero:
-      - kicker "ARTISTA"
-      - nome artista grande
-      - genere (primaryGenreName) + numero ascoltatori (random, es. Math.random() * 5_000_000)
-      - button "Play" -> player.play(prima track)
-   6) Costruisci #top-tracks come tracklist (uguale a album).
 */
 
 const player = initPage("home");
@@ -85,7 +71,7 @@ const renderArtistHero = (artist, tracks, fallbackCover) => {
     const bigPlayBtn = document.createElement("button");
     bigPlayBtn.type = "button";
     bigPlayBtn.className = "btn-play-big";
-    bigPlayBtn.textContent = "▶️"; //da modificare
+    bigPlayBtn.textContent = "▶";
     bigPlayBtn.setAttribute("aria-label", "Riproduzione brani popolari");
     bigPlayBtn.addEventListener("click", () => player.play(tracks[0], tracks));
     artistaActions.appendChild(bigPlayBtn);
@@ -152,8 +138,8 @@ const loadArtist = async () => {
       return;
     }
     const artist = new Artist(rawArtist);
-    artistTracks = rawTracks.map((raw) => Track(raw));
-    const fallbackCover = artistTracks.length > 0 ? artistTracks[0].cover : "";
+    artistTracks = rawTracks.map((raw) => new Track(raw));
+    const fallbackCover = artistTracks.length > 0 ? bigArt(artistTracks[0].cover) : "";
 
     renderArtistHero(artist, artistTracks, fallbackCover);
     renderTopTracks(artistTracks);
