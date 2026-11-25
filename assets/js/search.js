@@ -6,21 +6,11 @@
 
    COSA DEVI FARE
    1) initPage("search")
-   2) Recupera l'ultima query da localStorage (STORAGE_KEY_LAST_SEARCH).
-      Se presente, popola l'input e lancia la ricerca.
-   3) Aggancia l'evento "input" all'input #search-input con debounce 400ms.
-   4) doSearch(term):
-      - se term è vuoto -> nascondi i 3 row e svuota i grid
-      - altrimenti fetch in PARALLELO (Promise.all):
-          - tracks   = search?term=...&entity=song&limit=12
-          - albums   = search?term=...&entity=album&limit=8
-          - artists  = search?term=...&entity=musicArtist&limit=8
-      - mostra ciascuna sezione solo se i risultati sono > 0
-      - salva l'ultima query in localStorage
-   5) Per ogni risultato crea una card:
-      - track  -> click = player.play(track)
-      - album  -> click = window.location.href = "album.html?id=" + albumId
-      - artist -> click = window.location.href = "artist.html?id=" + artistId
+   2) Recupera l'ultima query da localStorage.
+   3) Aggancia l'evento input con debounce 400ms.
+   4) Cerca brani, album e artisti con Promise.all.
+   5) Mostra le card dei risultati.
+   6) Gestisci Play/Pausa e preferiti.
 */
 
 // [ALESSANDRO] Inizializza la pagina Cerca e il Player
@@ -40,6 +30,68 @@ const gridArtists = document.querySelector("#grid-artists");
 // Salva i risultati della ricerca
 let tracks = [];
 let searchId = 0;
+
+// [ALESSANDRO] Chiavi per i preferiti di album e artisti
+const STORAGE_KEY_ALBUMS = "epitunes_favourite_albums";
+const STORAGE_KEY_ARTISTS = "epitunes_favourite_artists";
+
+// [ALESSANDRO] Recupera i preferiti salvati
+const getSavedFavourites = (key) => {
+  const saved = localStorage.getItem(key);
+
+  if (!saved) return [];
+
+  try {
+    return JSON.parse(saved);
+  } catch {
+    return [];
+  }
+};
+
+// [ALESSANDRO] Controlla se un album o artista è preferito
+const isSavedFavourite = (id, key) => {
+  const favourites = getSavedFavourites(key);
+
+  return favourites.some((item) => item.id === id);
+};
+
+// [ALESSANDRO] Aggiunge o rimuove un preferito
+const toggleSavedFavourite = (item, key) => {
+  let favourites = getSavedFavourites(key);
+
+  if (isSavedFavourite(item.id, key)) {
+    favourites = favourites.filter(
+      (fav) => fav.id !== item.id,
+    );
+  } else {
+    favourites.push(item);
+  }
+
+  localStorage.setItem(key, JSON.stringify(favourites));
+
+  return isSavedFavourite(item.id, key);
+};
+
+// [ALESSANDRO] Crea il cuore per album e artisti
+const createSavedFavButton = (item, key) => {
+  const isFav = isSavedFavourite(item.id, key);
+
+  const button = buildElement(
+    "button",
+    "card-fav btn-fav",
+    isFav ? "♥" : "♡",
+  );
+
+  button.type = "button";
+  button.classList.toggle("is-fav", isFav);
+
+  button.setAttribute(
+    "aria-label",
+    isFav ? "Togli dai preferiti" : "Aggiungi ai preferiti",
+  );
+
+  return button;
+};
 
 // [ALESSANDRO] Crea la card di un brano
 const renderTrackCard = (track) => {
@@ -69,6 +121,14 @@ const renderAlbumCard = (album) => {
     buildElement("p", "card-sub", album.artist),
   );
 
+  // [ALESSANDRO] Aggiunge il cuore all'album
+  const favButton = createSavedFavButton(
+    album,
+    STORAGE_KEY_ALBUMS,
+  );
+
+  card.appendChild(favButton);
+
   gridAlbums.appendChild(card);
 };
 
@@ -80,20 +140,26 @@ const renderArtistCard = (artist) => {
 
   const imageWrap = buildElement("div", "card-image-wrap");
 
-  // Mostra l'iniziale perché iTunes non fornisce la foto
-  const initial = buildElement(
+  const placeholder = buildElement(
     "div",
     "artist-placeholder",
-    artist.name?.charAt(0) || "?",
   );
 
-  imageWrap.appendChild(initial);
+  imageWrap.appendChild(placeholder);
 
   card.append(
     imageWrap,
     buildElement("p", "card-title", artist.name),
     buildElement("p", "card-sub", artist.genre || ""),
   );
+
+  // [ALESSANDRO] Aggiunge il cuore all'artista
+  const favButton = createSavedFavButton(
+    artist,
+    STORAGE_KEY_ARTISTS,
+  );
+
+  card.appendChild(favButton);
 
   gridArtists.appendChild(card);
 };
@@ -126,14 +192,46 @@ gridTracks.addEventListener("click", (event) => {
     return;
   }
 
-  // Riproduce il brano con la sua lista
-  player.play(track, tracks);
+  // [ALESSANDRO] Gestisce Play e Pausa
+  if (player.currentTrack?.id === track.id) {
+    player.togglePlay();
+  } else {
+    player.play(track, tracks);
+  }
 });
 
 // [ALESSANDRO] Gestisce i click sugli album
 gridAlbums.addEventListener("click", (event) => {
   const card = event.target.closest("[data-album-id]");
   if (!card) return;
+
+  // [ALESSANDRO] Controlla se è stato cliccato il cuore
+  const favButton = event.target.closest(".btn-fav");
+
+  if (favButton) {
+    const albumId = card.dataset.albumId;
+
+    const savedAlbum = albums.find(
+      (album) => album.id === albumId,
+    );
+
+    if (!savedAlbum) return;
+
+    const isFav = toggleSavedFavourite(
+      savedAlbum,
+      STORAGE_KEY_ALBUMS,
+    );
+
+    favButton.textContent = isFav ? "♥" : "♡";
+    favButton.classList.toggle("is-fav", isFav);
+
+    favButton.setAttribute(
+      "aria-label",
+      isFav ? "Togli dai preferiti" : "Aggiungi ai preferiti",
+    );
+
+    return;
+  }
 
   window.location.href = "album.html?id=" + card.dataset.albumId;
 });
@@ -143,8 +241,40 @@ gridArtists.addEventListener("click", (event) => {
   const card = event.target.closest("[data-artist-id]");
   if (!card) return;
 
+  // [ALESSANDRO] Controlla se è stato cliccato il cuore
+  const favButton = event.target.closest(".btn-fav");
+
+  if (favButton) {
+    const artistId = card.dataset.artistId;
+
+    const savedArtist = artists.find(
+      (artist) => artist.id === artistId,
+    );
+
+    if (!savedArtist) return;
+
+    const isFav = toggleSavedFavourite(
+      savedArtist,
+      STORAGE_KEY_ARTISTS,
+    );
+
+    favButton.textContent = isFav ? "♥" : "♡";
+    favButton.classList.toggle("is-fav", isFav);
+
+    favButton.setAttribute(
+      "aria-label",
+      isFav ? "Togli dai preferiti" : "Aggiungi ai preferiti",
+    );
+
+    return;
+  }
+
   window.location.href = "artist.html?id=" + card.dataset.artistId;
 });
+
+// [ALESSANDRO] Salva gli album e gli artisti trovati
+let albums = [];
+let artists = [];
 
 // [ALESSANDRO] Esegue la ricerca musicale
 const doSearch = async (term) => {
@@ -154,13 +284,16 @@ const doSearch = async (term) => {
   // Salva l'ultima ricerca
   localStorage.setItem(STORAGE_KEY_LAST_SEARCH, term);
 
-  // Svuota i risultati precedenti
-  gridTracks.innerHTML = "";
-  gridAlbums.innerHTML = "";
-  gridArtists.innerHTML = "";
-  tracks = [];
+  // [ALESSANDRO] Svuota i risultati precedenti
+  gridTracks.replaceChildren();
+  gridAlbums.replaceChildren();
+  gridArtists.replaceChildren();
 
-  // [ALESSANDRO] Nasconde le sezioni
+  tracks = [];
+  albums = [];
+  artists = [];
+
+  // Nasconde le sezioni
   rowTracks.hidden = true;
   rowAlbums.hidden = true;
   rowArtists.hidden = true;
@@ -188,15 +321,15 @@ const doSearch = async (term) => {
   // Converte i dati nei modelli
   tracks = tracksData.results.map((raw) => new Track(raw));
 
-  const albums = albumsData.results.map(
+  albums = albumsData.results.map(
     (raw) => new Album(raw),
   );
 
-  const artists = artistsData.results.map(
+  artists = artistsData.results.map(
     (raw) => new Artist(raw),
   );
 
-  // [ALESSANDRO] Mostra le sezioni che hanno risultati
+  // Mostra le sezioni che hanno risultati
   rowTracks.hidden = tracks.length === 0;
   rowAlbums.hidden = albums.length === 0;
   rowArtists.hidden = artists.length === 0;
@@ -214,13 +347,13 @@ input.addEventListener("input", (event) => {
   // Annulla gli effetti delle ricerche precedenti
   searchId++;
 
-  // [ALESSANDRO] Recupera il testo scritto
+  // Recupera il testo scritto
   const term = event.target.value.trim();
 
-  // [ALESSANDRO] Salva subito l'ultima ricerca
+  // Salva subito l'ultima ricerca
   localStorage.setItem(STORAGE_KEY_LAST_SEARCH, term);
 
-  // [ALESSANDRO] Svuota subito i risultati se il testo è vuoto
+  // Svuota subito i risultati se il testo è vuoto
   if (!term) {
     doSearch("");
     return;
@@ -236,3 +369,5 @@ if (lastQuery) {
   input.value = lastQuery;
   doSearch(lastQuery);
 }
+
+
