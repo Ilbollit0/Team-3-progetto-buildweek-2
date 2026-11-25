@@ -141,10 +141,14 @@ class Player {
     this.audio.addEventListener("play", () => {
       this.isPlaying = true;
       this.toggleButton.textContent = "⏸";
+      const bigBtn = document.querySelector(".btn-play-big");
+      if (bigBtn) bigBtn.textContent = "⏸";
     });
     this.audio.addEventListener("pause", () => {
       this.isPlaying = false;
       this.toggleButton.textContent = "▶";
+      const bigBtn = document.querySelector(".btn-play-big");
+      if (bigBtn) bigBtn.textContent = "▶";
     });
     this.audio.addEventListener("ended", () => this.skip(1));
   }

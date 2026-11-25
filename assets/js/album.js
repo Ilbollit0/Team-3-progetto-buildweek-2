@@ -60,75 +60,86 @@ const renderAlbumHero = (album, tracks, artistId) => {
   const meta = document.createElement("div");
   meta.className = "hero-meta";
 
-   const kicker = document.createElement("span");
-   kicker.className = "hero-kicker";
-   kicker.textContent = "ALBUM";
+  const kicker = document.createElement("span");
+  kicker.className = "hero-kicker";
+  kicker.textContent = "ALBUM";
 
-   const title = document.createElement("h1");
-   title.className = "hero-title";
-   title.textContent = album.title;
+  const title = document.createElement("h1");
+  title.className = "hero-title";
+  title.textContent = album.title;
 
-   const sub = document.createElement("p");
-   sub.className = "hero-sub";
+  const sub = document.createElement("p");
+  sub.className = "hero-sub";
 
-   const artistLink = document.createElement("a");
-   artistLink.className = "hero-artist-link";
-   artistLink.href = `artist.html?id=${encodeURIComponent(artistId)}`;
-   artistLink.textContent = album.artist;
+  const artistLink = document.createElement("a");
+  artistLink.className = "hero-artist-link";
+  artistLink.href = `artist.html?id=${encodeURIComponent(artistId)}`;
+  artistLink.textContent = album.artist;
 
-   const totalMs = tracks.reduce((acc, t) => acc + (t.durationMs || 0), 0);
+  const totalMs = tracks.reduce((acc, t) => acc + (t.durationMs || 0), 0);
 
-   const details = document.createElement("span");
-   details.textContent = `· ${album.year} · ${tracks.length} brani · ${formatTime(totalMs)}`;
+  const details = document.createElement("span");
+  details.textContent = `· ${album.year} · ${tracks.length} brani · ${formatTime(totalMs)}`;
 
-   sub.appendChild(artistLink);
-   sub.appendChild(details);
+  sub.appendChild(artistLink);
+  sub.appendChild(details);
 
-   meta.appendChild(kicker);
-   meta.appendChild(title);
-   meta.appendChild(sub);
+  meta.appendChild(kicker);
+  meta.appendChild(title);
+  meta.appendChild(sub);
 
-   albumHero.appendChild(coverWrap);
-   albumHero.appendChild(meta);
+  albumHero.appendChild(coverWrap);
+  albumHero.appendChild(meta);
 
-   if(tracks.length > 0 && albumActions) {
-      const bigPlayBtn = document.createElement("button");
-      bigPlayBtn.type = "button";
-      bigPlayBtn.className = "btn-play-big";
-      bigPlayBtn.textContent = "▶️"; //da modificare
-      bigPlayBtn.setAttribute("aria-label", "Riproduzione album");
-      bigPlayBtn.addEventListener("click", () => player.play(tracks[0], tracks));
-      albumActions.appendChild(bigPlayBtn);
-   }
+  if (tracks.length > 0 && albumActions) {
+    const bigPlayBtn = document.createElement("button");
+    bigPlayBtn.type = "button";
+    bigPlayBtn.className = "btn-play-big";
+    bigPlayBtn.textContent = player.isPlaying ? "⏸" : "▶";
+    bigPlayBtn.setAttribute("aria-label", "Riproduzione album");
+    bigPlayBtn.addEventListener("click", () => {
+      const isCurrentList = tracks.some(
+        (t) => t.id === player.currentTrack?.id,
+      );
+      if (isCurrentList) {
+        player.togglePlay();
+      } else {
+        player.play(tracks[0], tracks);
+      }
+    });
+    albumActions.appendChild(bigPlayBtn);
+  }
 };
 
 //Francesca: renderizza tutte le righe della tracklist dell'album
 const renderAlbumTracklist = (tracks) => {
-   clearElement(tracklist);
-   tracks.forEach((track, idx) => {
-      tracklist.appendChild(createTrackRow(track, idx));
-   });
-   //Francesca: l'eventuale brano attualmente in riproduzione
-   player.highlightPlayingRow();
+  clearElement(tracklist);
+  tracks.forEach((track, idx) => {
+    tracklist.appendChild(createTrackRow(track, idx));
+  });
+  //Francesca: l'eventuale brano attualmente in riproduzione
+  player.highlightPlayingRow();
 };
 
 //Francesca: event delegation sulla tracklist
 tracklist.addEventListener("click", (event) => {
-   const row = event.target.closest("[data-track-id]");
-   if(!row) return;
+  const row = event.target.closest("[data-track-id]");
+  if (!row) return;
 
-   const track = albumTracks.find((t) => String(t.id) === String(row.dataset.trackId));
-   if(!track) return;
+  const track = albumTracks.find(
+    (t) => String(t.id) === String(row.dataset.trackId),
+  );
+  if (!track) return;
 
-   const favBtn = event.target.closest(".btn-fav");
-   if(favBtn) {
-      toggleFavourite(track);
-      //Luca: al posto del cuore cliccato ne creo uno nuovo, che mostra il preferito appena salvato
-      favBtn.replaceWith(createFavButton(track, "track-fav"));
-      return;
-   }
-   player.play(track, albumTracks);
-})
+  const favBtn = event.target.closest(".btn-fav");
+  if (favBtn) {
+    toggleFavourite(track);
+    //Luca: al posto del cuore cliccato ne creo uno nuovo, che mostra il preferito appena salvato
+    favBtn.replaceWith(createFavButton(track, "track-fav"));
+    return;
+  }
+  player.play(track, albumTracks);
+});
 
 //Francesca: carica i dati dell'album dall'API
 const loadAlbum = async () => {
@@ -156,7 +167,7 @@ const loadAlbum = async () => {
       return;
     }
     const album = new Album(rawCollection);
-    
+
     //Luca: Track è una classe, quindi serve new
     albumTracks = rawTracks.map((raw) => new Track(raw));
     const artistId = rawCollection.artistId || albumTracks[0]?.artistId || "";
