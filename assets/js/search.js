@@ -1,6 +1,7 @@
 
 /* ============================================================
    search.js — ricerca con debounce
+   [ALESSANDRO]
    ============================================================
 
    COSA DEVI FARE
@@ -22,44 +23,37 @@
       - artist -> click = window.location.href = "artist.html?id=" + artistId
 */
 
+// [ALESSANDRO] Inizializza la pagina Cerca e il Player
 const player = initPage("search");
 
+// [ALESSANDRO] Recupera gli elementi HTML
 const input = document.querySelector("#search-input");
+
 const rowTracks = document.querySelector("#row-tracks");
 const rowAlbums = document.querySelector("#row-albums");
 const rowArtists = document.querySelector("#row-artists");
+
 const gridTracks = document.querySelector("#grid-tracks");
 const gridAlbums = document.querySelector("#grid-albums");
 const gridArtists = document.querySelector("#grid-artists");
 
+// Salva i risultati della ricerca
+let tracks = [];
+let searchId = 0;
+
+// [ALESSANDRO] Crea la card di un brano
 const renderTrackCard = (track) => {
-  // Crea la card del brano
+  // Crea la card usando la funzione di common.js
   const card = createTrackCard(track);
-
-  // Riproduce il brano quando si clicca sulla card
-  card.addEventListener("click", (event) => {
-    if (event.target.closest(".btn-fav")) {
-      const isFav = toggleFavourite(track);
-      const button = event.target.closest(".btn-fav");
-
-      button.textContent = isFav ? "♥" : "♡";
-      button.classList.toggle("is-fav", isFav);
-      button.setAttribute(
-        "aria-label",
-        isFav ? "Togli dai preferiti" : "Aggiungi ai preferiti",
-      );
-      return;
-    }
-
-    player.play(track);
-  });
-
   gridTracks.appendChild(card);
 };
 
+// [ALESSANDRO] Crea la card di un album
 const renderAlbumCard = (album) => {
   // Crea la card dell'album
   const card = buildElement("div", "card");
+  card.dataset.albumId = album.id;
+
   const imageWrap = buildElement("div", "card-image-wrap");
   const img = document.createElement("img");
 
@@ -75,20 +69,18 @@ const renderAlbumCard = (album) => {
     buildElement("p", "card-sub", album.artist),
   );
 
-  // Apre la pagina dell'album
-  card.addEventListener("click", () => {
-    window.location.href = "album.html?id=" + album.id;
-  });
-
   gridAlbums.appendChild(card);
 };
 
+// [ALESSANDRO] Crea la card di un artista
 const renderArtistCard = (artist) => {
   // Crea la card dell'artista
   const card = buildElement("div", "card");
+  card.dataset.artistId = artist.id;
+
   const imageWrap = buildElement("div", "card-image-wrap");
 
-  // iTunes non fornisce la foto dell'artista
+  // Mostra l'iniziale perché iTunes non fornisce la foto
   const initial = buildElement(
     "div",
     "artist-placeholder",
@@ -103,15 +95,62 @@ const renderArtistCard = (artist) => {
     buildElement("p", "card-sub", artist.genre || ""),
   );
 
-  // Apre la pagina dell'artista
-  card.addEventListener("click", () => {
-    window.location.href = "artist.html?id=" + artist.id;
-  });
-
   gridArtists.appendChild(card);
 };
 
+// [ALESSANDRO] Gestisce i click sulle card dei brani
+gridTracks.addEventListener("click", (event) => {
+  const card = event.target.closest("[data-track-id]");
+  if (!card) return;
+
+  const track = tracks.find(
+    (item) => item.id === card.dataset.trackId,
+  );
+
+  if (!track) return;
+
+  // Gestisce il cuore dei preferiti
+  const favButton = event.target.closest(".btn-fav");
+
+  if (favButton) {
+    const isFav = toggleFavourite(track);
+
+    favButton.textContent = isFav ? "♥" : "♡";
+    favButton.classList.toggle("is-fav", isFav);
+
+    favButton.setAttribute(
+      "aria-label",
+      isFav ? "Togli dai preferiti" : "Aggiungi ai preferiti",
+    );
+
+    return;
+  }
+
+  // Riproduce il brano con la sua lista
+  player.play(track, tracks);
+});
+
+// [ALESSANDRO] Gestisce i click sugli album
+gridAlbums.addEventListener("click", (event) => {
+  const card = event.target.closest("[data-album-id]");
+  if (!card) return;
+
+  window.location.href = "album.html?id=" + card.dataset.albumId;
+});
+
+// [ALESSANDRO] Gestisce i click sugli artisti
+gridArtists.addEventListener("click", (event) => {
+  const card = event.target.closest("[data-artist-id]");
+  if (!card) return;
+
+  window.location.href = "artist.html?id=" + card.dataset.artistId;
+});
+
+// [ALESSANDRO] Esegue la ricerca musicale
 const doSearch = async (term) => {
+  // Identifica la ricerca più recente
+  const currentSearchId = ++searchId;
+
   // Salva l'ultima ricerca
   localStorage.setItem(STORAGE_KEY_LAST_SEARCH, term);
 
@@ -119,14 +158,15 @@ const doSearch = async (term) => {
   gridTracks.innerHTML = "";
   gridAlbums.innerHTML = "";
   gridArtists.innerHTML = "";
+  tracks = [];
 
-  // Nasconde le sezioni se la ricerca è vuota
-  if (!term) {
-    rowTracks.style.display = "none";
-    rowAlbums.style.display = "none";
-    rowArtists.style.display = "none";
-    return;
-  }
+  // [ALESSANDRO] Nasconde le sezioni
+  rowTracks.hidden = true;
+  rowAlbums.hidden = true;
+  rowArtists.hidden = true;
+
+  // Se la ricerca è vuota si ferma
+  if (!term) return;
 
   // Prepara le tre ricerche
   const query = encodeURIComponent(term);
@@ -135,22 +175,31 @@ const doSearch = async (term) => {
   const albumsUrl = `${API_BASE}/search?term=${query}&entity=album&limit=8`;
   const artistsUrl = `${API_BASE}/search?term=${query}&entity=musicArtist&limit=8`;
 
-  // Esegue le richieste in parallelo
+  // Esegue le tre richieste in parallelo
   const [tracksData, albumsData, artistsData] = await Promise.all([
     fetchJSON(tracksUrl),
     fetchJSON(albumsUrl),
     fetchJSON(artistsUrl),
   ]);
 
-  // Converte i risultati nei nostri modelli
-  const tracks = tracksData.results.map((raw) => new Track(raw));
-  const albums = albumsData.results.map((raw) => new Album(raw));
-  const artists = artistsData.results.map((raw) => new Artist(raw));
+  // Evita di mostrare risultati di una vecchia ricerca
+  if (currentSearchId !== searchId) return;
 
-  // Mostra solo le sezioni con risultati
-  rowTracks.style.display = tracks.length > 0 ? "" : "none";
-  rowAlbums.style.display = albums.length > 0 ? "" : "none";
-  rowArtists.style.display = artists.length > 0 ? "" : "none";
+  // Converte i dati nei modelli
+  tracks = tracksData.results.map((raw) => new Track(raw));
+
+  const albums = albumsData.results.map(
+    (raw) => new Album(raw),
+  );
+
+  const artists = artistsData.results.map(
+    (raw) => new Artist(raw),
+  );
+
+  // [ALESSANDRO] Mostra le sezioni che hanno risultati
+  rowTracks.hidden = tracks.length === 0;
+  rowAlbums.hidden = albums.length === 0;
+  rowArtists.hidden = artists.length === 0;
 
   // Crea le card dei risultati
   tracks.forEach((track) => renderTrackCard(track));
@@ -158,13 +207,27 @@ const doSearch = async (term) => {
   artists.forEach((artist) => renderArtistCard(artist));
 };
 
+// [ALESSANDRO] Aspetta 400ms prima di avviare la ricerca
 const debouncedSearch = debounce(doSearch, 400);
 
 input.addEventListener("input", (event) => {
-  debouncedSearch(event.target.value.trim());
-});
+  // Annulla gli effetti delle ricerche precedenti
+  searchId++;
 
-// TODO: al caricamento, recupera l'ultima query da localStorage e lancia doSearch(lastQuery)
+  // [ALESSANDRO] Recupera il testo scritto
+  const term = event.target.value.trim();
+
+  // [ALESSANDRO] Salva subito l'ultima ricerca
+  localStorage.setItem(STORAGE_KEY_LAST_SEARCH, term);
+
+  // [ALESSANDRO] Svuota subito i risultati se il testo è vuoto
+  if (!term) {
+    doSearch("");
+    return;
+  }
+
+  debouncedSearch(term);
+});
 
 // Recupera l'ultima ricerca salvata
 const lastQuery = localStorage.getItem(STORAGE_KEY_LAST_SEARCH);
@@ -173,4 +236,3 @@ if (lastQuery) {
   input.value = lastQuery;
   doSearch(lastQuery);
 }
-
