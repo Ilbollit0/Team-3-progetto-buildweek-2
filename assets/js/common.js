@@ -1,3 +1,4 @@
+
 /*
   common.js — codice comune a tutte le pagine
   Ogni pagina chiama initPage(), che monta sidebar e player.
@@ -210,6 +211,30 @@ class Player {
       .addEventListener("click", (event) => this.setVolume(clickRatio(event)));
 
     this.setVolume(0.8);
+    // Alessandro: mostra l’ultimo brano ascoltato
+    this.restoreLastTrack();
+  }
+
+  // Alessandro: recupera l’ultimo brano senza riprodurlo
+  restoreLastTrack() {
+    const lastTrack = getHistory()[0];
+    if (!lastTrack?.previewUrl) return;
+
+    this.currentTrack = lastTrack;
+    this.queue = [lastTrack];
+    this.audio.preload = "metadata";
+    this.audio.src = lastTrack.previewUrl;
+
+    this.coverImg.src = lastTrack.cover || "";
+    this.titleText.textContent = lastTrack.title || "Brano sconosciuto";
+    this.artistText.textContent = lastTrack.artist || "Artista sconosciuto";
+    this.timeCurrent.textContent = "0:00";
+    this.timeTotal.textContent = "0:00";
+    this.progressFill.style.width = "0%";
+    this.toggleButton.textContent = "▶";
+    this.isPlaying = false;
+
+    this.highlightPlayingRow();
   }
 
   // Brano nuovo: audio, footer, cronologia, riga in riproduzione.
@@ -410,3 +435,4 @@ const initPage = (activePage) => {
   window.player = player;
   return player;
 };
+
