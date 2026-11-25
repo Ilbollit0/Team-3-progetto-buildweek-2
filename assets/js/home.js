@@ -19,41 +19,35 @@
 const player = initPage("home");
 
 const home = document.querySelector(".home");
+const preferiti = document.querySelector("#preferiti");
+const recenti = document.querySelector("#recenti");
+const rock = document.querySelector("#rock");
+const pop = document.querySelector("#pop");
+const italianPop = document.querySelector("#italianPop");
 
-/*
-  renderRow(rowTitle, tracks)
-  - crea una <section class="row"> con titolo h2 e griglia .grid di .card per ogni track
-  - aggancia click handler che chiamano player.play(track) e toggleFavourite(track)
-*/
+const rowTracks = new Map();
+
 //griglia dove vanno le card
-const renderRow = (container, tracks) =>{
+const renderRow = (container, tracks) => {
   //toglie se ce gia 
   container.querySelector('.row')?.remove();
-//le card
+  //le card
   const grid = document.createElement('div');
   grid.classList.add('row', 'g-3');
-  tracks.foreach((track)=> grid.appendChild(creaCard(track)));
+  tracks.forEach((track) => grid.appendChild(creaCard(track)));
 
   container.appendChild(grid);
-
+  container.hidden = tracks.length === 0;
+  rowTracks.set(container, tracks);
 };
 
-/*
-  loadHome()
-  - chiama Promise.all sulle 3 fetch di suggerimenti
-  - costruisce le righe nell'ordine: history, favourites, pop, rock, hits
-*/
-const loadHome = async () => {
-  // TODO
-};
 
-loadHome();
 
 
 /*-----------------------------*/
-const preferiti = document.querySelector("#preferiti");
 
-function creaCard(canzone) {
+
+function creaCard(song) {
   // creo div per card 
   const col = document.createElement('div');
   col.classList.add('col-6', 'col-md-4', 'col-lg-3');
@@ -61,10 +55,11 @@ function creaCard(canzone) {
   //creo card
   const card = document.createElement('div');
   card.classList.add('card', 'h-100');
+  card.dataset.trackId = song.id;
 
   //creo immagine card
   const img = document.createElement('img');
-  img.src = canzone.artworkUrl100;
+  img.src = song.artworkUrl100;
   img.classList.add('card-img-top');
 
   //creo scritte sotto card
@@ -74,18 +69,22 @@ function creaCard(canzone) {
   //creo nome artista 
   const artistName = document.createElement('p');
   artistName.classList.add('fw-bold', 'mb-2');
-  artistName.textContent = canzone.artistName;
+  artistName.textContent = song.artist;
 
-  //creo nome canzone
+  //creo nome song
   const title = document.createElement('p');
   title.classList.add("mb-2");
-  titolo.textContent = canzone.trackName;
+  title.textContent = song.title;
 
-//appendo.
+  //appendo.
   body.appendChild(artistName);
   body.appendChild(title);
   card.appendChild(img);
-  card.appendChild(body);  
+  card.appendChild(body);
+  card.appendChild(createFavButton(song, 'card-fav'));
+  col.appendChild(card);
+
+  return col;
 }
 
 // una ricerca per riga, con il contenitore che la mostra
@@ -95,4 +94,53 @@ const SUGGESTIONS = [
   { term: "italian pop", selector: "#italianPop" },
 ];
 
+const loadSong = async (ricerca) => {
+  const data = await fetchJSON(
+    `${API_BASE}/search?term=${encodeURIComponent(ricerca)}&media=music&entity=song&limit=8`,
+  );
+  return data.results.map((raw) => new Track(raw));
+};
 
+
+/*
+  loadHome()
+  - chiama Promise.all sulle 3 fetch di suggerimenti
+  - costruisce le righe nell'ordine: history, favourites, pop, rock, hits
+*/
+const loadHome = async () => {
+  renderRow(recenti, getHistory());
+  renderRow(preferiti, getFavourites());
+
+  const results = await Promise.all(SUGGESTIONS.map((s) => loadSong(s.term)));
+
+  SUGGESTIONS.forEach((s, i) => {
+    renderRow(document.querySelector(s.selector), results[i])
+  });
+};
+
+loadHome();
+
+
+
+//creo eventi al click
+home.addEventListener('click', (e) => {
+  //card cliccata 
+  const card = e.target.closest('[data-track-id]');
+  if (!card) return;
+  //dov'é la card
+  const container = card.closest('.row').parentElement
+  const tracks = rowTracks.get(container);
+
+  const track = tracks.find((item) => item.id === card.dataset.trackId);
+  if (!track) return;
+  // click sul centro
+  const cntButton = e.target.closest('.btn-fav');
+  if (cntButton) {
+    toggleFavourite(track);
+    cntButton.replaceWith(createFavButton(track, "card-fav"));
+    renderRow(preferiti, getFavourites());
+    return;
+  }
+
+  player.play(track, tracks);
+});
