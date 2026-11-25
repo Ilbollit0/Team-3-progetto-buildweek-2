@@ -25,8 +25,17 @@ const home = document.querySelector(".home");
   - crea una <section class="row"> con titolo h2 e griglia .grid di .card per ogni track
   - aggancia click handler che chiamano player.play(track) e toggleFavourite(track)
 */
-const renderRow = (rowTitle, tracks) => {
-  // TODO
+//griglia dove vanno le card
+const renderRow = (container, tracks) =>{
+  //toglie se ce gia 
+  container.querySelector('.row')?.remove();
+//le card
+  const grid = document.createElement('div');
+  grid.classList.add('row', 'g-3');
+  tracks.foreach((track)=> grid.appendChild(creaCard(track)));
+
+  container.appendChild(grid);
+
 };
 
 /*
@@ -78,4 +87,12 @@ function creaCard(canzone) {
   card.appendChild(img);
   card.appendChild(body);  
 }
+
+// una ricerca per riga, con il contenitore che la mostra
+const SUGGESTIONS = [
+  { term: "rock", selector: "#rock" },
+  { term: "pop", selector: "#pop" },
+  { term: "italian pop", selector: "#italianPop" },
+];
+
 
