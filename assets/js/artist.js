@@ -71,9 +71,18 @@ const renderArtistHero = (artist, tracks, fallbackCover) => {
     const bigPlayBtn = document.createElement("button");
     bigPlayBtn.type = "button";
     bigPlayBtn.className = "btn-play-big";
-    bigPlayBtn.textContent = "▶";
+    bigPlayBtn.textContent = player.isPlaying ? "⏸" : "▶";
     bigPlayBtn.setAttribute("aria-label", "Riproduzione brani popolari");
-    bigPlayBtn.addEventListener("click", () => player.play(tracks[0], tracks));
+    bigPlayBtn.addEventListener("click", () => {
+      const isCurrentList = tracks.some(
+        (t) => t.id === player.currentTrack?.id,
+      );
+      if (isCurrentList) {
+        player.togglePlay();
+      } else {
+        player.play(tracks[0], tracks);
+      }
+    });
     artistaActions.appendChild(bigPlayBtn);
   }
 };
@@ -139,7 +148,8 @@ const loadArtist = async () => {
     }
     const artist = new Artist(rawArtist);
     artistTracks = rawTracks.map((raw) => new Track(raw));
-    const fallbackCover = artistTracks.length > 0 ? bigArt(artistTracks[0].cover) : "";
+    const fallbackCover =
+      artistTracks.length > 0 ? bigArt(artistTracks[0].cover) : "";
 
     renderArtistHero(artist, artistTracks, fallbackCover);
     renderTopTracks(artistTracks);
