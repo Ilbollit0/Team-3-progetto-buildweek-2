@@ -1,4 +1,3 @@
-
 /*
   common.js — codice comune a tutte le pagine
   Ogni pagina chiama initPage(), che monta sidebar e player.
@@ -157,39 +156,6 @@ class Player {
   mount() {
     const footer = document.querySelector(".player");
     if (!footer) return;
-    footer.innerHTML = `
-      <div class="player-track">
-        <div class="player-cover"><img id="player-cover-img" alt="" /></div>
-        <div class="player-meta">
-          <p class="player-title" id="player-title">Seleziona un brano</p>
-          <p class="player-artist" id="player-artist">—</p>
-        </div>
-      </div>
-
-      <div class="player-center">
-        <div class="player-controls">
-          <button class="btn-ctrl" id="btn-shuffle" aria-label="Shuffle">⇄</button>
-          <button class="btn-ctrl" id="btn-prev"    aria-label="Precedente">⏮</button>
-          <button class="btn-play" id="btn-toggle"  aria-label="Play/Pausa">▶</button>
-          <button class="btn-ctrl" id="btn-next"    aria-label="Successivo">⏭</button>
-          <button class="btn-ctrl" id="btn-repeat"  aria-label="Ripeti">↻</button>
-        </div>
-        <div class="player-progress">
-          <span id="time-current">0:00</span>
-          <div class="progress-bar" id="progress-bar">
-            <div class="progress-fill" id="progress-fill"></div>
-          </div>
-          <span id="time-total">0:00</span>
-        </div>
-      </div>
-
-      <div class="player-right">
-        <span>🔊</span>
-        <div class="volume-bar" id="volume-bar">
-          <div class="volume-fill" id="volume-fill" style="width: 80%"></div>
-        </div>
-      </div>
-    `;
 
     this.coverImg = footer.querySelector("#player-cover-img");
     this.titleText = footer.querySelector("#player-title");
@@ -223,6 +189,8 @@ class Player {
   restoreLastTrack() {
     const lastTrack = getHistory()[0];
     if (!lastTrack?.previewUrl) return;
+
+    //Francesca: tolto innerHTML che era presente nello start
 
     this.currentTrack = lastTrack;
     this.queue = [lastTrack];
@@ -306,6 +274,23 @@ class Player {
         "is-playing",
         row.dataset.trackId === this.currentTrack?.id,
       );
+    });
+  }
+
+  //Francesca: bottone nelle canzoni (cerca)
+  syncPlayButtons() {
+    const bigBtn = document.querySelector(".btn-play-big");
+    if (bigBtn) {
+      bigBtn.textContent = this.isPlaying ? "⏸" : "▶";
+    }
+
+    document.querySelectorAll(".card").forEach((card) => {
+      const playBtn = card.querySelector(".card-play");
+      if (!playBtn) return;
+      const isCurrentCard = card.dataset.trackId === this.currentTrack?.id;
+      const showPause = isCurrentCard && this.isPlaying;
+      playBtn.textContent = showPause ? "⏸" : "▶";
+      card.classList.toggle("is-playing", showPause);
     });
   }
 }
@@ -416,18 +401,13 @@ const createTrackRow = (track, index) => {
 const renderSidebar = (activePage) => {
   const sidebar = document.querySelector(".sidebar");
   if (!sidebar) return;
-  sidebar.innerHTML = `
-    <div class="brand">
-      <div class="brand-mark">E</div>
-      <span class="brand-text">EpiTunes</span>
-    </div>
-    <nav class="sidebar-nav">
-      <a href="index.html"  data-page="home"   ${activePage === "home" ? 'class="active"' : ""}><span class="ico">🏠</span><span>Home</span></a>
-      <a href="search.html" data-page="search" ${activePage === "search" ? 'class="active"' : ""}><span class="ico">🔍</span><span>Cerca</span></a>
-    </nav>
-    <p class="sidebar-section-title">I tuoi preferiti</p>
-    <ul class="sidebar-list" id="sidebar-favs"></ul>
-  `;
+
+  //Francesca: tolto innerHTML che era presente nello start
+
+  //Francesca: aggiunge la classe .active solo al link corrispondente alla pagina corrente
+  sidebar.querySelectorAll(".sidebar-nav a").forEach((link) => {
+    link.classList.toggle("active", link.dataset.page === activePage);
+  });
   //Luca: riempie la lista dei preferiti appena creata
   renderSidebarFavs();
 };
@@ -445,14 +425,47 @@ const renderSidebarFavs = () => {
   list.replaceChildren(...items);
 };
 
+//Francesca: nella topbar le iniziali del nome, il nome intero nel title
+const pill = document.querySelector(".user-pill");
+pill.title = pill.textContent;
+pill.textContent = pill.textContent
+  .split(" ")
+  .map((word) => word[0])
+  .join("");
+
 // 8. Inizializzazione
+
+//Francesca: mostra la freccia Indietro su album.html e artist.html e torna alla pagina precedente
+const initTopbarNav = () => {
+  const backBtn = document.querySelector(".topbar-nav .nav-btn");
+  const forwardBtn = document.querySelector(
+    '.topbar-nav .nav-btn[aria-label="Avanti"]',
+  );
+  const path = window.location.pathname;
+  const isDetailPage = path.includes("album") || path.includes("artist");
+
+  if (forwardBtn) {
+    forwardBtn.remove();
+  }
+
+  if (backBtn) {
+    backBtn.hidden = !isDetailPage;
+    backBtn.addEventListener("click", () => {
+      if (window.history.length > 1 && document.referrer) {
+        window.history.back();
+      } else {
+        window.location.href = "index.html";
+      }
+    });
+  }
+};
 
 // La chiama ogni pagina: monta sidebar e player e ritorna il player, che resta anche in window.player
 const initPage = (activePage) => {
   renderSidebar(activePage);
+  initTopbarNav();
   const player = new Player();
   player.mount();
   window.player = player;
   return player;
 };
-

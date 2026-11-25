@@ -3,7 +3,7 @@
    ============================================================
 */
 
-const player = initPage("home");
+const player = initPage("");
 
 const artistHero = document.querySelector("#artist-hero");
 const topTracks = document.querySelector("#top-tracks");

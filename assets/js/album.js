@@ -23,7 +23,7 @@
       - click sul cuore -> toggleFavourite(track)
 */
 
-const player = initPage("home");
+const player = initPage("");
 
 const albumHero = document.querySelector("#album-hero");
 const tracklist = document.querySelector("#tracklist");
