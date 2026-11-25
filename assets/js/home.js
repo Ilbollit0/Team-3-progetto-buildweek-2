@@ -59,7 +59,7 @@ function creaCard(song) {
 
   //creo immagine card
   const img = document.createElement('img');
-  img.src = song.artworkUrl100;
+  img.src = bigArt(song.cover);
   img.classList.add('card-img-top');
 
   //creo scritte sotto card
@@ -68,12 +68,12 @@ function creaCard(song) {
 
   //creo nome artista 
   const artistName = document.createElement('p');
-  artistName.classList.add('fw-bold', 'mb-2');
+  artistName.classList.add('fw-bold', 'mb-2', 'text-white' );
   artistName.textContent = song.artist;
 
   //creo nome song
   const title = document.createElement('p');
-  title.classList.add("mb-2");
+  title.classList.add("mb-2" , 'text-white-50');
   title.textContent = song.title;
 
   //appendo.
