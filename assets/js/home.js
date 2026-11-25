@@ -46,46 +46,57 @@ const renderRow = (container, tracks) => {
 
 /*-----------------------------*/
 
+//VECCHIA CREA CARD
+// function creaCard(song) {
+//   // creo div per card 
+//   const col = document.createElement('div');
+//   col.classList.add('col-6', 'col-md-4', 'col-lg-3');
 
-function creaCard(song) {
-  // creo div per card 
-  const col = document.createElement('div');
-  col.classList.add('col-6', 'col-md-4', 'col-lg-3');
+//   //creo card
+//   const card = document.createElement('div');
+//   card.classList.add('card', 'h-100');
+//   card.dataset.trackId = song.id;
 
-  //creo card
-  const card = document.createElement('div');
-  card.classList.add('card', 'h-100');
-  card.dataset.trackId = song.id;
+//   //creo immagine card
+//   const img = document.createElement('img');
+//   img.src = bigArt(song.cover);
+//   img.classList.add('card-img-top');
 
-  //creo immagine card
-  const img = document.createElement('img');
-  img.src = bigArt(song.cover);
-  img.classList.add('card-img-top');
+//   //creo scritte sotto card
+//   const body = document.createElement('div');
+//   body.classList.add('card-body');
 
-  //creo scritte sotto card
-  const body = document.createElement('div');
-  body.classList.add('card-body');
+//   //creo nome artista 
+//   const artistName = document.createElement('p');
+//   artistName.classList.add('fw-bold', 'mb-2', 'text-white' );
+//   artistName.textContent = song.artist;
 
-  //creo nome artista 
-  const artistName = document.createElement('p');
-  artistName.classList.add('fw-bold', 'mb-2', 'text-white' );
-  artistName.textContent = song.artist;
+//   //creo nome song
+//   const title = document.createElement('p');
+//   title.classList.add("mb-2" , 'text-white-50');
+//   title.textContent = song.title;
 
-  //creo nome song
-  const title = document.createElement('p');
-  title.classList.add("mb-2" , 'text-white-50');
-  title.textContent = song.title;
+//   //appendo.
+//   body.appendChild(artistName);
+//   body.appendChild(title);
+//   card.appendChild(img);
+//   card.appendChild(body);
+//   card.appendChild(createFavButton(song, 'card-fav'));
+//   col.appendChild(card);
 
-  //appendo.
-  body.appendChild(artistName);
-  body.appendChild(title);
-  card.appendChild(img);
-  card.appendChild(body);
-  card.appendChild(createFavButton(song, 'card-fav'));
+//   return col;
+// }
+
+//NUOVA CREA CARD GIA ESTENTE IN COMMON.JS
+const creaCard = (track) => {
+  const col = document.createElement("div");
+  col.classList.add("col-6", "col-md-4", "col-lg-3");
+
+  const card = createTrackCard(track);
   col.appendChild(card);
-
+// nel caso servisse mettewre altezza a card
   return col;
-}
+};
 
 // una ricerca per riga, con il contenitore che la mostra
 const SUGGESTIONS = [
@@ -102,11 +113,7 @@ const loadSong = async (ricerca) => {
 };
 
 
-/*
-  loadHome()
-  - chiama Promise.all sulle 3 fetch di suggerimenti
-  - costruisce le righe nell'ordine: history, favourites, pop, rock, hits
-*/
+
 const loadHome = async () => {
   renderRow(recenti, getHistory());
   renderRow(preferiti, getFavourites());
@@ -135,12 +142,17 @@ home.addEventListener('click', (e) => {
   if (!track) return;
   // click sul centro
   const cntButton = e.target.closest('.btn-fav');
-  if (cntButton) {
+  if (e.target.closest(".btn-fav")) {
     toggleFavourite(track);
-    cntButton.replaceWith(createFavButton(track, "card-fav"));
     renderRow(preferiti, getFavourites());
+    rowTracks.forEach((rowList, container) => renderRow(container, rowList));
     return;
   }
 
-  player.play(track, tracks);
+  if (player.currentTrack?.id === track.id) {
+    player.togglePlay();
+  } else {
+    player.play(track, tracks);
+    renderRow(recenti, getHistory());
+  }
 });
