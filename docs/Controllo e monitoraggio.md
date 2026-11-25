@@ -16,12 +16,13 @@ gantt
   Prova API con Postman (step 0)   :2026-11-23, 1d
   fetchJSON e modelli (step 2)     :2026-11-24, 1d
   Prova di main (step 6)           :2026-11-25, 1d
-  Extra (step 7, da definire)      :2026-11-26, 1d
   Revisione e prova esposizione (step 8) :2026-11-27, 1d
 
   section Luca
+  Riordino app.css (step 1)        :2026-11-24, 1d
   Markup riga brano (step 1, con Francesca) :2026-11-24, 1d
   Helper preferiti e cronologia (step 3) :2026-11-24, 1d
+  Precedente e successivo (extra, step 3) :2026-11-24, 1d
   Dettaglio album (step 4)         :2026-11-25, 1d
   Preferiti nella sidebar (step 5) :2026-11-25, 1d
   README finito (step 7)           :2026-11-26, 1d
@@ -46,6 +47,11 @@ gantt
   Player (step 3)                  :2026-11-24, 1d
   Cerca e ultima ricerca (step 4)  :2026-11-25, 1d
   Brano in corso al cambio pagina (step 5) :2026-11-25, 1d
+  Cuore nelle altre viste (extra, step 5) :2026-11-25, 1d
+  Click sul preferito che suona (extra, step 5) :2026-11-25, 1d
+  Shuffle e ripeti (extra, step 7) :2026-11-26, 1d
+  Volume a trascinamento (extra, step 7) :2026-11-26, 1d
+  Login e playlist (extra, step 7) :2026-11-26, 1d
 
   section Scadenze
   Minimo completo                  :milestone, 2026-11-26, 0d

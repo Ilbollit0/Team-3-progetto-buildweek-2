@@ -23,7 +23,7 @@ Cosa va costruito sta in [Istruzioni progetto](Istruzioni%20progetto.md); qui c'
 ### Obiettivi
 
 1. Il minimo richiesto funzionante e integrato su `main` entro mercoledì sera.
-2. Giovedì gli extra (step 7 del *Backlog*), solo a minimo completo.
+2. Gli extra della sezione *Extra* del *Backlog*, ognuno solo dopo le sue voci del minimo.
 3. Un README che spiega cosa fa l'app e come, scritto man mano e finito giovedì sera.
 4. Venerdì tutto è già pronto: solo piccole correzioni, revisione e rilettura per l'esposizione finale.
 
@@ -84,7 +84,7 @@ I nomi sono in inglese, i commenti in italiano, come nello scheletro. Il caso de
 
 ### Backlog — chi fa cosa, step per step
 
-Il lavoro è diviso in nove step, dallo 0 all'8. Gli step da 1 a 6 portano al minimo richiesto, lo step 7 sono gli extra, che si fanno solo a minimo completo. Lunedì niente codice: c'è solo lo step 0.
+Il lavoro è diviso in nove step, dallo 0 all'8. Gli step da 1 a 6 portano al minimo richiesto, lo step 7 è il giorno degli extra e del README. Gli extra hanno la loro tabella, in *Extra*. Lunedì niente codice: c'è solo lo step 0.
 
 **Gli step in breve**
 
@@ -123,10 +123,9 @@ Il lavoro è diviso in nove step, dallo 0 all'8. Gli step da 1 a 6 portano al mi
 | 3 | Martedì pomeriggio | Giovanbattista | `index.html`, `search.html` (classi di Bootstrap) e `app.css`: CSS di Home e Cerca alle tre larghezze (`.home`, `.search`, `.row`, `.grid`, `.card`) | In corso |
 | 3 | Martedì pomeriggio | Francesca | `album.html`, `artist.html` (classi di Bootstrap) e `app.css`: CSS di Album e Artista alle tre larghezze (`.album-page`, `.artist-page`, hero con copertina grande, `.tracklist`, `.track-row` con il brano in riproduzione) | In corso |
 | 3 | Martedì pomeriggio | Alessandro | `common.js`: `Player` (`constructor` ed eventi audio, `mount` con i click, `play(track, queue)`, `togglePlay`, `setVolume`, `seek`) e `createTrackCard` | Fatto |
-| 3 | Martedì pomeriggio | Luca | **Extra** · `common.js` (`Player`): precedente e successivo nella coda di `play(track, queue)`, e a fine brano parte il successivo; allo step 4 ogni pagina passa come `queue` i brani della riga o della tracklist cliccata, nell'ordine in cui si vedono | Fatto |
 | 3 | Martedì pomeriggio | Luca | `common.js`: preferiti e cronologia in localStorage (`getFavourites`, `isFavourite`, `toggleFavourite`, `getHistory`, `addToHistory`) e `createTrackRow` | Fatto |
 | 4 | Mercoledì mattina | Alessandro | `search.js`: debounce di ~400 ms, tre chiamate con `Promise.all`, righe Brani / Album / Artisti, ultima ricerca | Da fare |
-| 4 | Mercoledì mattina | Luca | `album.js`: id dalla query string, lookup, hero, tracklist con `createTrackRow` e cuore dei preferiti | Da fare |
+| 4 | Mercoledì mattina | Luca | `album.js`: id dalla query string, lookup, hero, tracklist con `createTrackRow` e cuore dei preferiti | Fatto |
 | 4 | Mercoledì mattina | Giovanbattista | `home.js`: `renderRow`, tre righe di suggerimenti con `Promise.all`, righe dei recenti e dei preferiti | Da fare |
 | 4 | Mercoledì mattina | Francesca | `artist.js`: id dalla query string, lookup, hero, brani più ascoltati con `createTrackRow` | In corso |
 | 4 | Mercoledì mattina | Gabriel | `app.css`, parti comuni: rifinitura responsive; merge delle PR su GitHub | Da fare |
@@ -134,16 +133,29 @@ Il lavoro è diviso in nove step, dallo 0 all'8. Gli step da 1 a 6 portano al mi
 | 5 | Mercoledì pomeriggio | Luca | `common.js`: lista dei preferiti nella sidebar, in `#sidebar-favs` di `renderSidebar` | Da fare |
 | 5 | Mercoledì pomeriggio | Gabriel, Giovanbattista, Francesca | I file delle proprie voci: chiusura delle voci aperte, correzioni | Da fare |
 | 6 | Mercoledì sera | Tutti | Le 4 pagine da `main`: prova alle tre larghezze, zero errori in console (KPI K4, K5); le correzioni le fa chi risponde del file | Da fare |
-| 7 | Giovedì | _da definire_ | `common.js` (`Player`): player completo, cioè shuffle e ripeti | Da fare |
-| 7 | Giovedì | _da definire_ | `home.js` e `common.js` (`renderSidebar`): click su un preferito che avvia il brano | Da fare |
-| 7 | Giovedì | _da definire_ | `home.js`, `search.js` e `artist.js`: preferiti anche dai singoli brani nelle altre viste | Da fare |
-| 7 | Giovedì | _da definire_ | Una pagina nuova con il suo JS, le 4 pagine HTML (`user-pill`), `common.js` e `app.css`: login e playlist per utente | Da fare |
 | 7 | Giovedì | Luca | `README.md`: chiusura del README, che spiega cosa fa l'app e come | Da fare |
 | 8 | Venerdì | Tutti tranne Luca | I file delle proprie voci, solo per piccole correzioni e ritocchi: revisione e rilettura per l'esposizione finale | Da fare |
 
-**Extra, da definire oggi:** quali si fanno e chi fa ciascuno. Si scelgono tra le righe dello step 7 o se ne aggiungono altre.
-
 **Regola di passaggio:** allo step 4 Giovanbattista e Francesca scrivono il JS delle pagine di cui hanno fatto il CSS, quindi il CSS va finito martedì. Se martedì sera non è finito, `home.js` passa a Luca e `artist.js` ad Alessandro; il CSS resta a loro.
+
+#### Extra
+
+Ognuno fa gli extra solo dopo le sue voci del minimo, e gli extra non contano nel KPI K1 di [Controllo e monitoraggio](Controllo%20e%20monitoraggio.md).
+
+- **Mercoledì pomeriggio, con lo step 5:** gli extra che toccano codice del minimo. Così passano dalla prova di `main` dello step 6 insieme al minimo; giovedì riaprire quel codice rischierebbe di romperlo quando resta meno tempo per sistemarlo.
+- **Giovedì, con lo step 7:** gli extra che stanno tutti in un posto.
+- **Se le voci del minimo non sono finite**, l'extra passa a giovedì.
+
+Per ora gli extra da fare sono di Alessandro; allo stand-up si possono ridistribuire.
+
+| Quando | Chi | Compito | Stato |
+| --- | --- | --- | --- |
+| Martedì pomeriggio (step 3) | Luca | `common.js` (`Player`): precedente e successivo nella coda di `play(track, queue)`, e a fine brano parte il successivo; allo step 4 ogni pagina passa come `queue` i brani della riga o della tracklist cliccata, nell'ordine in cui si vedono | Fatto |
+| Mercoledì pomeriggio (step 5) | Alessandro | `home.js`, `search.js` e `artist.js`: preferiti anche dai singoli brani nelle altre viste, cioè il cuore `btn-fav` nelle card e nelle righe di Home, Cerca e Artista, come in Album | Da fare |
+| Mercoledì pomeriggio (step 5) | Alessandro | `home.js` e `common.js` (`renderSidebar`): click su un preferito che avvia il brano, nella riga dei preferiti della Home (basta che usi la stessa `renderRow` delle altre righe) e in `#sidebar-favs` | Da fare |
+| Giovedì (step 7) | Alessandro | `common.js` (`Player`): shuffle e ripeti | Da fare |
+| Giovedì (step 7) | Alessandro | `common.js` (`Player`): slider del volume che scorre anche trascinandolo, non solo al click | Da fare |
+| Giovedì (step 7), per ultimo | Alessandro | Una pagina nuova con il suo JS, le 4 pagine HTML (`user-pill`), `common.js` e `app.css`: login e playlist per utente | Da fare |
 
 ### Rischi
 

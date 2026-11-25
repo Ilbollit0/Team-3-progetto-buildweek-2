@@ -123,7 +123,8 @@ tracklist.addEventListener("click", (event) => {
    const favBtn = event.target.closest(".btn-fav");
    if(favBtn) {
       toggleFavourite(track);
-      renderTopTracks(albumTracks);
+      //Luca: al posto del cuore cliccato ne creo uno nuovo, che mostra il preferito appena salvato
+      favBtn.replaceWith(createFavButton(track, "track-fav"));
       return;
    }
    player.play(track, albumTracks);
@@ -155,7 +156,9 @@ const loadAlbum = async () => {
       return;
     }
     const album = new Album(rawCollection);
-    albumTracks = rawTracks.map((raw) => Track(raw));
+    
+    //Luca: Track è una classe, quindi serve new
+    albumTracks = rawTracks.map((raw) => new Track(raw));
     const artistId = rawCollection.artistId || albumTracks[0]?.artistId || "";
 
     renderAlbumHero(album, albumTracks, artistId);
