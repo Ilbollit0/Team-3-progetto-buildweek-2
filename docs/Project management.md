@@ -124,13 +124,15 @@ Il lavoro è diviso in nove step, dallo 0 all'8. Gli step da 1 a 6 portano al mi
 | 3 | Martedì pomeriggio | Francesca | `album.html`, `artist.html` (classi di Bootstrap) e `app.css`: CSS di Album e Artista alle tre larghezze (`.album-page`, `.artist-page`, hero con copertina grande, `.tracklist`, `.track-row` con il brano in riproduzione) | Fatto |
 | 3 | Martedì pomeriggio | Alessandro | `common.js`: `Player` (`constructor` ed eventi audio, `mount` con i click, `play(track, queue)`, `togglePlay`, `setVolume`, `seek`) e `createTrackCard` | Fatto |
 | 3 | Martedì pomeriggio | Luca | `common.js`: preferiti e cronologia in localStorage (`getFavourites`, `isFavourite`, `toggleFavourite`, `getHistory`, `addToHistory`) e `createTrackRow` | Fatto |
-| 4 | Mercoledì mattina | Alessandro | `search.js`: debounce di ~400 ms, tre chiamate con `Promise.all`, righe Brani / Album / Artisti, ultima ricerca | Da fare |
+| 4 | Mercoledì mattina | Alessandro | `search.js`: debounce di ~400 ms, tre chiamate con `Promise.all`, righe Brani / Album / Artisti, ultima ricerca | Fatto |
 | 4 | Mercoledì mattina | Luca | `album.js`: id dalla query string, lookup, hero, tracklist con `createTrackRow` e cuore dei preferiti | Fatto |
-| 4 | Mercoledì mattina | Giovanbattista | `home.js`: `renderRow`, tre righe di suggerimenti con `Promise.all`, righe dei recenti e dei preferiti | Da fare |
+| 4 | Mercoledì mattina | Giovanbattista | `home.js`: `renderRow`, tre righe di suggerimenti con `Promise.all`, righe dei recenti e dei preferiti | Fatto |
 | 4 | Mercoledì mattina | Francesca | `artist.js`: id dalla query string, lookup, hero, brani più ascoltati con `createTrackRow` | Fatto |
 | 4 | Mercoledì mattina | Gabriel | `app.css`, parti comuni: rifinitura responsive; merge delle PR su GitHub | Da fare |
 | 5 | Mercoledì pomeriggio | Alessandro | `common.js` (`Player`): brano in corso mostrato al cambio pagina, cioè il primo della cronologia | Da fare |
 | 5 | Mercoledì pomeriggio | Luca | `common.js`: lista dei preferiti nella sidebar, in `#sidebar-favs` di `renderSidebar` | Fatto |
+| 5 | Mercoledì pomeriggio | Luca | `app.css`: correzioni dell'audit, cioè colore e bordo della `.card` (con Bootstrap i titoli in Cerca non si leggevano), sidebar come barra in alto su mobile con Home e Cerca, freccia ‹ solo in Album e Artista, `user-pill` a pallino per le iniziali | Fatto |
+| 5 | Mercoledì pomeriggio | Luca | `common.js`: click della freccia ‹, che torna alla pagina precedente, e iniziali del nome nella `user-pill`, col nome intero nel `title` | Da fare |
 | 5 | Mercoledì pomeriggio | Gabriel, Giovanbattista, Francesca | I file delle proprie voci: chiusura delle voci aperte, correzioni | Da fare |
 | 6 | Mercoledì sera | Gabriel | Tutti i file: Prettier in un solo commit, quando tutti hanno unito su `main` e prima della prova; fatto prima andrebbe in conflitto con i file su cui gli altri lavorano ancora → merge su `main` | Da fare |
 | 6 | Mercoledì sera | Tutti | Le 4 pagine da `main`: prova alle tre larghezze, zero errori in console (KPI K4, K5); le correzioni le fa chi risponde del file | Da fare |

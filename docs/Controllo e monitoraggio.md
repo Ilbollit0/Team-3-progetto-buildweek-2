@@ -4,7 +4,7 @@ Strumenti per seguire l'avanzamento della Build Week. Chi fa cosa e lo stato di 
 
 ## Gantt
 
-Chi fa cosa e in quale giorno; tra parentesi lo step del backlog. Si aggiorna dopo lo stand-up quando un lavoro slitta.
+Chi fa cosa e in quale giorno; tra parentesi lo step del backlog. Si aggiorna dopo lo stand-up quando un lavoro slitta. Le barre grigie (`done`) sono le voci a «Fatto» nel backlog, quelle evidenziate (`active`) le voci «In corso».
 
 ```mermaid
 gantt
@@ -13,40 +13,40 @@ gantt
   axisFormat %a %d
 
   section Tutti insieme
-  Prova API con Postman (step 0)   :2026-11-23, 1d
-  fetchJSON e modelli (step 2)     :2026-11-24, 1d
+  Prova API con Postman (step 0)   :done, 2026-11-23, 1d
+  fetchJSON e modelli (step 2)     :done, 2026-11-24, 1d
   Prova di main (step 6)           :2026-11-25, 1d
   Revisione e prova esposizione (step 8) :2026-11-27, 1d
 
   section Luca
-  Riordino app.css (step 1)        :2026-11-24, 1d
-  Markup riga brano (step 1, con Francesca) :2026-11-24, 1d
-  Helper preferiti e cronologia (step 3) :2026-11-24, 1d
-  Precedente e successivo (extra, step 3) :2026-11-24, 1d
-  Dettaglio album (step 4)         :2026-11-25, 1d
-  Preferiti nella sidebar (step 5) :2026-11-25, 1d
+  Riordino app.css (step 1)        :done, 2026-11-24, 1d
+  Markup riga brano (step 1, con Francesca) :done, 2026-11-24, 1d
+  Helper preferiti e cronologia (step 3) :done, 2026-11-24, 1d
+  Precedente e successivo (extra, step 3) :done, 2026-11-24, 1d
+  Dettaglio album (step 4)         :done, 2026-11-25, 1d
+  Preferiti nella sidebar (step 5) :done, 2026-11-25, 1d
   README finito (step 7)           :2026-11-26, 1d
 
   section Gabriel
-  Fondamenta (step 1)              :2026-11-24, 1d
-  CSS comune (step 3)              :2026-11-24, 1d
+  Fondamenta (step 1)              :done, 2026-11-24, 1d
+  CSS comune (step 3)              :2026-11-25, 1d
   Merge e rifinitura responsive (step 4) :2026-11-25, 1d
   Prettier su tutti i file (step 6) :2026-11-25, 1d
 
   section Giovanbattista
-  Markup card (step 1, con Alessandro) :2026-11-24, 1d
-  CSS Home e Cerca (step 3)        :2026-11-24, 1d
-  Home, preferiti, recenti (step 4) :2026-11-25, 1d
+  Markup card (step 1, con Alessandro) :done, 2026-11-24, 1d
+  CSS Home e Cerca (step 3)        :active, 2026-11-25, 1d
+  Home, preferiti, recenti (step 4) :done, 2026-11-25, 1d
 
   section Francesca
-  Markup riga brano (step 1, con Luca) :2026-11-24, 1d
-  CSS Album e Artista (step 3)     :2026-11-24, 1d
-  Dettaglio artista (step 4)       :2026-11-25, 1d
+  Markup riga brano (step 1, con Luca) :done, 2026-11-24, 1d
+  CSS Album e Artista (step 3)     :done, 2026-11-24, 1d
+  Dettaglio artista (step 4)       :done, 2026-11-25, 1d
 
   section Alessandro
-  Markup card (step 1, con Giovanbattista) :2026-11-24, 1d
-  Player (step 3)                  :2026-11-24, 1d
-  Cerca e ultima ricerca (step 4)  :2026-11-25, 1d
+  Markup card (step 1, con Giovanbattista) :done, 2026-11-24, 1d
+  Player (step 3)                  :done, 2026-11-24, 1d
+  Cerca e ultima ricerca (step 4)  :done, 2026-11-25, 1d
   Brano in corso al cambio pagina (step 5) :2026-11-25, 1d
   Cuore nelle altre viste (extra, step 5) :2026-11-25, 1d
   Preferito che suona al click (extra, step 5) :2026-11-25, 1d
