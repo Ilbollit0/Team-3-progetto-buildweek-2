@@ -341,6 +341,8 @@ const toggleFavourite = (track) => {
   const others = getFavourites().filter((item) => item.id !== track.id);
   const favourites = wasFavourite ? others : [track, ...others];
   localStorage.setItem(STORAGE_KEY_FAVOURITES, JSON.stringify(favourites));
+  //Luca: aggiorna subito la sidebar, da qualunque pagina arrivi il cuore
+  renderSidebarFavs();
   return !wasFavourite;
 };
 
@@ -422,7 +424,21 @@ const renderSidebar = (activePage) => {
     <p class="sidebar-section-title">I tuoi preferiti</p>
     <ul class="sidebar-list" id="sidebar-favs"></ul>
   `;
-  // TODO (opzionale): popola #sidebar-favs con i titoli dei preferiti
+  //Luca: riempie la lista dei preferiti appena creata
+  renderSidebarFavs();
+};
+
+//Luca: preferiti nella sidebar, un <li> col titolo per brano, con data-track-id come card e righe (event delegation)
+const renderSidebarFavs = () => {
+  const list = document.querySelector("#sidebar-favs");
+  if (!list) return;
+  const items = getFavourites().map((track) => {
+    const item = document.createElement("li");
+    item.textContent = track.title;
+    item.dataset.trackId = track.id;
+    return item;
+  });
+  list.replaceChildren(...items);
 };
 
 // 8. Inizializzazione

@@ -89,12 +89,12 @@ Il lavoro è diviso in nove step, dallo 0 all'8. Gli step da 1 a 6 portano al mi
 **Gli step in breve**
 
 - **Step 0 · Prova dell'API** (lunedì pomeriggio): tutti insieme, con Postman.
-- **Step 1 · Fondamenta** (martedì, prima ora): Gabriel sistema i percorsi negli HTML e le `@media` di `app.css`, poi passa Prettier su tutti i file; le due coppie scrivono la struttura della card e della riga del brano.
+- **Step 1 · Fondamenta** (martedì, prima ora): Gabriel sistema i percorsi negli HTML e le `@media` di `app.css`; le due coppie scrivono la struttura della card e della riga del brano.
 - **Step 2 · Dati** (martedì, fino a mezzogiorno): tutti insieme scrivono `fetchJSON` e i modelli `Track`, `Album`, `Artist`.
 - **Step 3 · Stile e funzioni comuni** (martedì pomeriggio): il CSS delle pagine, il player, preferiti e cronologia.
 - **Step 4 · Le pagine** (mercoledì mattina): il JS di Home, Cerca, Album e Artista; Gabriel unisce le PR e rifinisce il responsive.
 - **Step 5 · Collegamenti** (mercoledì pomeriggio): al cambio pagina il player mostra il brano in corso, i preferiti compaiono nella sidebar, gli altri chiudono le loro voci.
-- **Step 6 · Prova** (mercoledì sera): tutti provano `main` alle tre larghezze.
+- **Step 6 · Prova** (mercoledì sera): Gabriel passa Prettier su tutti i file, poi tutti provano `main` alle tre larghezze.
 - **Step 7 · Extra e README** (giovedì).
 - **Step 8 · Revisione** (venerdì): piccole correzioni e ritocchi, poi si prepara l'esposizione finale.
 
@@ -114,24 +114,25 @@ Il lavoro è diviso in nove step, dallo 0 all'8. Gli step da 1 a 6 portano al mi
 | Step | Quando | Chi | Compito | Stato |
 | --- | --- | --- | --- | --- |
 | 0 | Lunedì pomeriggio | Tutti | `riferimenti/api-esempi/`, `riferimenti/postman/` e [Istruzioni API](Istruzioni%20API.md): prova dell'API con Postman; si salvano le risposte di esempio, la collection EpiTunes e la tabella dei campi | Fatto |
-| 1 | Martedì, prima ora | Gabriel | Le 4 pagine HTML e `app.css`: fondamenta, cioè percorsi di CSS e JS negli HTML (da `css/` e `js/` ad `assets/`) e le due `@media` in fondo ad `app.css` spezzate nelle sezioni, già mobile-first; poi Prettier su tutti i file → merge su `main` | In corso |
+| 1 | Martedì, prima ora | Gabriel | Le 4 pagine HTML e `app.css`: fondamenta, cioè percorsi di CSS e JS negli HTML (da `css/` e `js/` ad `assets/`) e le due `@media` in fondo ad `app.css` spezzate nelle sezioni, già mobile-first → merge su `main`; Prettier passa allo step 6 | Fatto |
 | 1 | Martedì mattina | Luca | `app.css`: riordino, cioè CSS annidato che segue l'HTML, ogni `@media` dentro il blocco che modifica, blocchi doppi uniti, refuso `html,s` corretto; lo stile delle pagine resta identico → merge su `main` | Fatto |
 | 1 | Martedì, prima ora | Alessandro + Giovanbattista | `common.js`: struttura HTML della card del brano (`createTrackCard`), cioè classi, cover, titolo, artista, Play, cuore `btn-fav`, `data-track-id` | Fatto |
 | 1 | Martedì, prima ora | Luca + Francesca | `common.js`: struttura HTML della riga del brano (`createTrackRow`), cioè numero, titolo, durata, cuore `btn-fav`, `data-track-id`, `.is-playing` | Fatto |
 | 2 | Martedì, fino a mezzogiorno | Tutti | `common.js`: `fetchJSON` e costruttori di `Track`, `Album`, `Artist` dalla tabella di [Istruzioni API](Istruzioni%20API.md), scritti insieme: uno alla tastiera e gli altri che seguono, a turno → merge su `main` | Fatto |
 | 3 | Martedì pomeriggio | Gabriel | `app.css`: CSS comune, cioè colori e font del tema scuro, `.app` a tre zone, `.sidebar` (assente su mobile, solo icone su `md`, completa su `lg`), `.main`, `.topbar`, `.player` | Da fare |
 | 3 | Martedì pomeriggio | Giovanbattista | `index.html`, `search.html` (classi di Bootstrap) e `app.css`: CSS di Home e Cerca alle tre larghezze (`.home`, `.search`, `.row`, `.grid`, `.card`) | In corso |
-| 3 | Martedì pomeriggio | Francesca | `album.html`, `artist.html` (classi di Bootstrap) e `app.css`: CSS di Album e Artista alle tre larghezze (`.album-page`, `.artist-page`, hero con copertina grande, `.tracklist`, `.track-row` con il brano in riproduzione) | In corso |
+| 3 | Martedì pomeriggio | Francesca | `album.html`, `artist.html` (classi di Bootstrap) e `app.css`: CSS di Album e Artista alle tre larghezze (`.album-page`, `.artist-page`, hero con copertina grande, `.tracklist`, `.track-row` con il brano in riproduzione) | Fatto |
 | 3 | Martedì pomeriggio | Alessandro | `common.js`: `Player` (`constructor` ed eventi audio, `mount` con i click, `play(track, queue)`, `togglePlay`, `setVolume`, `seek`) e `createTrackCard` | Fatto |
 | 3 | Martedì pomeriggio | Luca | `common.js`: preferiti e cronologia in localStorage (`getFavourites`, `isFavourite`, `toggleFavourite`, `getHistory`, `addToHistory`) e `createTrackRow` | Fatto |
 | 4 | Mercoledì mattina | Alessandro | `search.js`: debounce di ~400 ms, tre chiamate con `Promise.all`, righe Brani / Album / Artisti, ultima ricerca | Da fare |
 | 4 | Mercoledì mattina | Luca | `album.js`: id dalla query string, lookup, hero, tracklist con `createTrackRow` e cuore dei preferiti | Fatto |
 | 4 | Mercoledì mattina | Giovanbattista | `home.js`: `renderRow`, tre righe di suggerimenti con `Promise.all`, righe dei recenti e dei preferiti | Da fare |
-| 4 | Mercoledì mattina | Francesca | `artist.js`: id dalla query string, lookup, hero, brani più ascoltati con `createTrackRow` | In corso |
+| 4 | Mercoledì mattina | Francesca | `artist.js`: id dalla query string, lookup, hero, brani più ascoltati con `createTrackRow` | Fatto |
 | 4 | Mercoledì mattina | Gabriel | `app.css`, parti comuni: rifinitura responsive; merge delle PR su GitHub | Da fare |
 | 5 | Mercoledì pomeriggio | Alessandro | `common.js` (`Player`): brano in corso mostrato al cambio pagina, cioè il primo della cronologia | Da fare |
-| 5 | Mercoledì pomeriggio | Luca | `common.js`: lista dei preferiti nella sidebar, in `#sidebar-favs` di `renderSidebar` | Da fare |
+| 5 | Mercoledì pomeriggio | Luca | `common.js`: lista dei preferiti nella sidebar, in `#sidebar-favs` di `renderSidebar` | Fatto |
 | 5 | Mercoledì pomeriggio | Gabriel, Giovanbattista, Francesca | I file delle proprie voci: chiusura delle voci aperte, correzioni | Da fare |
+| 6 | Mercoledì sera | Gabriel | Tutti i file: Prettier in un solo commit, quando tutti hanno unito su `main` e prima della prova; fatto prima andrebbe in conflitto con i file su cui gli altri lavorano ancora → merge su `main` | Da fare |
 | 6 | Mercoledì sera | Tutti | Le 4 pagine da `main`: prova alle tre larghezze, zero errori in console (KPI K4, K5); le correzioni le fa chi risponde del file | Da fare |
 | 7 | Giovedì | Luca | `README.md`: chiusura del README, che spiega cosa fa l'app e come | Da fare |
 | 8 | Venerdì | Tutti tranne Luca | I file delle proprie voci, solo per piccole correzioni e ritocchi: revisione e rilettura per l'esposizione finale | Da fare |
@@ -189,13 +190,14 @@ Dopo lo stand-up il TL aggiorna la colonna *Stato* del backlog e, se un lavoro s
 
 ### Esposizioni al docente
 
-Ogni pomeriggio il gruppo espone i progressi al docente, che fa da project manager. Lunedì espone il TL; da martedì a venerdì espongono Giovanbattista, Alessandro, Gabriel e Francesca, un giorno a testa in quest'ordine. Quella di venerdì è l'esposizione finale di tutto il progetto.
+Ogni giorno il gruppo espone i progressi al docente, che fa da project manager. Lunedì espone il TL; martedì non c'è stata esposizione, quindi mercoledì espongono Giovanbattista la mattina e Alessandro il pomeriggio; giovedì Gabriel e venerdì Francesca. Quella di venerdì è l'esposizione finale di tutto il progetto.
 
 | Giorno | Chi espone | Cosa |
 | --- | --- | --- |
 | Lunedì 23/11 | Luca | Organizzazione, divisione del lavoro, piano della settimana |
-| Martedì 24/11 | Giovanbattista | _da definire_ |
-| Mercoledì 25/11 | Alessandro | _da definire_ |
+| Martedì 24/11 | _nessuno_ | Nessuna esposizione |
+| Mercoledì 25/11, mattina | Giovanbattista | _da definire_ |
+| Mercoledì 25/11, pomeriggio | Alessandro | _da definire_ |
 | Giovedì 26/11 | Gabriel | _da definire_ |
 | Venerdì 27/11 | Francesca | Esposizione finale completa del progetto |
 
