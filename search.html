@@ -58,7 +58,32 @@
         <div class="search-box">
           <input type="text" id="search-input" class="search-input"
             placeholder="Cerca un brano, un album, un artista..." autocomplete="off" />
+          <!--Francesca: pulsante X per cancellare il testo cercato-->
+          <button type="button" id="search-clear" class="search-clear-btn" aria-label="Cancella ricerca" hidden>
+            &times;
+          </button>
         </div>
+
+        <!--Francesca: sezione ricerche recenti visibile solo quando la barra è vuota-->
+        <section id="recent-searches-section" class="mt-4" hidden>
+          <div class="d-flex align-items-center justify-content-between mb-3">
+            <h2 class="h5 fw-bold text-white m-0">Ricerche recenti</h2>
+            <button
+              type="button"
+              id="clear-recent-searches"
+              class="btn btn-sm btn-link text-secondary text-decoration-none p-0"
+            >
+              Cancella cronologia
+            </button>
+          </div>
+          <div id="recent-searches-list" class="d-flex flex-wrap gap-2 mb-4"></div>
+        </section>
+
+        <!--Francesca: brani dell'ultima ricerca con lo stesso layout delle card Brani-->
+          <section class="row" id="recent-tracks-box" hidden>
+            <h2>Brani cercati di recente</h2>
+            <div class="grid" id="grid-recent-tracks"></div>
+          </section>
 
         <div class="search-results">
           <section class="row" id="row-tracks" hidden>
