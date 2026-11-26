@@ -16,6 +16,8 @@
    ============================================================ */
 
 /* ============================ Token ============================ */
+/*font*/
+@import url('https://fonts.googleapis.com/css2?family=Science+Gothic:wght@100..900&display=swap');
 
 /* Colori, raggi e ombre del tema scuro */
 :root {
@@ -178,16 +180,29 @@ button {
       width: 28px;
       height: 28px;
       border-radius: 6px;
-      background: var(--accent);
-      color: #000;
+      background: #F5EFE6;
+      color:  #1ED760;
       display: grid;
       place-items: center;
       font-weight: 900;
+      /*modifiche stile*/
+      border-radius: 50% !important;
+      font-family: 'Science Gothic', sans-serif;
+
     }
+
+    /*cambio logo */
+    /**/
+
+.brand-e ,.brand-t{
+  color: #1ED760;
+}
+
 
     /* Gabriel: il nome si vede sempre, nella barra e nella sidebar */
     .brand-text {
       display: inline;
+      font-family: 'Science Gothic', sans-serif;
     }
   }
 
@@ -844,3 +859,8 @@ button {
   text-align: center;
   color: var(--text-secondary);
 }
+
+
+
+
+ 
