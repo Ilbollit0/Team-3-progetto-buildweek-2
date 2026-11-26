@@ -35,24 +35,11 @@ const STORAGE_KEY_ALBUMS = "epitunes_favourite_albums";
 const STORAGE_KEY_ARTISTS = "epitunes_favourite_artists";
 
 // [ALESSANDRO] Recupera i preferiti salvati
-const getSavedFavourites = (key) => {
-  const saved = localStorage.getItem(key);
-
-  if (!saved) return [];
-
-  try {
-    return JSON.parse(saved);
-  } catch {
-    return [];
-  }
-};
+const getSavedFavourites = (key) => readList(userKey(key));
 
 // [ALESSANDRO] Controlla se un album o artista è preferito
-const isSavedFavourite = (id, key) => {
-  const favourites = getSavedFavourites(key);
-
-  return favourites.some((item) => item.id === id);
-};
+const isSavedFavourite = (id, key) =>
+  getSavedFavourites(key).some((item) => item.id === id);
 
 // [ALESSANDRO] Aggiunge o rimuove un preferito
 const toggleSavedFavourite = (item, key) => {
@@ -64,7 +51,7 @@ const toggleSavedFavourite = (item, key) => {
     favourites.push(item);
   }
 
-  localStorage.setItem(key, JSON.stringify(favourites));
+  localStorage.setItem(userKey(key), JSON.stringify(favourites));
 
   return isSavedFavourite(item.id, key);
 };
@@ -123,22 +110,22 @@ const renderAlbumCard = (album) => {
 };
 
 
-// iTunes non ha le foto degli artisti: le chiede a TheAudioDB per nome
-const getArtistPhoto = async (name) => {
-  const data = await fetchJSON(
-    `${AUDIODB_BASE}/search.php?s=${encodeURIComponent(name)}`,
-  );
-  return data.artists?.[0]?.strArtistThumb ?? "";
-};
+// // iTunes non ha le foto degli artisti: le chiede a TheAudioDB per nome
+// const getArtistPhoto = async (name) => {
+//   const data = await fetchJSON(
+//     `${AUDIODB_BASE}/search.php?s=${encodeURIComponent(name)}`,
+//   );
+//   return data.artists?.[0]?.strArtistThumb ?? "";
+// };
 
-// Copertina di un album dell'artista, se non c'é immagine album
-const getArtistAlbumCover = async (artistId) => {
-  const data = await fetchJSON(
-    `${API_BASE}/lookup?id=${encodeURIComponent(artistId)}&entity=album&limit=1`,
-  );
-  const rawAlbum = data.results.find((item) => item.wrapperType === "collection");
-  return rawAlbum ? bigArt(new Album(rawAlbum).cover) : "";
-};
+// // Copertina di un album dell'artista, se non c'é immagine album
+// const getArtistAlbumCover = async (artistId) => {
+//   const data = await fetchJSON(
+//     `${API_BASE}/lookup?id=${encodeURIComponent(artistId)}&entity=album&limit=1`,
+//   );
+//   const rawAlbum = data.results.find((item) => item.wrapperType === "collection");
+//   return rawAlbum ? bigArt(new Album(rawAlbum).cover) : "";
+// };
 
 // [ALESSANDRO] Crea la card di un artista
 const renderArtistCard = (artist) => {
@@ -146,21 +133,12 @@ const renderArtistCard = (artist) => {
   const card = buildElement("div", "card");
   card.dataset.artistId = artist.id;
 
-  const imageWrap = buildElement("div", "card-image-wrap rounded-circle");
-  // Foto da TheAudioDB; se non c'è, copertina di un suo brano; se no, di un suo album
-  getArtistPhoto(artist.name).then(async (photo) => {
-    const trackCover = tracks.find((track) => track.artistId === artist.id)?.cover;
-    const cover =
-      photo || bigArt(trackCover) || (await getArtistAlbumCover(artist.id));
-    if (!cover) return;
+  const imageWrap = buildElement("div", "card-image-wrap");
 
-    const img = document.createElement("img");
-    img.src = cover;
-    img.alt = artist.name;
-    img.loading = "lazy";
-    imageWrap.appendChild(img);
-  });
-  
+  const placeholder = buildElement("div", "artist-placeholder");
+
+  imageWrap.appendChild(placeholder);
+
   card.append(
     imageWrap,
     buildElement("p", "card-title", artist.name),
@@ -346,8 +324,8 @@ input.addEventListener("input", (event) => {
   // Recupera il testo scritto
   const term = event.target.value.trim();
 
-  // Salva subito l'ultima ricerca
-  localStorage.setItem(STORAGE_KEY_LAST_SEARCH, term);
+  //Francesca: salva subito l'ultima ricerca dell'utente collegato
+  localStorage.setItem(userKey(STORAGE_KEY_LAST_SEARCH), term);
 
   // Svuota subito i risultati se il testo è vuoto
   if (!term) {
@@ -358,8 +336,8 @@ input.addEventListener("input", (event) => {
   debouncedSearch(term);
 });
 
-// Recupera l'ultima ricerca salvata
-const lastQuery = localStorage.getItem(STORAGE_KEY_LAST_SEARCH);
+//Francesca: recupera l'ultima ricerca salvata per l'utente collegato
+const lastQuery = localStorage.getItem(userKey(STORAGE_KEY_LAST_SEARCH));
 
 if (lastQuery) {
   input.value = lastQuery;
