@@ -23,6 +23,20 @@ const STORAGE_KEY_FAVOURITES = "epitunes_favourites";
 const STORAGE_KEY_LAST_SEARCH = "epitunes_last_search";
 const MAX_HISTORY = 12;
 
+//Francesca: chiavi per la lista utenti registrati (localStorage) e per l'utente attivo nella sessione (sessionStorage)
+const STORAGE_KEY_USERS = "epitunes_users";
+const STORAGE_KEY_CURRENT_USER = "epitunes_current_user";
+
+//Francesca: genera una chiave univoca legata all'id dell'utente loggato per separare preferiti, cronologia e ricerche
+const userKey = (key) =>
+  `${key}_${sessionStorage.getItem(STORAGE_KEY_CURRENT_USER)}`;
+
+//Francesca: controlla subito se l'utente è loggato; se non siamo già su login.html rimanda al login
+const isLoginPage = window.location.pathname.endsWith("login.html");
+if (!isLoginPage && !sessionStorage.getItem(STORAGE_KEY_CURRENT_USER)) {
+  window.location.replace("login.html");
+}
+
 // 2. Helpers
 
 // Chiamata GET all'API: su un errore lo scrive in console e ritorna una risposta vuota.
@@ -425,19 +439,20 @@ const readList = (key) => {
 };
 
 // Cronologia: l'ultimo brano in testa, senza doppioni, al più MAX_HISTORY
-const getHistory = () => readList(STORAGE_KEY_HISTORY);
+const getHistory = () => readList(userKey(STORAGE_KEY_HISTORY));
 
+//Francesca: salva il brano ascoltato nella cronologia personale dell'utente corrente
 const addToHistory = (track) => {
   const history = getHistory().filter((item) => item.id !== track.id);
   history.unshift(track);
   localStorage.setItem(
-    STORAGE_KEY_HISTORY,
+    userKey(STORAGE_KEY_HISTORY),
     JSON.stringify(history.slice(0, MAX_HISTORY)),
   );
 };
 
 // Preferiti: l'ultimo aggiunto in testa
-const getFavourites = () => readList(STORAGE_KEY_FAVOURITES);
+const getFavourites = () => readList(userKey(STORAGE_KEY_FAVOURITES));
 
 const isFavourite = (trackId) =>
   getFavourites().some((track) => track.id === trackId);
@@ -447,7 +462,7 @@ const toggleFavourite = (track) => {
   const wasFavourite = isFavourite(track.id);
   const others = getFavourites().filter((item) => item.id !== track.id);
   const favourites = wasFavourite ? others : [track, ...others];
-  localStorage.setItem(STORAGE_KEY_FAVOURITES, JSON.stringify(favourites));
+  localStorage.setItem(userKey(STORAGE_KEY_FAVOURITES), JSON.stringify(favourites));
   //Luca: aggiorna subito la sidebar, da qualunque pagina arrivi il cuore
   renderSidebarFavs();
   return !wasFavourite;
@@ -546,10 +561,72 @@ const renderSidebarFavs = () => {
 //Francesca: nella topbar le iniziali del nome, il nome intero nel title
 const pill = document.querySelector(".user-pill");
 pill.title = pill.textContent;
-pill.textContent = pill.textContent
-  .split(" ")
-  .map((word) => word[0])
-  .join("");
+pill.textContent = pill.textContent.split(" ").map((word) => word[0]).join("");
+
+//Francesca: recupera l'oggetto completo (id e nome) dell'utente attualmente collegato
+const getCurrentUser = () => {
+  const currentId = sessionStorage.getItem(STORAGE_KEY_CURRENT_USER);
+  if (!currentId) return null;
+  return readList(STORAGE_KEY_USERS).find((u) => u.id === currentId) || null;
+};
+
+//Francesca: trasforma la pillola utente della topbar in un dropdown Bootstrap con iniziali, nome intero e tasto Esci
+const renderUserPill = (user) => {
+  const pill = document.querySelector(".user-pill");
+  if (!pill || !user) return;
+
+  //Francesca: ricava le iniziali dal nome completo dell'utente (es. "Francesca Alesi" -> "FA")
+  const initials = user.name
+    .trim()
+    .split(/\s+/)
+    .map((word) => word[0].toUpperCase())
+    .join("");
+
+  //Francesca: contenitore dropdown Bootstrap allineato a destra nella topbar
+  const dropdown = document.createElement("div");
+  dropdown.className = "dropdown ms-auto";
+
+  //Francesca: bottone circolare con le iniziali e il nome intero al passaggio del mouse (title)
+  const btn = document.createElement("button");
+  btn.type = "button";
+  btn.className = "user-pill border-0 text-white";
+  btn.title = user.name;
+  btn.textContent = initials;
+  btn.setAttribute("data-bs-toggle", "dropdown");
+  btn.setAttribute("aria-expanded", "false");
+
+  //Francesca: menu a tendina scuro con il nome completo dell'utente e il pulsante di logout
+  const menu = document.createElement("ul");
+  menu.className = "dropdown-menu dropdown-menu-end dropdown-menu-dark shadow";
+
+  const headerLi = document.createElement("li");
+  headerLi.appendChild(
+    buildElement(
+      "span",
+      "dropdown-item-text small text-secondary fw-semibold",
+      user.name,
+    ),
+  );
+
+  const dividerLi = document.createElement("li");
+  const hr = document.createElement("hr");
+  hr.className = "dropdown-divider";
+  dividerLi.appendChild(hr);
+
+  //Francesca: pulsante Esci che chiude la sessione corrente e riporta alla pagina di login
+  const logoutLi = document.createElement("li");
+  const logoutBtn = buildElement("button", "dropdown-item text-danger", "Esci");
+  logoutBtn.type = "button";
+  logoutBtn.addEventListener("click", () => {
+    sessionStorage.removeItem(STORAGE_KEY_CURRENT_USER);
+    window.location.replace("login.html");
+  });
+  logoutLi.appendChild(logoutBtn);
+
+  menu.append(headerLi, dividerLi, logoutLi);
+  dropdown.append(btn, menu);
+  pill.replaceWith(dropdown);
+};
 
 // 8. Inizializzazione
 
@@ -580,6 +657,15 @@ const initTopbarNav = () => {
 
 // La chiama ogni pagina: monta sidebar e player e ritorna il player, che resta anche in window.player
 const initPage = (activePage) => {
+ //Francesca: blocca il caricamento della pagina se non esiste un utente loggato
+  const currentUser = getCurrentUser();
+  if (!currentUser) {
+    window.location.replace("login.html");
+    return null;
+  }
+
+  //Francesca: inizializza il menu utente nella topbar con i dati dell'utente collegato
+  renderUserPill(currentUser);
   renderSidebar(activePage);
   initTopbarNav();
   const player = new Player();
@@ -587,5 +673,3 @@ const initPage = (activePage) => {
   window.player = player;
   return player;
 };
-
-
