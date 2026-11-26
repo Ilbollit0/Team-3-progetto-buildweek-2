@@ -8,7 +8,8 @@ const player = initPage("");
 const artistHero = document.querySelector("#artist-hero");
 const topTracks = document.querySelector("#top-tracks");
 const artistaActions = document.querySelector("#artist-actions");
-
+const albumsGrid = document.querySelector("#grid-albums");
+let artistAlbums = [];
 let artistTracks = [];
 
 //Francesca: vuota un elemento DOM rimuovendo tutti i suoi nodi
@@ -153,6 +154,9 @@ const loadArtist = async () => {
 
     renderArtistHero(artist, artistTracks, fallbackCover);
     renderTopTracks(artistTracks);
+    //aggiunto per card album
+    loadAlbums(artistId);
+
   } catch (error) {
     console.error("Errore nel caricamento dell'artista:", error);
     renderMessage(artistHero, "Errore durante il caricamento dell'artista.");
@@ -160,3 +164,104 @@ const loadArtist = async () => {
 };
 
 loadArtist();
+
+
+
+//render card album 
+// Giovanni: chiave dei preferiti album (la stessa di search.js, così sono condivisi)
+const STORAGE_KEY_ALBUMS = "epitunes_favourite_albums";
+
+// Giovanni: recupera i preferiti salvati
+const getSavedFavourites = (key) => {
+  const saved = localStorage.getItem(key);
+  if (!saved) return [];
+  try {
+    return JSON.parse(saved);
+  } catch {
+    return [];
+  }
+};
+
+// Giovanni: controlla se un album è tra i preferiti
+const isSavedFavourite = (id, key) =>
+  getSavedFavourites(key).some((item) => item.id === id);
+
+// Giovanni: aggiunge o rimuove un album dai preferiti
+const toggleSavedFavourite = (item, key) => {
+  let favourites = getSavedFavourites(key);
+  if (isSavedFavourite(item.id, key)) {
+    favourites = favourites.filter((fav) => fav.id !== item.id);
+  } else {
+    favourites.push(item);
+  }
+  localStorage.setItem(key, JSON.stringify(favourites));
+  return isSavedFavourite(item.id, key);
+};
+
+// Giovanni: crea il cuore della card
+const createSavedFavButton = (item, key) => {
+  const isFav = isSavedFavourite(item.id, key);
+  const button = buildElement("button", "card-fav btn-fav", isFav ? "♥" : "♡");
+  button.type = "button";
+  button.classList.toggle("is-fav", isFav);
+  button.setAttribute("aria-label", isFav ? "Togli dai preferiti" : "Aggiungi ai preferiti");
+  return button;
+};
+
+// Giovanni: crea la card di un album
+const renderAlbumCard = (album) => {
+  const card = buildElement("div", "card");
+  card.dataset.albumId = album.id;
+
+  const imageWrap = buildElement("div", "card-image-wrap");
+  const img = document.createElement("img");
+  img.src = bigArt(album.cover);
+  img.alt = album.title;
+  img.loading = "lazy";
+  imageWrap.appendChild(img);
+
+  card.append(
+    imageWrap,
+    buildElement("p", "card-title", album.title),
+    buildElement("p", "card-sub", album.artist),
+    createSavedFavButton(album, STORAGE_KEY_ALBUMS),
+  );
+
+  albumsGrid.appendChild(card);
+};
+
+// Giovanni: carica gli album dell'artista
+const loadAlbums = async (artistId) => {
+  const url = `${API_BASE}/lookup?id=${encodeURIComponent(artistId)}&entity=album&limit=12`;
+  const data = await fetchJSON(url);
+
+  // il primo risultato è l'artista: tengo solo gli album
+  artistAlbums = (data.results || [])
+    .filter((item) => item.wrapperType === "collection")
+    .map((raw) => new Album(raw));
+
+  clearElement(albumsGrid);
+  artistAlbums.forEach((album) => renderAlbumCard(album));
+};
+
+// Giovanni: click sulle card album (cuore oppure apertura album)
+albumsGrid.addEventListener("click", (event) => {
+  const card = event.target.closest("[data-album-id]");
+  if (!card) return;
+
+  const favButton = event.target.closest(".btn-fav");
+  if (favButton) {
+    const album = artistAlbums.find((a) => String(a.id) === card.dataset.albumId);
+    if (!album) return;
+
+    const isFav = toggleSavedFavourite(album, STORAGE_KEY_ALBUMS);
+    favButton.textContent = isFav ? "♥" : "♡";
+    favButton.classList.toggle("is-fav", isFav);
+    favButton.setAttribute("aria-label", isFav ? "Togli dai preferiti" : "Aggiungi ai preferiti");
+    return;
+  }
+
+  window.location.href = "album.html?id=" + card.dataset.albumId;
+});
+
+
