@@ -122,18 +122,45 @@ const renderAlbumCard = (album) => {
   gridAlbums.appendChild(card);
 };
 
+
+// iTunes non ha le foto degli artisti: le chiede a TheAudioDB per nome
+const getArtistPhoto = async (name) => {
+  const data = await fetchJSON(
+    `${AUDIODB_BASE}/search.php?s=${encodeURIComponent(name)}`,
+  );
+  return data.artists?.[0]?.strArtistThumb ?? "";
+};
+
+// Copertina di un album dell'artista, se non c'é immagine album
+const getArtistAlbumCover = async (artistId) => {
+  const data = await fetchJSON(
+    `${API_BASE}/lookup?id=${encodeURIComponent(artistId)}&entity=album&limit=1`,
+  );
+  const rawAlbum = data.results.find((item) => item.wrapperType === "collection");
+  return rawAlbum ? bigArt(new Album(rawAlbum).cover) : "";
+};
+
 // [ALESSANDRO] Crea la card di un artista
 const renderArtistCard = (artist) => {
   // Crea la card dell'artista
   const card = buildElement("div", "card");
   card.dataset.artistId = artist.id;
 
-  const imageWrap = buildElement("div", "card-image-wrap");
+  const imageWrap = buildElement("div", "card-image-wrap rounded-circle");
+  // Foto da TheAudioDB; se non c'è, copertina di un suo brano; se no, di un suo album
+  getArtistPhoto(artist.name).then(async (photo) => {
+    const trackCover = tracks.find((track) => track.artistId === artist.id)?.cover;
+    const cover =
+      photo || bigArt(trackCover) || (await getArtistAlbumCover(artist.id));
+    if (!cover) return;
 
-  const placeholder = buildElement("div", "artist-placeholder");
-
-  imageWrap.appendChild(placeholder);
-
+    const img = document.createElement("img");
+    img.src = cover;
+    img.alt = artist.name;
+    img.loading = "lazy";
+    imageWrap.appendChild(img);
+  });
+  
   card.append(
     imageWrap,
     buildElement("p", "card-title", artist.name),
@@ -147,6 +174,7 @@ const renderArtistCard = (artist) => {
 
   gridArtists.appendChild(card);
 };
+
 
 // [ALESSANDRO] Gestisce i click sulle card dei brani
 gridTracks.addEventListener("click", (event) => {
