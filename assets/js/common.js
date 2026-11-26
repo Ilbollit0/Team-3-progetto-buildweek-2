@@ -34,7 +34,7 @@ const userKey = (key) =>
 //Francesca: controlla subito se l'utente è loggato; se non siamo già su login.html rimanda al login
 const isLoginPage = window.location.pathname.endsWith("login.html");
 if (!isLoginPage && !sessionStorage.getItem(STORAGE_KEY_CURRENT_USER)) {
-  window.location.replace("login");
+  window.location.replace("login.html");
 }
 
 // 2. Helpers
