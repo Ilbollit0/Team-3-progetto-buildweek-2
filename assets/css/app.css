@@ -794,6 +794,8 @@ button {
     overflow: visible;
     cursor: pointer;
     position: relative;
+    user-select: none;
+    touch-action: none;
 
     .progress-fill,
     .volume-fill {
