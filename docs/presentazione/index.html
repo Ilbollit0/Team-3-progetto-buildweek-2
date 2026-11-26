@@ -1,0 +1,2332 @@
+<!doctype html>
+<html lang="it">
+  <head>
+    <meta charset="UTF-8" />
+    <meta name="viewport" content="width=device-width, initial-scale=1.0" />
+    <title>EpiTunes — Presentazione</title>
+    <!-- Font: titoli serif editoriali, testo sans, etichette mono -->
+    <link rel="preconnect" href="https://fonts.googleapis.com" />
+    <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin />
+    <link
+      href="https://fonts.googleapis.com/css2?family=Instrument+Serif:ital@0;1&family=Inter:wght@400;500;600&family=JetBrains+Mono:wght@400;500&display=swap"
+      rel="stylesheet"
+    />
+    <style>
+      /* ============================================================
+         Presentazione di EpiTunes — una pagina a slide
+         Ordine: token, base, barra e comandi, slide, copertina,
+         schermate, elenchi, flussi, catene, codice, numeri, chiusura.
+         ============================================================ */
+
+      /* Token: carta e inchiostro, font, misure */
+      :root {
+        --carta: #fbfaf7;
+        --inchiostro: #111111;
+        --inchiostro-2: #444444;
+        --inchiostro-3: #858585;
+        --filo: #d9d7d1;
+        --font-titoli: "Instrument Serif", Georgia, serif;
+        --font-testo: "Inter", system-ui, -apple-system, sans-serif;
+        --font-mono: "JetBrains Mono", ui-monospace, Menlo, monospace;
+        --margine: clamp(16px, 5vw, 72px);
+        --larghezza: 1180px;
+        --molla: cubic-bezier(0.32, 0.72, 0, 1);
+      }
+
+      /* Base */
+      * {
+        box-sizing: border-box;
+      }
+
+      html {
+        scroll-snap-type: y proximity;
+        scroll-behavior: smooth;
+      }
+
+      body {
+        margin: 0;
+        background: var(--carta);
+        color: var(--inchiostro);
+        font-family: var(--font-testo);
+        font-size: 17px;
+        line-height: 1.55;
+        -webkit-font-smoothing: antialiased;
+      }
+
+      img {
+        display: block;
+        max-width: 100%;
+        height: auto;
+      }
+
+      a {
+        color: inherit;
+      }
+
+      :focus-visible {
+        outline: 2px solid var(--inchiostro);
+        outline-offset: 3px;
+      }
+
+      /* Barra in alto: nome, parte, numero della slide */
+      .barra {
+        position: fixed;
+        inset: 0 0 auto;
+        z-index: 10;
+        display: flex;
+        justify-content: space-between;
+        gap: 16px;
+        padding: 14px var(--margine);
+        background: color-mix(in srgb, var(--carta) 88%, transparent);
+        backdrop-filter: blur(8px);
+        border-bottom: 1px solid var(--filo);
+        font-family: var(--font-mono);
+        font-size: 12px;
+        letter-spacing: 0.08em;
+        text-transform: uppercase;
+
+        .barra-parte {
+          color: var(--inchiostro-3);
+        }
+
+        /* Sul telefono resta solo il nome, così la barra sta su una riga */
+        .barra-extra {
+          @media (max-width: 599px) {
+            display: none;
+          }
+        }
+      }
+
+      /* Comandi in basso: slide precedente e successiva */
+      .comandi {
+        position: fixed;
+        right: var(--margine);
+        bottom: 16px;
+        z-index: 10;
+        display: flex;
+        gap: 8px;
+
+        button {
+          width: 40px;
+          height: 40px;
+          border: 1px solid var(--inchiostro);
+          border-radius: 50%;
+          background: var(--carta);
+          color: var(--inchiostro);
+          font-size: 16px;
+          cursor: pointer;
+          transition:
+            background 0.2s,
+            color 0.2s;
+
+          &:hover {
+            background: var(--inchiostro);
+            color: var(--carta);
+          }
+        }
+      }
+
+      /* Slide: un'altezza di schermo, contenuto centrato */
+      .slide {
+        min-height: 100vh;
+        padding: 76px var(--margine) 64px;
+        display: flex;
+        flex-direction: column;
+        justify-content: center;
+        border-bottom: 1px solid var(--filo);
+        scroll-snap-align: start;
+
+        /* Schermi bassi, come un proiettore a 720 px: margini e titoli più stretti */
+        @media (max-height: 780px) {
+          padding: 64px var(--margine) 44px;
+        }
+
+        .contenuto {
+          width: 100%;
+          max-width: var(--larghezza);
+          margin: 0 auto;
+        }
+
+        .etichetta {
+          display: block;
+          margin-bottom: 18px;
+          font-family: var(--font-mono);
+          font-size: 12px;
+          letter-spacing: 0.12em;
+          text-transform: uppercase;
+          color: var(--inchiostro-3);
+        }
+
+        h2 {
+          margin: 0 0 18px;
+          max-width: 22ch;
+          font-family: var(--font-titoli);
+          font-weight: 400;
+          font-size: clamp(32px, 3.6vw, 46px);
+          line-height: 1.05;
+          letter-spacing: -0.01em;
+
+          @media (max-height: 780px) {
+            font-size: clamp(28px, 3vw, 38px);
+          }
+
+          em {
+            font-style: italic;
+          }
+        }
+
+        .lead {
+          max-width: 60ch;
+          margin: 0 0 32px;
+          color: var(--inchiostro-2);
+
+          @media (max-height: 780px) {
+            margin-bottom: 20px;
+          }
+        }
+
+        /* Due colonne da tablet in su: testo e immagine */
+        .due-colonne {
+          display: grid;
+          gap: 32px;
+          align-items: center;
+
+          @media (min-width: 900px) {
+            grid-template-columns: 5fr 7fr;
+            gap: 56px;
+          }
+        }
+      }
+
+      /* Ingresso dei blocchi quando la slide arriva sullo schermo */
+      .js .rivela {
+        opacity: 0;
+        transform: translateY(14px);
+        transition:
+          opacity 0.7s var(--molla),
+          transform 0.7s var(--molla);
+
+        &.is-visibile {
+          opacity: 1;
+          transform: none;
+        }
+
+        @media (prefers-reduced-motion: reduce) {
+          transform: none;
+          transition: opacity 0.3s;
+        }
+      }
+
+      /* Copertina */
+      .copertina {
+        .titolo {
+          margin: 0;
+          font-family: var(--font-titoli);
+          font-weight: 400;
+          font-size: clamp(56px, 8vw, 104px);
+          line-height: 0.95;
+          letter-spacing: -0.02em;
+        }
+
+        .sottotitolo {
+          margin: 14px 0 28px;
+          font-family: var(--font-titoli);
+          font-style: italic;
+          font-size: clamp(22px, 2.4vw, 30px);
+          line-height: 1.2;
+          color: var(--inchiostro-2);
+        }
+
+        .meta {
+          display: flex;
+          flex-wrap: wrap;
+          gap: 8px 24px;
+          margin: 0;
+          padding: 16px 0 0;
+          border-top: 1px solid var(--inchiostro);
+          list-style: none;
+          font-family: var(--font-mono);
+          font-size: 12px;
+          letter-spacing: 0.06em;
+          text-transform: uppercase;
+        }
+      }
+
+      /* Schermate del computer: cornice sottile e didascalia */
+      .schermata {
+        margin: 0;
+
+        img {
+          width: 100%;
+          border: 1px solid var(--inchiostro);
+          background: #121212;
+        }
+
+        figcaption {
+          margin-top: 10px;
+          font-family: var(--font-mono);
+          font-size: 12px;
+          letter-spacing: 0.04em;
+          color: var(--inchiostro-3);
+        }
+      }
+
+      /* Due schermate affiancate */
+      .coppia {
+        display: grid;
+        gap: 24px;
+
+        @media (min-width: 900px) {
+          grid-template-columns: 1fr 1fr;
+        }
+      }
+
+      /* Schermate del telefono: cornice arrotondata, in fila */
+      .telefoni {
+        display: grid;
+        grid-template-columns: repeat(2, 1fr);
+        gap: 20px;
+
+        @media (min-width: 900px) {
+          grid-template-columns: repeat(4, 1fr);
+        }
+
+        figure {
+          margin: 0;
+        }
+
+        img {
+          border: 1px solid var(--inchiostro);
+          border-radius: 22px;
+          padding: 5px;
+          background: var(--inchiostro);
+          max-height: 54vh;
+          width: auto;
+          margin: 0 auto;
+        }
+
+        figcaption {
+          margin-top: 10px;
+          text-align: center;
+          font-family: var(--font-mono);
+          font-size: 12px;
+          color: var(--inchiostro-3);
+        }
+      }
+
+      /* Percorso dell'utente: quattro passi numerati */
+      .passi {
+        display: grid;
+        gap: 24px;
+        margin: 0;
+        padding: 0;
+        list-style: none;
+        counter-reset: passo;
+
+        @media (min-width: 900px) {
+          grid-template-columns: repeat(4, 1fr);
+        }
+
+        li {
+          padding-top: 14px;
+          border-top: 1px solid var(--inchiostro);
+          counter-increment: passo;
+
+          &::before {
+            content: "0" counter(passo);
+            display: block;
+            margin-bottom: 10px;
+            font-family: var(--font-mono);
+            font-size: 12px;
+            color: var(--inchiostro-3);
+          }
+
+          img {
+            margin-bottom: 14px;
+            border: 1px solid var(--inchiostro);
+            aspect-ratio: 16 / 10;
+            object-fit: cover;
+            object-position: top left;
+          }
+
+          h3 {
+            margin: 0 0 6px;
+            font-family: var(--font-titoli);
+            font-weight: 400;
+            font-size: 26px;
+          }
+
+          p {
+            margin: 0;
+            font-size: 15px;
+            color: var(--inchiostro-2);
+          }
+        }
+      }
+
+      /* Griglia di voci brevi: funzionalità, upgrade, regole */
+      .voci {
+        display: grid;
+        gap: 0 40px;
+        margin: 0;
+        padding: 0;
+        list-style: none;
+
+        @media (min-width: 760px) {
+          grid-template-columns: 1fr 1fr;
+        }
+
+        li {
+          display: grid;
+          grid-template-columns: 44px 1fr;
+          padding: 16px 0;
+          border-top: 1px solid var(--filo);
+
+          .numero {
+            font-family: var(--font-mono);
+            font-size: 12px;
+            color: var(--inchiostro-3);
+            padding-top: 4px;
+          }
+
+          strong {
+            display: block;
+            font-weight: 600;
+          }
+
+          strong + span {
+            color: var(--inchiostro-2);
+            font-size: 15px;
+          }
+        }
+      }
+
+      /* Elenco di tecnologie, come targhette */
+      .targhette {
+        display: flex;
+        flex-wrap: wrap;
+        gap: 10px;
+        margin: 0;
+        padding: 0;
+        list-style: none;
+
+        li {
+          padding: 6px 14px;
+          border: 1px solid var(--inchiostro);
+          border-radius: 999px;
+          font-family: var(--font-mono);
+          font-size: 13px;
+        }
+      }
+
+      /* Due colonne con il loro titolo: i documenti di progetto, l'uso dell'AI */
+      .colonne {
+        display: grid;
+        gap: 32px;
+
+        @media (min-width: 900px) {
+          grid-template-columns: 1fr 1fr;
+          gap: 56px;
+        }
+
+        h3 {
+          margin: 0 0 16px;
+          padding-bottom: 10px;
+          border-bottom: 1px solid var(--inchiostro);
+          font-family: var(--font-titoli);
+          font-weight: 400;
+          font-size: 26px;
+
+          /* Un secondo titolo nella stessa colonna si stacca da quello che c'è sopra */
+          * + & {
+            margin-top: 28px;
+          }
+
+          span {
+            margin-left: 8px;
+            font-family: var(--font-mono);
+            font-size: 12px;
+            color: var(--inchiostro-3);
+          }
+        }
+
+        .voci {
+          grid-template-columns: 1fr;
+        }
+
+        /* Sotto il titolo basta la sua riga, niente secondo filo */
+        h3 + .voci li:first-child {
+          padding-top: 0;
+          border-top: 0;
+        }
+
+        .targhette {
+          margin-top: 16px;
+        }
+
+        /* Frase in evidenza, nel carattere dei titoli */
+        .frase {
+          margin: 0;
+          font-family: var(--font-titoli);
+          font-size: 28px;
+          line-height: 1.15;
+        }
+      }
+
+      /* Settimana come un piccolo Gantt: le barre crescono quando la slide arriva */
+      .settimana {
+        display: grid;
+        /* minmax(0, …): le etichette lunghe escono a destra senza allargare il giorno */
+        grid-template-columns: repeat(5, minmax(0, 1fr));
+        gap: 12px 0;
+        margin-bottom: 12px;
+        font-family: var(--font-mono);
+        font-size: 12px;
+
+        .giorno {
+          padding-bottom: 6px;
+          border-bottom: 1px solid var(--filo);
+          color: var(--inchiostro-3);
+        }
+
+        /* Una fase per riga, come nel Gantt; la riga 1 è dei giorni */
+        .fase {
+          grid-column: var(--da) / var(--a);
+          grid-row: calc(var(--i) + 2);
+          white-space: nowrap;
+
+          &::after {
+            content: "";
+            display: block;
+            height: 8px;
+            margin-top: 4px;
+            background: var(--inchiostro);
+            transform-origin: left;
+            transition: transform 0.9s var(--molla) calc(var(--i) * 0.3s);
+          }
+
+          /* Adapt non è una fase in fila: tratteggio, perché torna ogni giorno */
+          &.ogni-giorno::after {
+            background: repeating-linear-gradient(
+              90deg,
+              var(--inchiostro) 0 10px,
+              transparent 10px 16px
+            );
+          }
+        }
+
+        /* Con JS le barre partono vuote finché la slide non si vede */
+        .js .rivela:not(.is-visibile) & .fase::after {
+          transform: scaleX(0);
+        }
+
+        @media (prefers-reduced-motion: reduce) {
+          .fase::after {
+            transition: none;
+          }
+        }
+      }
+
+      /* Flussi: riquadri e frecce, si sceglie un riquadro per leggere cosa fa */
+      .flusso {
+        margin: 0;
+
+        /* Il disegno si adatta in larghezza, ma non supera metà schermo in altezza */
+        svg {
+          display: block;
+          width: 100%;
+          height: auto;
+          max-height: 50vh;
+          overflow: visible;
+
+          @media (max-height: 780px) {
+            max-height: 44vh;
+          }
+        }
+
+        .arco {
+          transition: opacity 0.4s var(--molla);
+
+          path {
+            fill: none;
+            stroke: var(--inchiostro-3);
+            stroke-width: 1.3;
+            transition: stroke 0.4s;
+          }
+
+          &.is-acceso path {
+            stroke: var(--inchiostro);
+            stroke-width: 1.8;
+          }
+
+          &.is-spento {
+            opacity: 0.15;
+          }
+        }
+
+        .impulso {
+          fill: var(--inchiostro);
+
+          @media (prefers-reduced-motion: reduce) {
+            display: none;
+          }
+        }
+
+        .nodo {
+          cursor: pointer;
+          transition: opacity 0.4s var(--molla);
+
+          rect {
+            fill: var(--carta);
+            stroke: var(--inchiostro);
+            stroke-width: 1;
+            transition: fill 0.3s;
+          }
+
+          &.is-esterno rect {
+            stroke-dasharray: 4 4;
+          }
+
+          .nodo-tipo {
+            font-family: var(--font-mono);
+            font-size: 10.5px;
+            letter-spacing: 0.08em;
+            text-transform: uppercase;
+            fill: var(--inchiostro-3);
+          }
+
+          .nodo-nome {
+            font-family: var(--font-testo);
+            font-size: 15px;
+            font-weight: 500;
+            fill: var(--inchiostro);
+          }
+
+          &:focus {
+            outline: none;
+          }
+
+          &.is-scelto rect,
+          &:focus-visible rect {
+            fill: var(--inchiostro);
+          }
+
+          &.is-scelto text,
+          &:focus-visible text {
+            fill: var(--carta);
+          }
+
+          &.is-spento {
+            opacity: 0.3;
+          }
+        }
+
+        /* Pannello sotto il disegno: cosa fa il riquadro scelto e con chi parla */
+        .pannello {
+          min-height: 120px;
+          margin-top: 18px;
+          padding-top: 18px;
+          border-top: 1px solid var(--inchiostro);
+          display: grid;
+          gap: 8px 40px;
+
+          @media (min-width: 900px) {
+            grid-template-columns: 4fr 8fr;
+          }
+
+          .invito {
+            color: var(--inchiostro-3);
+            font-size: 15px;
+          }
+
+          .pannello-tipo {
+            display: block;
+            font-family: var(--font-mono);
+            font-size: 12px;
+            letter-spacing: 0.08em;
+            text-transform: uppercase;
+            color: var(--inchiostro-3);
+          }
+
+          .pannello-nome {
+            display: block;
+            margin-top: 4px;
+            font-family: var(--font-titoli);
+            font-size: 28px;
+            line-height: 1.1;
+          }
+
+          p {
+            margin: 0 0 8px;
+            color: var(--inchiostro-2);
+          }
+
+          ul {
+            margin: 0;
+            padding: 0;
+            list-style: none;
+            font-size: 15px;
+
+            li {
+              padding: 3px 0;
+            }
+
+            .verso {
+              font-family: var(--font-mono);
+              font-size: 12px;
+              color: var(--inchiostro-3);
+            }
+          }
+        }
+      }
+
+      /* Catene «questo porta a questo»: i passi si accendono uno dopo l'altro */
+      .catene {
+        display: grid;
+        gap: 26px;
+      }
+
+      .catena {
+        h3 {
+          margin: 0 0 10px;
+          font-family: var(--font-mono);
+          font-size: 12px;
+          font-weight: 500;
+          letter-spacing: 0.1em;
+          text-transform: uppercase;
+          color: var(--inchiostro-3);
+        }
+
+        ol {
+          display: grid;
+          gap: 24px;
+          margin: 0;
+          padding: 0;
+          list-style: none;
+
+          @media (min-width: 900px) {
+            grid-template-columns: repeat(5, 1fr);
+            gap: 28px;
+          }
+        }
+
+        li {
+          position: relative;
+          padding: 10px 12px;
+          border: 1px solid var(--inchiostro);
+          font-size: 14px;
+          line-height: 1.35;
+          background: var(--carta);
+
+          code {
+            font-family: var(--font-mono);
+            font-size: 12.5px;
+          }
+
+          /* La freccia verso il passo dopo */
+          &:not(:last-child)::after {
+            content: "→";
+            position: absolute;
+            top: 50%;
+            right: -21px;
+            transform: translateY(-50%);
+            color: var(--inchiostro-3);
+
+            @media (max-width: 899px) {
+              content: "↓";
+              top: auto;
+              right: auto;
+              left: 16px;
+              bottom: -23px;
+              transform: none;
+            }
+          }
+        }
+
+        &.is-visibile li {
+          animation: passo 6s infinite;
+          animation-delay: calc(var(--i) * 1.2s);
+
+          @media (prefers-reduced-motion: reduce) {
+            animation: none;
+          }
+        }
+      }
+
+      @keyframes passo {
+        0%,
+        18% {
+          background: var(--inchiostro);
+          color: var(--carta);
+        }
+        24%,
+        100% {
+          background: var(--carta);
+          color: var(--inchiostro);
+        }
+      }
+
+      /* Codice */
+      .codice {
+        margin: 0;
+        padding: 20px 22px;
+        border: 1px solid var(--inchiostro);
+        overflow-x: auto;
+        font-family: var(--font-mono);
+        font-size: 13.5px;
+        line-height: 1.6;
+
+        .commento {
+          color: var(--inchiostro-3);
+        }
+      }
+
+      /* Numeri grandi */
+      .numeri {
+        display: grid;
+        grid-template-columns: repeat(2, 1fr);
+        gap: 28px 32px;
+        margin: 0 0 40px;
+        padding: 0;
+        list-style: none;
+
+        @media (min-width: 900px) {
+          grid-template-columns: repeat(3, 1fr);
+        }
+
+        li {
+          padding-top: 12px;
+          border-top: 1px solid var(--inchiostro);
+        }
+
+        strong {
+          display: block;
+          font-family: var(--font-titoli);
+          font-weight: 400;
+          font-size: clamp(40px, 4.4vw, 60px);
+          line-height: 1;
+        }
+
+        span {
+          display: block;
+          margin-top: 6px;
+          font-size: 15px;
+          color: var(--inchiostro-2);
+        }
+      }
+
+      /* Team: nome e ruolo */
+      .team {
+        display: grid;
+        gap: 0 40px;
+        margin: 0;
+        padding: 0;
+        list-style: none;
+
+        @media (min-width: 760px) {
+          grid-template-columns: 1fr 1fr;
+        }
+
+        li {
+          display: flex;
+          justify-content: space-between;
+          gap: 16px;
+          padding: 10px 0;
+          border-top: 1px solid var(--filo);
+
+          span {
+            color: var(--inchiostro-3);
+            font-size: 14px;
+            text-align: right;
+          }
+        }
+      }
+
+      /* Divisore tra le due parti */
+      .divisore {
+        background: var(--inchiostro);
+        color: var(--carta);
+
+        .etichetta {
+          color: #9a9a9a;
+        }
+
+        .targhette li {
+          border-color: var(--carta);
+        }
+      }
+
+      /* Chiusura */
+      .chiusura {
+        .grazie {
+          margin: 0 0 24px;
+          font-family: var(--font-titoli);
+          font-weight: 400;
+          font-size: clamp(64px, 9vw, 120px);
+          line-height: 0.95;
+        }
+      }
+    </style>
+  </head>
+
+  <body>
+    <script>
+      document.documentElement.classList.add("js");
+    </script>
+
+    <!-- Barra in alto -->
+    <header class="barra">
+      <span>EpiTunes<span class="barra-extra"> — Presentazione</span></span>
+      <span
+        ><span class="barra-parte" id="barra-parte">Il prodotto</span> ·
+        <span id="barra-numero">01</span></span
+      >
+    </header>
+
+    <main>
+      <!-- ======================= PARTE 1 — IL PRODOTTO ======================= -->
+
+      <!-- 1. Copertina -->
+      <section class="slide copertina" data-parte="Il prodotto">
+        <div class="contenuto due-colonne">
+          <div class="rivela">
+            <span class="etichetta">Build Week 2 · EPICODE · Team 3</span>
+            <h1 class="titolo">EpiTunes</h1>
+            <p class="sottotitolo">La musica che cerchi, subito in ascolto.</p>
+            <ul class="meta">
+              <li>Francesca</li>
+              <li>Gabriel</li>
+              <li>Giovanbattista</li>
+              <li>Alessandro</li>
+              <li>Luca</li>
+            </ul>
+          </div>
+          <figure class="schermata rivela">
+            <img
+              src="schermate/home.webp"
+              width="2880"
+              height="1800"
+              alt="La Home di EpiTunes: preferiti con le copertine, sidebar e player in basso"
+            />
+          </figure>
+        </div>
+      </section>
+
+      <!-- 2. Il prodotto in una frase -->
+      <section class="slide" data-parte="Il prodotto">
+        <div class="contenuto">
+          <span class="etichetta rivela">Il prodotto</span>
+          <h2 class="rivela">
+            Cerchi un brano, lo <em>ascolti</em>, lo ritrovi la volta dopo.
+          </h2>
+          <p class="lead rivela">
+            EpiTunes è una web app per scoprire, cercare e ascoltare musica. Si
+            apre nel browser, dal telefono come dal computer, e ricorda quello
+            che ti piace, utente per utente.
+          </p>
+          <ul class="numeri rivela">
+            <li>
+              <strong>5</strong
+              ><span>pagine: Login, Home, Cerca, Album, Artista</span>
+            </li>
+            <li>
+              <strong>30 s</strong
+              ><span
+                >di anteprima per ogni brano, presa dal catalogo di iTunes</span
+              >
+            </li>
+            <li>
+              <strong>0</strong><span>cose da installare: basta un link</span>
+            </li>
+          </ul>
+        </div>
+      </section>
+
+      <!-- 3. Come si usa -->
+      <section class="slide" data-parte="Il prodotto">
+        <div class="contenuto">
+          <span class="etichetta rivela">Come si usa</span>
+          <h2 class="rivela">Quattro passi, nessuna istruzione.</h2>
+          <ol class="passi rivela">
+            <li>
+              <img
+                src="schermate/home.webp"
+                width="2880"
+                height="1800"
+                alt=""
+              />
+              <h3>Entra e scopri</h3>
+              <p>
+                Dopo il login, la Home ti mostra preferiti e ascoltati di
+                recente, e tre righe di suggerimenti.
+              </p>
+            </li>
+            <li>
+              <img
+                src="schermate/cerca.webp"
+                width="2880"
+                height="1800"
+                alt=""
+              />
+              <h3>Cerca</h3>
+              <p>
+                Scrivi un nome: i risultati arrivano mentre scrivi, divisi in
+                brani, album e artisti.
+              </p>
+            </li>
+            <li>
+              <img
+                src="schermate/album.webp"
+                width="2880"
+                height="1800"
+                alt=""
+              />
+              <h3>Apri</h3>
+              <p>
+                Un album o un artista hanno la loro pagina, con tutti i brani.
+              </p>
+            </li>
+            <li>
+              <img
+                src="schermate/artista.webp"
+                width="2880"
+                height="1800"
+                alt=""
+              />
+              <h3>Ascolta e salva</h3>
+              <p>
+                Un clic e parte. Il cuore lo salva tra i preferiti, che ritrovi
+                su ogni pagina.
+              </p>
+            </li>
+          </ol>
+        </div>
+      </section>
+
+      <!-- 4. Login -->
+      <section class="slide" data-parte="Il prodotto">
+        <div class="contenuto due-colonne">
+          <div class="rivela">
+            <span class="etichetta">Accesso</span>
+            <h2>Si apre con il login.</h2>
+            <p class="lead">
+              Ti registri con nome, email e password, poi entri nella Home: in
+              cima i tuoi preferiti, divisi in brani, album e artisti, poi gli
+              ascolti recenti e i suggerimenti. Ogni utente ha i suoi, e le
+              iniziali in alto aprono il menu con «Esci».
+            </p>
+          </div>
+          <figure class="schermata rivela">
+            <img
+              src="schermate/login.webp"
+              width="2880"
+              height="1800"
+              alt="Il login di EpiTunes: schede Accedi e Registrati, email e password"
+            />
+            <figcaption>Login · computer, 1440 px</figcaption>
+          </figure>
+        </div>
+      </section>
+
+      <!-- 5. Cerca -->
+      <section class="slide" data-parte="Il prodotto">
+        <div class="contenuto">
+          <span class="etichetta rivela">Cerca</span>
+          <h2 class="rivela">I risultati arrivano mentre scrivi.</h2>
+          <p class="lead rivela">
+            Brani, album e artisti in tre righe, con le foto degli artisti. A
+            campo vuoto tornano le ricerche recenti e i brani cercati.
+          </p>
+          <div class="coppia rivela">
+            <figure class="schermata">
+              <img
+                src="schermate/cerca.webp"
+                width="2880"
+                height="1800"
+                alt="La Cerca con «queen»: la riga dei brani"
+              />
+              <figcaption>«queen» · brani</figcaption>
+            </figure>
+            <figure class="schermata">
+              <img
+                src="schermate/cerca-artisti.webp"
+                width="2880"
+                height="1800"
+                alt="La Cerca con «queen»: album e artisti con le foto"
+              />
+              <figcaption>«queen» · album e artisti</figcaption>
+            </figure>
+          </div>
+        </div>
+      </section>
+
+      <!-- 6. Album e Artista -->
+      <section class="slide" data-parte="Il prodotto">
+        <div class="contenuto">
+          <span class="etichetta rivela">Album e Artista</span>
+          <h2 class="rivela">Ogni album, ogni artista, la sua pagina.</h2>
+          <p class="lead rivela">
+            L'album con anno, brani e durata; l'artista con i più ascoltati e i
+            suoi album. Il brano in ascolto è in verde, il grande ▶ parte
+            dall'inizio.
+          </p>
+          <div class="coppia rivela">
+            <figure class="schermata">
+              <img
+                src="schermate/album.webp"
+                width="2880"
+                height="1800"
+                alt="La pagina dell'album Greatest Hits dei Queen con la tracklist"
+              />
+              <figcaption>Album · Greatest Hits</figcaption>
+            </figure>
+            <figure class="schermata">
+              <img
+                src="schermate/artista.webp"
+                width="2880"
+                height="1800"
+                alt="La pagina dell'artista Måneskin con i brani popolari"
+              />
+              <figcaption>Artista · Måneskin</figcaption>
+            </figure>
+          </div>
+        </div>
+      </section>
+
+      <!-- 7. Telefono -->
+      <section class="slide" data-parte="Il prodotto">
+        <div class="contenuto">
+          <span class="etichetta rivela">Dal telefono al computer</span>
+          <h2 class="rivela">Stessa app, in tasca.</h2>
+          <p class="lead rivela">
+            Sul telefono la navigazione sta in un menu a scomparsa; dal computer
+            diventa una sidebar sempre visibile. Il player resta in basso, a
+            portata di pollice.
+          </p>
+          <div class="telefoni rivela">
+            <figure>
+              <img
+                src="schermate/home-telefono.webp"
+                width="780"
+                height="1688"
+                alt="La Home sul telefono"
+              />
+              <figcaption>Home</figcaption>
+            </figure>
+            <figure>
+              <img
+                src="schermate/menu-telefono.webp"
+                width="780"
+                height="1688"
+                alt="Il menu aperto sul telefono, con Home, Cerca e i preferiti"
+              />
+              <figcaption>Menu</figcaption>
+            </figure>
+            <figure>
+              <img
+                src="schermate/album-telefono.webp"
+                width="780"
+                height="1688"
+                alt="La pagina dell'album sul telefono"
+              />
+              <figcaption>Album</figcaption>
+            </figure>
+            <figure>
+              <img
+                src="schermate/artista-telefono.webp"
+                width="780"
+                height="1688"
+                alt="La pagina dell'artista sul telefono"
+              />
+              <figcaption>Artista</figcaption>
+            </figure>
+          </div>
+        </div>
+      </section>
+
+      <!-- 8. Funzionalità -->
+      <section class="slide" data-parte="Il prodotto">
+        <div class="contenuto">
+          <span class="etichetta rivela">Funzionalità</span>
+          <h2 class="rivela">Quello che fa, in otto righe.</h2>
+          <ul class="voci rivela">
+            <li>
+              <span class="numero">01</span
+              ><span
+                ><strong>Suggerimenti</strong
+                ><span>Tre righe in Home per partire subito.</span></span
+              >
+            </li>
+            <li>
+              <span class="numero">02</span
+              ><span
+                ><strong>Ricerca istantanea</strong
+                ><span>Brani, album e artisti mentre scrivi.</span></span
+              >
+            </li>
+            <li>
+              <span class="numero">03</span
+              ><span
+                ><strong>Player vero</strong
+                ><span
+                  >Precedente e successivo, shuffle, ripeti; brano e volume si
+                  trascinano.</span
+                ></span
+              >
+            </li>
+            <li>
+              <span class="numero">04</span
+              ><span
+                ><strong>Un account a testa</strong
+                ><span
+                  >Registrazione e accesso: preferiti e ascolti restano di chi
+                  li ha scelti.</span
+                ></span
+              >
+            </li>
+            <li>
+              <span class="numero">05</span
+              ><span
+                ><strong>Preferiti ovunque</strong
+                ><span
+                  >Cuori su brani, album e artisti; in Home divisi per
+                  categoria.</span
+                ></span
+              >
+            </li>
+            <li>
+              <span class="numero">06</span
+              ><span
+                ><strong>Memoria</strong
+                ><span
+                  >Ascoltati di recente, ricerche e brani cercati restano tra
+                  una visita e l'altra.</span
+                ></span
+              >
+            </li>
+            <li>
+              <span class="numero">07</span
+              ><span
+                ><strong>Album e artisti</strong
+                ><span
+                  >Pagine di dettaglio; dall'artista si aprono i suoi
+                  album.</span
+                ></span
+              >
+            </li>
+            <li>
+              <span class="numero">08</span
+              ><span
+                ><strong>Per ogni schermo</strong
+                ><span
+                  >Menu a scomparsa sul telefono, sidebar sul computer.</span
+                ></span
+              >
+            </li>
+          </ul>
+        </div>
+      </section>
+
+      <!-- 9. Possibili upgrade -->
+      <section class="slide" data-parte="Il prodotto">
+        <div class="contenuto">
+          <span class="etichetta rivela">Possibili upgrade</span>
+          <h2 class="rivela">Dove può crescere.</h2>
+          <ul class="voci rivela">
+            <li>
+              <span class="numero">01</span
+              ><span
+                ><strong>Account online e playlist</strong
+                ><span
+                  >Un server per il login: preferiti e playlist su ogni
+                  dispositivo.</span
+                ></span
+              >
+            </li>
+            <li>
+              <span class="numero">02</span
+              ><span
+                ><strong>Brani completi</strong
+                ><span
+                  >Collegarsi ad Apple Music o Spotify, oltre i 30
+                  secondi.</span
+                ></span
+              >
+            </li>
+            <li>
+              <span class="numero">03</span
+              ><span
+                ><strong>Musica senza pause</strong
+                ><span
+                  >Un player che continua a suonare anche cambiando
+                  pagina.</span
+                ></span
+              >
+            </li>
+            <li>
+              <span class="numero">04</span
+              ><span
+                ><strong>Suggerimenti su misura</strong
+                ><span
+                  >Dai preferiti e dagli ascolti, i generi che ami di più.</span
+                ></span
+              >
+            </li>
+            <li>
+              <span class="numero">05</span
+              ><span
+                ><strong>App installabile</strong
+                ><span
+                  >Un'icona sul telefono, con i preferiti anche offline.</span
+                ></span
+              >
+            </li>
+            <li>
+              <span class="numero">06</span
+              ><span
+                ><strong>Testi e condivisione</strong
+                ><span
+                  >Il testo della canzone e un link per mandarla a un
+                  amico.</span
+                ></span
+              >
+            </li>
+          </ul>
+        </div>
+      </section>
+
+      <!-- ======================= PARTE 2 — COME FUNZIONA ======================= -->
+
+      <!-- 10. Divisore -->
+      <section class="slide divisore" data-parte="Come funziona">
+        <div class="contenuto">
+          <span class="etichetta rivela">Parte 2</span>
+          <h2 class="rivela">Dietro le quinte.</h2>
+          <p class="lead rivela" style="color: #bdbdbd">
+            Cinque pagine HTML vere, login compreso, un file JavaScript comune e
+            uno per pagina. I dati arrivano dalle API, il browser ricorda il
+            resto, utente per utente.
+          </p>
+          <ul class="targhette rivela">
+            <li>HTML</li>
+            <li>CSS annidato</li>
+            <li>Bootstrap 5.3</li>
+            <li>JavaScript vanilla</li>
+            <li>iTunes Search API</li>
+            <li>TheAudioDB</li>
+            <li>localStorage</li>
+            <li>sessionStorage</li>
+          </ul>
+        </div>
+      </section>
+
+      <!-- 11. Progettazione -->
+      <section class="slide" data-parte="Come funziona">
+        <div class="contenuto">
+          <span class="etichetta rivela">Progettazione</span>
+          <h2 class="rivela">Prima del codice, un piano.</h2>
+          <p class="lead rivela">
+            Due documenti, aggiornati dopo ogni stand-up.
+          </p>
+          <div class="colonne">
+            <div class="rivela">
+              <h3>Project management <span>chi fa cosa</span></h3>
+              <div
+                class="settimana"
+                role="img"
+                aria-label="La settimana: lunedì Envision e Speculate, da martedì a giovedì Explore, venerdì Close, ogni giorno Adapt"
+              >
+                <span class="giorno">Lun</span>
+                <span class="giorno">Mar</span>
+                <span class="giorno">Mer</span>
+                <span class="giorno">Gio</span>
+                <span class="giorno">Ven</span>
+                <span class="fase" style="--da: 1; --a: 2; --i: 0"
+                  >Envision e Speculate · piano e backlog</span
+                >
+                <span class="fase" style="--da: 2; --a: 5; --i: 1"
+                  >Explore · il minimo, poi gli extra</span
+                >
+                <span class="fase" style="--da: 5; --a: 6; --i: 2">Close</span>
+                <span class="fase ogni-giorno" style="--da: 1; --a: 6; --i: 3"
+                  >Adapt · lo stand-up di ogni mattina</span
+                >
+              </div>
+              <ul class="voci">
+                <li>
+                  <span class="numero">→</span
+                  ><span
+                    ><strong>Backlog a step</strong
+                    ><span
+                      >Nove step, dallo 0 all'8: ogni voce ha chi, file e
+                      stato.</span
+                    ></span
+                  >
+                </li>
+                <li>
+                  <span class="numero">→</span
+                  ><span
+                    ><strong>Regole di lavoro</strong
+                    ><span
+                      >Un branch a testa; su <code>main</code> unisce solo il
+                      Git manager.</span
+                    ></span
+                  >
+                </li>
+              </ul>
+            </div>
+            <div class="rivela">
+              <h3>Controllo e monitoraggio <span>a che punto siamo</span></h3>
+              <ul class="voci">
+                <li>
+                  <span class="numero">→</span
+                  ><span
+                    ><strong>Gantt</strong
+                    ><span
+                      >Chi fa cosa e in quale giorno; se un lavoro slitta, si
+                      sposta.</span
+                    ></span
+                  >
+                </li>
+                <li>
+                  <span class="numero">→</span
+                  ><span
+                    ><strong>Sei KPI</strong
+                    ><span
+                      >Misurati in pochi minuti, con un grafico ciascuno: il
+                      valore reale contro l'obiettivo.</span
+                    ></span
+                  >
+                </li>
+              </ul>
+              <ul class="targhette">
+                <li>Avanzamento del minimo</li>
+                <li>Rispetto del Gantt</li>
+                <li>Integrazione su main</li>
+                <li>Errori in console</li>
+                <li>Pagine responsive</li>
+                <li>Vincoli sul codice</li>
+              </ul>
+            </div>
+          </div>
+        </div>
+      </section>
+
+      <!-- 12. Flusso delle pagine -->
+      <section class="slide" data-parte="Come funziona">
+        <div class="contenuto">
+          <span class="etichetta rivela">Come ci si muove</span>
+          <h2 class="rivela">
+            Ogni clic porta a una pagina, con l'id nell'indirizzo.
+          </h2>
+          <figure class="flusso rivela" data-flusso="pagine">
+            <svg
+              role="group"
+              aria-label="Le cinque pagine e i collegamenti tra loro"
+            ></svg>
+            <div class="pannello" aria-live="polite"></div>
+          </figure>
+        </div>
+      </section>
+
+      <!-- 13. Flusso dei dati -->
+      <section class="slide" data-parte="Come funziona">
+        <div class="contenuto">
+          <span class="etichetta rivela">Come girano i dati</span>
+          <h2 class="rivela">
+            Dalla API allo schermo, e dallo schermo alle orecchie.
+          </h2>
+          <figure class="flusso rivela" data-flusso="dati">
+            <svg
+              role="group"
+              aria-label="Il percorso dei dati tra pagine, codice comune, API e browser"
+            ></svg>
+            <div class="pannello" aria-live="polite"></div>
+          </figure>
+        </div>
+      </section>
+
+      <!-- 14. Questo porta a questo -->
+      <section class="slide" data-parte="Come funziona">
+        <div class="contenuto">
+          <span class="etichetta rivela">Questo porta a questo</span>
+          <h2 class="rivela">Quattro gesti, seguiti passo per passo.</h2>
+          <div class="catene">
+            <div class="catena rivela">
+              <h3>Scrivi nella ricerca</h3>
+              <ol>
+                <li style="--i: 0">Scrivi «queen»</li>
+                <li style="--i: 1">
+                  Aspetta 400 ms dall'ultimo tasto <code>debounce</code>
+                </li>
+                <li style="--i: 2">
+                  Tre chiamate insieme <code>Promise.all</code>
+                </li>
+                <li style="--i: 3">
+                  Diventano <code>Track</code>, <code>Album</code>,
+                  <code>Artist</code>
+                </li>
+                <li style="--i: 4">Le card compaiono</li>
+              </ol>
+            </div>
+            <div class="catena rivela">
+              <h3>Clic su un brano</h3>
+              <ol>
+                <li style="--i: 0">Un solo listener sul contenitore</li>
+                <li style="--i: 1">
+                  Legge <code>data-track-id</code> della card
+                </li>
+                <li style="--i: 2"><code>player.play(brano, coda)</code></li>
+                <li style="--i: 3">
+                  L'anteprima suona nell'<code>&lt;audio&gt;</code>
+                </li>
+                <li style="--i: 4">⏮ ⏭ shuffle e ripeti girano nella coda</li>
+              </ol>
+            </div>
+            <div class="catena rivela">
+              <h3>Clic sul cuore</h3>
+              <ol>
+                <li style="--i: 0">
+                  Il clic è sul cuore <code>.btn-fav</code>
+                </li>
+                <li style="--i: 1">Il brano non parte</li>
+                <li style="--i: 2"><code>toggleFavourite</code></li>
+                <li style="--i: 3">
+                  Salvato per l'utente in <code>localStorage</code>
+                </li>
+                <li style="--i: 4">Sidebar e Home si aggiornano</li>
+              </ol>
+            </div>
+            <div class="catena rivela">
+              <h3>Cambi pagina</h3>
+              <ol>
+                <li style="--i: 0">Si carica una pagina nuova</li>
+                <li style="--i: 1">L'audio si ferma: sono pagine vere</li>
+                <li style="--i: 2"><code>restoreLastTrack</code></li>
+                <li style="--i: 3">Legge la cronologia</li>
+                <li style="--i: 4">Il player è pronto con l'ultimo brano</li>
+              </ol>
+            </div>
+          </div>
+        </div>
+      </section>
+
+      <!-- 15. Regole del codice -->
+      <section class="slide" data-parte="Come funziona">
+        <div class="contenuto due-colonne">
+          <div class="rivela">
+            <span class="etichetta">Regole del codice</span>
+            <h2>Poche regole, uguali per tutti.</h2>
+            <ul class="voci" style="grid-template-columns: 1fr">
+              <li>
+                <span class="numero">01</span
+                ><span
+                  ><strong>Un listener per contenitore</strong
+                  ><span
+                    >Funziona anche sulle card create dopo (event
+                    delegation).</span
+                  ></span
+                >
+              </li>
+              <li>
+                <span class="numero">02</span
+                ><span
+                  ><strong>I dati passano dai modelli</strong
+                  ><span
+                    >Solo loro conoscono i nomi dei campi di iTunes.</span
+                  ></span
+                >
+              </li>
+              <li>
+                <span class="numero">03</span
+                ><span
+                  ><strong>Testo, mai HTML</strong
+                  ><span
+                    >I dati delle API entrano con <code>createElement</code> e
+                    <code>textContent</code>.</span
+                  ></span
+                >
+              </li>
+              <li>
+                <span class="numero">04</span
+                ><span
+                  ><strong>Solo <code>querySelector</code></strong
+                  ><span
+                    >Niente <code>getElementById</code>, niente
+                    <code>onclick</code>, niente <code>var</code>.</span
+                  ></span
+                >
+              </li>
+            </ul>
+          </div>
+          <pre
+            class="codice rivela"
+          ><code><span class="commento">// Un listener per tutta la tracklist (da album.js, in breve)</span>
+tracklist.addEventListener("click", (event) =&gt; {
+  const row = event.target.closest("[data-track-id]");
+  if (!row) return;
+  const track = albumTracks.find(
+    (t) =&gt; t.id === row.dataset.trackId,
+  );
+
+  <span class="commento">// Il cuore si controlla per primo: salva, non suona</span>
+  if (event.target.closest(".btn-fav")) {
+    toggleFavourite(track);
+    return;
+  }
+
+  <span class="commento">// Il brano parte con la sua coda</span>
+  player.play(track, albumTracks);
+});</code></pre>
+        </div>
+      </section>
+
+      <!-- 16. Intelligenza artificiale -->
+      <section class="slide" data-parte="Come funziona">
+        <div class="contenuto">
+          <span class="etichetta rivela">Intelligenza artificiale</span>
+          <h2 class="rivela">Un aiuto per capire,<br />il codice a mano.</h2>
+          <div class="colonne">
+            <div class="rivela">
+              <h3>Dove l'abbiamo usata <span>quando e come</span></h3>
+              <ul class="voci">
+                <li>
+                  <span class="numero">01</span
+                  ><span
+                    ><strong>Conflitti sui branch</strong
+                    ><span
+                      >Da martedì a giovedì, nei merge su <code>main</code>: i
+                      conflitti più complessi, risolti con Copilot di VS
+                      Code.</span
+                    ></span
+                  >
+                </li>
+                <li>
+                  <span class="numero">02</span
+                  ><span
+                    ><strong>Progetto e documenti</strong
+                    ><span
+                      >Lunedì, brainstorming per lo scheletro di Project
+                      management e di Controllo e monitoraggio.</span
+                    ></span
+                  >
+                </li>
+                <li>
+                  <span class="numero">03</span
+                  ><span
+                    ><strong>Le API</strong
+                    ><span
+                      >Lunedì, istruzioni per capire come funzionano.</span
+                    ></span
+                  >
+                </li>
+                <li>
+                  <span class="numero">04</span
+                  ><span
+                    ><strong>Funzioni JavaScript</strong
+                    ><span
+                      >Durante lo sviluppo, la ricerca di una soluzione quando
+                      da soli non ci si arrivava.</span
+                    ></span
+                  >
+                </li>
+              </ul>
+            </div>
+            <div class="rivela">
+              <h3>Dove no <span>cosa è rimasto nostro</span></h3>
+              <p class="frase">
+                Le implementazioni le abbiamo scritte a mano, man mano.
+              </p>
+              <h3>Quali AI <span>ognuno del team le sue</span></h3>
+              <ul class="targhette">
+                <li>Copilot di VS Code · GPT Luna</li>
+                <li>Claude Code</li>
+                <li>Gemini</li>
+              </ul>
+            </div>
+          </div>
+        </div>
+      </section>
+
+      <!-- 17. Come abbiamo lavorato -->
+      <section class="slide" data-parte="Come funziona">
+        <div class="contenuto">
+          <span class="etichetta rivela">Come abbiamo lavorato</span>
+          <h2 class="rivela">Cinque persone, un branch a testa.</h2>
+          <ul class="numeri rivela">
+            <li>
+              <strong>4</strong
+              ><span
+                >giorni di sviluppo, organizzati con l'Agile Project
+                Management</span
+              >
+            </li>
+            <li>
+              <strong>47</strong
+              ><span>pull request unite su <code>main</code></span>
+            </li>
+            <li>
+              <strong>~3.800</strong
+              ><span>righe di HTML, CSS e JavaScript</span>
+            </li>
+            <li>
+              <strong>0</strong
+              ><span>errori in console sulle cinque pagine</span>
+            </li>
+            <li>
+              <strong>0</strong
+              ><span
+                ><code>onclick</code>, <code>getElementById</code> e
+                <code>var</code></span
+              >
+            </li>
+            <li>
+              <strong>3</strong
+              ><span>larghezze provate: telefono, tablet, computer</span>
+            </li>
+          </ul>
+          <ul class="team rivela">
+            <li>Luca <span>Team Leader e JavaScript</span></li>
+            <li>Gabriel <span>Git manager, HTML e CSS comune</span></li>
+            <li>
+              Giovanbattista <span>Home, artisti con foto e album, login</span>
+            </li>
+            <li>
+              Francesca <span>Album, Artista, player, login e ricerche</span>
+            </li>
+            <li>
+              Alessandro <span>Player, Cerca e preferiti per categoria</span>
+            </li>
+          </ul>
+        </div>
+      </section>
+
+      <!-- 18. Chiusura -->
+      <section class="slide chiusura" data-parte="Come funziona">
+        <div class="contenuto">
+          <span class="etichetta rivela">EpiTunes · Team 3</span>
+          <p class="grazie rivela">Ora vediamo il progetto.</p>
+          <p class="lead rivela">
+            Il codice è su
+            <a href="https://github.com/Ilbollit0/Team-3-progetto-buildweek-2"
+              >github.com/Ilbollit0/Team-3-progetto-buildweek-2</a
+            >
+          </p>
+        </div>
+      </section>
+    </main>
+
+    <!-- Comandi: slide precedente e successiva -->
+    <nav class="comandi" aria-label="Slide">
+      <button type="button" id="slide-prima" aria-label="Slide precedente">
+        ←
+      </button>
+      <button type="button" id="slide-dopo" aria-label="Slide successiva">
+        →
+      </button>
+    </nav>
+
+    <script>
+      // Valori fissi: dove sta il disegno SVG, durata dell'impulso
+      const SVG_NS = "http://www.w3.org/2000/svg";
+      const DURATA_IMPULSO = 2.6;
+      const NODO_LARGHEZZA = 210;
+      const NODO_ALTEZZA = 66;
+
+      // I due flussi: riquadri (con cosa fanno) e frecce (con cosa passa).
+      // dal e al sono i lati della freccia (n, s, e, o); scarto la sposta di lato, per le frecce affiancate
+      const FLUSSI = {
+        pagine: {
+          larghezza: 1000,
+          altezza: 380,
+          invito:
+            "Passa su una pagina per vedere dove porta. Da ogni pagina il menu riporta a Home e Cerca, e le iniziali in alto a «Esci».",
+          nodi: [
+            {
+              id: "login",
+              tipo: "login.html",
+              nome: "Login",
+              x: 120,
+              y: 70,
+              testo:
+                "La porta d'ingresso: ci si registra con nome, email e password, o si accede. Senza un utente collegato, ogni altra pagina rimanda qui.",
+            },
+            {
+              id: "home",
+              tipo: "index.html",
+              nome: "Home",
+              x: 440,
+              y: 70,
+              testo:
+                "La pagina d'arrivo: preferiti divisi in brani, album e artisti, ascoltati di recente e tre righe di suggerimenti. Un clic su un brano lo fa partire senza cambiare pagina; un album o un artista preferito apre la sua pagina.",
+            },
+            {
+              id: "cerca",
+              tipo: "search.html",
+              nome: "Cerca",
+              x: 820,
+              y: 70,
+              testo:
+                "Si scrive e i risultati arrivano da soli, divisi in brani, album e artisti. A campo vuoto mostra le ricerche recenti e i brani cercati. Da qui si aprono le pagine di dettaglio.",
+            },
+            {
+              id: "album",
+              tipo: "album.html?id=…",
+              nome: "Album",
+              x: 440,
+              y: 300,
+              testo:
+                "Legge l'id dell'album dall'indirizzo e chiede a iTunes l'album con tutti i suoi brani.",
+            },
+            {
+              id: "artista",
+              tipo: "artist.html?id=…",
+              nome: "Artista",
+              x: 820,
+              y: 300,
+              testo:
+                "Legge l'id dell'artista dall'indirizzo: nome, genere, brani più popolari e i suoi album.",
+            },
+          ],
+          archi: [
+            {
+              da: "login",
+              a: "home",
+              dal: "e",
+              al: "o",
+              scarto: -10,
+              etichetta: "accesso o registrazione",
+            },
+            {
+              da: "home",
+              a: "login",
+              dal: "o",
+              al: "e",
+              scarto: 10,
+              etichetta: "«Esci» dal menu delle iniziali, da ogni pagina",
+            },
+            {
+              da: "home",
+              a: "cerca",
+              dal: "e",
+              al: "o",
+              scarto: -10,
+              etichetta: "menu, Cerca",
+            },
+            {
+              da: "cerca",
+              a: "home",
+              dal: "o",
+              al: "e",
+              scarto: 10,
+              etichetta: "menu, Home",
+            },
+            {
+              da: "home",
+              a: "album",
+              dal: "s",
+              al: "n",
+              scarto: -60,
+              etichetta: "clic su un album preferito",
+            },
+            {
+              da: "home",
+              a: "artista",
+              dal: "s",
+              al: "o",
+              scarto: [70, 26],
+              etichetta: "clic su un artista preferito",
+            },
+            {
+              da: "cerca",
+              a: "album",
+              dal: "s",
+              al: "n",
+              scarto: [-80, -15],
+              etichetta: "clic su un album: album.html?id=…",
+            },
+            {
+              da: "album",
+              a: "cerca",
+              dal: "n",
+              al: "s",
+              scarto: [50, -25],
+              etichetta: "‹ torna alla pagina precedente",
+            },
+            {
+              da: "cerca",
+              a: "artista",
+              dal: "s",
+              al: "n",
+              scarto: 25,
+              etichetta: "clic su un artista: artist.html?id=…",
+            },
+            {
+              da: "artista",
+              a: "cerca",
+              dal: "n",
+              al: "s",
+              scarto: 60,
+              etichetta: "‹ torna alla pagina precedente",
+            },
+            {
+              da: "album",
+              a: "artista",
+              dal: "e",
+              al: "o",
+              scarto: -20,
+              etichetta: "clic sul nome dell'artista",
+            },
+            {
+              da: "artista",
+              a: "album",
+              dal: "o",
+              al: "e",
+              scarto: 2,
+              etichetta: "clic su un suo album",
+            },
+          ],
+        },
+        dati: {
+          larghezza: 1000,
+          altezza: 420,
+          invito:
+            "Passa su un riquadro per vedere cosa fa e con chi parla. I riquadri tratteggiati sono fuori dal nostro codice.",
+          nodi: [
+            {
+              id: "pagina",
+              tipo: "5 file .js",
+              nome: "La pagina",
+              x: 130,
+              y: 175,
+              testo:
+                "Ogni pagina ha il suo file (login.js, home.js, search.js, album.js, artist.js): chiede i dati, disegna card e righe, ascolta i clic con un listener per contenitore.",
+            },
+            {
+              id: "fetch",
+              tipo: "common.js",
+              nome: "fetchJSON",
+              x: 470,
+              y: 40,
+              testo:
+                "L'unica porta verso le API. Se una chiamata va male non blocca la pagina: scrive l'errore in console e risponde con una lista vuota.",
+            },
+            {
+              id: "itunes",
+              tipo: "API esterna",
+              nome: "iTunes Search",
+              x: 840,
+              y: 40,
+              esterno: true,
+              testo:
+                "Brani, album e artisti, con copertine e anteprime di 30 secondi. Gratis e senza chiave.",
+            },
+            {
+              id: "audiodb",
+              tipo: "API esterna",
+              nome: "TheAudioDB",
+              x: 840,
+              y: 140,
+              esterno: true,
+              testo:
+                "iTunes non ha le foto degli artisti: la Cerca le chiede qui. Se manca, usa la copertina di un suo brano o album.",
+            },
+            {
+              id: "modelli",
+              tipo: "common.js",
+              nome: "Track · Album · Artist",
+              x: 470,
+              y: 175,
+              testo:
+                "Traducono i campi di iTunes (trackName, artworkUrl100) nei nostri (title, cover). Se iTunes cambia un nome, si corregge solo qui.",
+            },
+            {
+              id: "player",
+              tipo: "common.js",
+              nome: "Player",
+              x: 470,
+              y: 370,
+              testo:
+                "Suona il brano scelto con la sua coda: precedente, successivo, shuffle e ripeti si muovono lì dentro.",
+            },
+            {
+              id: "storage",
+              tipo: "Browser",
+              nome: "localStorage",
+              x: 130,
+              y: 370,
+              esterno: true,
+              testo:
+                "La memoria del browser: gli utenti registrati e, per ognuno, preferiti, ultimi 12 ascolti, ricerche recenti e brani cercati, che restano anche chiudendo la pagina. Chi è collegato sta in sessionStorage, che si svuota chiudendo la scheda.",
+            },
+            {
+              id: "audio",
+              tipo: "Browser",
+              nome: "<audio>",
+              x: 840,
+              y: 370,
+              esterno: true,
+              testo: "L'elemento audio di HTML: riceve l'anteprima e la suona.",
+            },
+          ],
+          archi: [
+            {
+              da: "pagina",
+              a: "fetch",
+              dal: "n",
+              al: "o",
+              scarto: 0,
+              etichetta: "chiede i dati",
+            },
+            {
+              da: "fetch",
+              a: "itunes",
+              dal: "e",
+              al: "o",
+              scarto: 0,
+              etichetta: "search e lookup",
+            },
+            {
+              da: "fetch",
+              a: "audiodb",
+              dal: "e",
+              al: "o",
+              scarto: 10,
+              etichetta: "foto dell'artista",
+            },
+            {
+              da: "fetch",
+              a: "modelli",
+              dal: "s",
+              al: "n",
+              scarto: 0,
+              etichetta: "risposta in JSON",
+            },
+            {
+              da: "modelli",
+              a: "pagina",
+              dal: "o",
+              al: "e",
+              scarto: 0,
+              etichetta: "oggetti pronti per card e righe",
+            },
+            {
+              da: "pagina",
+              a: "player",
+              dal: "e",
+              al: "o",
+              scarto: [20, -20],
+              etichetta: "play(brano, coda)",
+            },
+            {
+              da: "player",
+              a: "audio",
+              dal: "e",
+              al: "o",
+              scarto: 0,
+              etichetta: "anteprima di 30 secondi",
+            },
+            {
+              da: "pagina",
+              a: "storage",
+              dal: "s",
+              al: "n",
+              scarto: 0,
+              etichetta: "utente, preferiti e ricerche recenti",
+            },
+            {
+              da: "player",
+              a: "storage",
+              dal: "o",
+              al: "e",
+              scarto: 0,
+              etichetta: "cronologia degli ascolti",
+            },
+            {
+              da: "storage",
+              a: "player",
+              dal: "e",
+              al: "o",
+              scarto: 20,
+              etichetta: "ultimo brano, al cambio pagina",
+            },
+          ],
+        },
+      };
+
+      // Direzione di ogni lato del riquadro
+      const LATI = { n: [0, -1], s: [0, 1], e: [1, 0], o: [-1, 0] };
+
+      // Elemento SVG con i suoi attributi
+      const creaSvg = (tag, attributi = {}) => {
+        const elemento = document.createElementNS(SVG_NS, tag);
+        Object.entries(attributi).forEach(([nome, valore]) =>
+          elemento.setAttribute(nome, valore),
+        );
+        return elemento;
+      };
+
+      // Punto sul lato del riquadro, spostato di lato di «scarto»
+      const puntoSulLato = (nodo, lato, scarto) => {
+        const [dx, dy] = LATI[lato];
+        return {
+          x: nodo.x + (dx * NODO_LARGHEZZA) / 2 + (dy !== 0 ? scarto : 0),
+          y: nodo.y + (dy * NODO_ALTEZZA) / 2 + (dx !== 0 ? scarto : 0),
+          dx,
+          dy,
+        };
+      };
+
+      // Tracciato a curva tra due riquadri: esce e arriva perpendicolare ai lati.
+      // scarto è un numero, uguale ai due capi, o una coppia [partenza, arrivo]
+      const tracciato = (da, a, arco) => {
+        const [scartoDa, scartoA] = Array.isArray(arco.scarto)
+          ? arco.scarto
+          : [arco.scarto, arco.scarto];
+        const p1 = puntoSulLato(da, arco.dal, scartoDa);
+        const p2 = puntoSulLato(a, arco.al, scartoA);
+        const spinta = Math.max(40, Math.hypot(p2.x - p1.x, p2.y - p1.y) / 2.4);
+        const c1 = `${p1.x + p1.dx * spinta} ${p1.y + p1.dy * spinta}`;
+        const c2 = `${p2.x + p2.dx * spinta} ${p2.y + p2.dy * spinta}`;
+        return `M${p1.x} ${p1.y} C${c1} ${c2} ${p2.x} ${p2.y}`;
+      };
+
+      // Pannello sotto il disegno: cosa fa il riquadro e le sue frecce
+      const disegnaPannello = (pannello, flusso, nodo) => {
+        pannello.replaceChildren();
+        if (!nodo) {
+          const invito = document.createElement("p");
+          invito.className = "invito";
+          invito.textContent = flusso.invito;
+          pannello.append(invito);
+          return;
+        }
+        const nomeDi = (id) => flusso.nodi.find((n) => n.id === id).nome;
+        const testa = document.createElement("div");
+        const tipo = document.createElement("span");
+        tipo.className = "pannello-tipo";
+        tipo.textContent = nodo.tipo;
+        const nome = document.createElement("span");
+        nome.className = "pannello-nome";
+        nome.textContent = nodo.nome;
+        testa.append(tipo, nome);
+
+        const corpo = document.createElement("div");
+        const testo = document.createElement("p");
+        testo.textContent = nodo.testo;
+        const elenco = document.createElement("ul");
+        flusso.archi
+          .filter((arco) => arco.da === nodo.id || arco.a === nodo.id)
+          .forEach((arco) => {
+            const esce = arco.da === nodo.id;
+            const voce = document.createElement("li");
+            const verso = document.createElement("span");
+            verso.className = "verso";
+            verso.textContent = esce
+              ? `→ ${nomeDi(arco.a)}  `
+              : `← da ${nomeDi(arco.da)}  `;
+            voce.append(verso, arco.etichetta);
+            elenco.append(voce);
+          });
+        corpo.append(testo, elenco);
+        pannello.append(testa, corpo);
+      };
+
+      // Un flusso: frecce con l'impulso, riquadri da scegliere, pannello
+      const initFlusso = (figura) => {
+        const flusso = FLUSSI[figura.dataset.flusso];
+        const svg = figura.querySelector("svg");
+        const pannello = figura.querySelector(".pannello");
+        const nodoDi = (id) => flusso.nodi.find((n) => n.id === id);
+        svg.setAttribute(
+          "viewBox",
+          `0 0 ${flusso.larghezza} ${flusso.altezza}`,
+        );
+
+        // Punta delle frecce
+        const defs = creaSvg("defs");
+        const punta = creaSvg("marker", {
+          id: `punta-${figura.dataset.flusso}`,
+          viewBox: "0 0 8 8",
+          refX: 7,
+          refY: 4,
+          markerWidth: 7,
+          markerHeight: 7,
+          orient: "auto-start-reverse",
+        });
+        punta.append(
+          creaSvg("path", {
+            d: "M1 1 L7 4 L1 7",
+            fill: "none",
+            stroke: "#111",
+            "stroke-width": 1.2,
+            "stroke-linecap": "round",
+            "stroke-linejoin": "round",
+          }),
+        );
+        defs.append(punta);
+        svg.append(defs);
+
+        // Frecce: un impulso le percorre nel verso in cui passano i dati
+        const archi = flusso.archi.map((arco, i) => {
+          const d = tracciato(nodoDi(arco.da), nodoDi(arco.a), arco);
+          const gruppo = creaSvg("g", { class: "arco" });
+          gruppo.append(
+            creaSvg("path", {
+              d,
+              "marker-end": `url(#punta-${figura.dataset.flusso})`,
+            }),
+          );
+          const impulso = creaSvg("circle", { r: 3.5, class: "impulso" });
+          impulso.append(
+            creaSvg("animateMotion", {
+              dur: `${DURATA_IMPULSO}s`,
+              begin: `${(i * 0.43) % DURATA_IMPULSO}s`,
+              repeatCount: "indefinite",
+              path: d,
+              keyPoints: "0;1",
+              keyTimes: "0;1",
+              calcMode: "spline",
+              keySplines: "0.4 0 0.2 1",
+            }),
+          );
+          gruppo.append(impulso);
+          svg.append(gruppo);
+          return { arco, gruppo };
+        });
+
+        // Riquadri: si scelgono con il mouse, con un tocco o con il tabulatore
+        const riquadri = flusso.nodi.map((nodo) => {
+          const gruppo = creaSvg("g", {
+            class: `nodo${nodo.esterno ? " is-esterno" : ""}`,
+            tabindex: 0,
+            role: "button",
+            "aria-label": `${nodo.nome}: ${nodo.testo}`,
+          });
+          gruppo.append(
+            creaSvg("rect", {
+              x: nodo.x - NODO_LARGHEZZA / 2,
+              y: nodo.y - NODO_ALTEZZA / 2,
+              width: NODO_LARGHEZZA,
+              height: NODO_ALTEZZA,
+              rx: 8,
+            }),
+          );
+          const tipo = creaSvg("text", {
+            x: nodo.x - NODO_LARGHEZZA / 2 + 14,
+            y: nodo.y - 8,
+            class: "nodo-tipo",
+          });
+          tipo.textContent = nodo.tipo;
+          const nome = creaSvg("text", {
+            x: nodo.x - NODO_LARGHEZZA / 2 + 14,
+            y: nodo.y + 16,
+            class: "nodo-nome",
+          });
+          nome.textContent = nodo.nome;
+          gruppo.append(tipo, nome);
+          gruppo.addEventListener("pointerenter", () => scegli(nodo.id));
+          gruppo.addEventListener("focus", () => scegli(nodo.id));
+          gruppo.addEventListener("click", () => scegli(nodo.id));
+          svg.append(gruppo);
+          return { nodo, gruppo };
+        });
+
+        // Scelta: accende le frecce del riquadro, spegne il resto, riempie il pannello
+        const scegli = (id) => {
+          const vicini = new Set([id]);
+          archi.forEach(({ arco, gruppo }) => {
+            const acceso = id !== null && (arco.da === id || arco.a === id);
+            if (acceso) vicini.add(arco.da).add(arco.a);
+            gruppo.classList.toggle("is-acceso", acceso);
+            gruppo.classList.toggle("is-spento", id !== null && !acceso);
+          });
+          riquadri.forEach(({ nodo, gruppo }) => {
+            gruppo.classList.toggle("is-scelto", nodo.id === id);
+            gruppo.classList.toggle(
+              "is-spento",
+              id !== null && !vicini.has(nodo.id),
+            );
+          });
+          disegnaPannello(pannello, flusso, nodoDi(id));
+        };
+
+        // Uscendo col mouse dal disegno si torna alla vista intera; col dito resta l'ultimo scelto
+        svg.addEventListener("pointerleave", (event) => {
+          if (event.pointerType === "mouse") scegli(null);
+        });
+        scegli(null);
+      };
+
+      // Ingresso dei blocchi: compaiono quando entrano nello schermo
+      const initRivela = () => {
+        const osservatore = new IntersectionObserver(
+          (voci) =>
+            voci.forEach((voce) => {
+              if (!voce.isIntersecting) return;
+              voce.target.classList.add("is-visibile");
+              osservatore.unobserve(voce.target);
+            }),
+          { threshold: 0.15 },
+        );
+        document
+          .querySelectorAll(".rivela")
+          .forEach((elemento) => osservatore.observe(elemento));
+      };
+
+      // Navigazione: frecce della tastiera, barra spaziatrice e bottoni; numero e parte in alto
+      const initNavigazione = () => {
+        const slide = [...document.querySelectorAll(".slide")];
+        const numero = document.querySelector("#barra-numero");
+        const parte = document.querySelector("#barra-parte");
+        let corrente = 0;
+
+        const aggiorna = (indice) => {
+          corrente = indice;
+          numero.textContent = `${String(indice + 1).padStart(2, "0")} / ${slide.length}`;
+          parte.textContent = slide[indice].dataset.parte;
+        };
+        const vai = (indice) => {
+          const destinazione = Math.min(Math.max(indice, 0), slide.length - 1);
+          slide[destinazione].scrollIntoView({ behavior: "smooth" });
+        };
+
+        const osservatore = new IntersectionObserver(
+          (voci) =>
+            voci.forEach(
+              (voce) =>
+                voce.isIntersecting && aggiorna(slide.indexOf(voce.target)),
+            ),
+          { threshold: 0.55 },
+        );
+        slide.forEach((elemento) => osservatore.observe(elemento));
+
+        document.addEventListener("keydown", (event) => {
+          if (event.target.closest?.(".nodo")) return;
+          if (
+            ["ArrowRight", "ArrowDown", "PageDown", " "].includes(event.key)
+          ) {
+            event.preventDefault();
+            vai(corrente + 1);
+          }
+          if (["ArrowLeft", "ArrowUp", "PageUp"].includes(event.key)) {
+            event.preventDefault();
+            vai(corrente - 1);
+          }
+        });
+        document
+          .querySelector("#slide-prima")
+          .addEventListener("click", () => vai(corrente - 1));
+        document
+          .querySelector("#slide-dopo")
+          .addEventListener("click", () => vai(corrente + 1));
+        aggiorna(0);
+      };
+
+      // Avvio, nell'ordine della pagina
+      initNavigazione();
+      document.querySelectorAll(".flusso").forEach(initFlusso);
+      initRivela();
+    </script>
+  </body>
+</html>

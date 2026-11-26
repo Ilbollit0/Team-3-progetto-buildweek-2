@@ -15,7 +15,7 @@ gantt
   section Tutti insieme
   Prova API con Postman (step 0)   :done, 2026-11-23, 1d
   fetchJSON e modelli (step 2)     :done, 2026-11-24, 1d
-  Prova di main (step 6)           :2026-11-25, 1d
+  Prova di main (step 6)           :2026-11-26, 1d
   Revisione e prova esposizione (step 8) :2026-11-27, 1d
 
   section Luca
@@ -25,34 +25,43 @@ gantt
   Precedente e successivo (extra, step 3) :done, 2026-11-24, 1d
   Dettaglio album (step 4)         :done, 2026-11-25, 1d
   Preferiti nella sidebar (step 5) :done, 2026-11-25, 1d
-  README finito (step 7)           :2026-11-26, 1d
+  Correzioni CSS dell'audit (step 5) :done, 2026-11-25, 1d
+  README finito (step 7)           :active, 2026-11-26, 1d
+  Presentazione finale (step 7)    :active, 2026-11-26, 1d
 
   section Gabriel
   Fondamenta (step 1)              :done, 2026-11-24, 1d
-  CSS comune (step 3)              :2026-11-25, 1d
-  Merge e rifinitura responsive (step 4) :2026-11-25, 1d
-  Prettier su tutti i file (step 6) :2026-11-25, 1d
+  CSS comune (step 3)              :done, 2026-11-26, 1d
+  Merge e rifinitura responsive (step 4) :done, 2026-11-26, 1d
+  Prettier su tutti i file (step 6) :done, 2026-11-26, 1d
 
   section Giovanbattista
   Markup card (step 1, con Alessandro) :done, 2026-11-24, 1d
-  CSS Home e Cerca (step 3)        :active, 2026-11-25, 1d
+  CSS Home e Cerca (step 3)        :done, 2026-11-26, 1d
   Home, preferiti, recenti (step 4) :done, 2026-11-25, 1d
+  Immagine degli artisti (extra, step 7) :done, 2026-11-26, 1d
+  Album nella pagina Artista (extra, step 7) :done, 2026-11-26, 1d
+  Login (extra, step 7, con Francesca) :done, 2026-11-26, 1d
+  Playlist per utente (extra, step 7, con Francesca) :2026-11-26, 1d
 
   section Francesca
   Markup riga brano (step 1, con Luca) :done, 2026-11-24, 1d
   CSS Album e Artista (step 3)     :done, 2026-11-24, 1d
   Dettaglio artista (step 4)       :done, 2026-11-25, 1d
+  Freccia indietro e iniziali (step 5) :done, 2026-11-25, 1d
+  Shuffle e ripeti (extra, step 7) :done, 2026-11-26, 1d
+  Volume a trascinamento (extra, step 7) :done, 2026-11-26, 1d
+  Login (extra, step 7, con Giovanbattista) :done, 2026-11-26, 1d
+  Playlist per utente (extra, step 7, con Giovanbattista) :2026-11-26, 1d
 
   section Alessandro
   Markup card (step 1, con Giovanbattista) :done, 2026-11-24, 1d
   Player (step 3)                  :done, 2026-11-24, 1d
   Cerca e ultima ricerca (step 4)  :done, 2026-11-25, 1d
-  Brano in corso al cambio pagina (step 5) :2026-11-25, 1d
-  Cuore nelle altre viste (extra, step 5) :2026-11-25, 1d
-  Preferito che suona al click (extra, step 5) :2026-11-25, 1d
-  Shuffle e ripeti (extra, step 7) :2026-11-26, 1d
-  Volume a trascinamento (extra, step 7) :2026-11-26, 1d
-  Login e playlist (extra, step 7) :2026-11-26, 1d
+  Brano in corso al cambio pagina (step 5) :done, 2026-11-25, 1d
+  Cuore nelle altre viste (extra, step 5) :done, 2026-11-25, 1d
+  Preferito che suona al click (extra, step 7) :active, 2026-11-26, 1d
+  Preferiti per categoria (extra, step 7) :active, 2026-11-26, 1d
 
   section Scadenze
   Minimo completo                  :milestone, 2026-11-26, 0d
@@ -84,7 +93,7 @@ xychart-beta
   x-axis ["Mar 24", "Mer 25", "Gio 26", "Ven 27"]
   y-axis "Step" 0 --> 6
   line [3, 6, 6, 6]
-  bar [0, 0, 0, 0]
+  bar [2, 2, 5, 0]
 ```
 
 ### K2 — Rispetto del Gantt
@@ -95,7 +104,7 @@ xychart-beta
   x-axis ["Mar 24", "Mer 25", "Gio 26", "Ven 27"]
   y-axis "%" 0 --> 100
   line [100, 100, 100, 100]
-  bar [0, 0, 0, 0]
+  bar [82, 70, 0, 0]
 ```
 
 ### K3 — Integrazione su main
@@ -106,7 +115,7 @@ xychart-beta
   x-axis ["Mar 24", "Mer 25", "Gio 26", "Ven 27"]
   y-axis "Persone" 0 --> 5
   line [5, 5, 5, 4]
-  bar [0, 0, 0, 0]
+  bar [4, 4, 3, 0]
 ```
 
 Venerdì l'obiettivo è 4 e non 5: Luca è assente.
@@ -131,7 +140,7 @@ xychart-beta
   x-axis ["Mar 24", "Mer 25", "Gio 26", "Ven 27"]
   y-axis "Pagine" 0 --> 4
   line [0, 4, 4, 4]
-  bar [0, 0, 0, 0]
+  bar [0, 0, 4, 0]
 ```
 
 ### K6 — Vincoli sul codice
