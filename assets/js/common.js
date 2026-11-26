@@ -126,6 +126,10 @@ class Player {
     this.queue = [];
     this.isPlaying = false;
 
+    //Francesca: stati attivi per riproduzione casuale (shuffle) e ripetizione brano (repeat)
+    this.isShuffle = false;
+    this.isRepeat = false;
+
     // Eventi audio: scrivono negli elementi del footer, che mount() salva prima del primo play.
     // La durata arriva da loadedmetadata perché l'anteprima dura 30 secondi, non quanto il brano;
     // "pause" arriva anche a fine brano, quindi l'icona torna ▶ da sola; poi "ended" passa al successivo
@@ -147,7 +151,16 @@ class Player {
       this.toggleButton.textContent = "▶";
       this.syncPlayButtons();
     });
-    this.audio.addEventListener("ended", () => this.skip(1));
+
+    //Francesca: a fine brano, se repeat è attivo riparte da 0:00 in loop, altrimenti passa al successivo
+    this.audio.addEventListener("ended", () => {
+      if (this.isRepeat && this.currentTrack) {
+        this.audio.currentTime = 0;
+        this.start();
+      } else {
+        this.skip(1);
+      }
+    });
   }
 
   // Footer del player: markup, elementi da aggiornare, click, volume iniziale
@@ -159,6 +172,8 @@ class Player {
     this.titleText = footer.querySelector("#player-title");
     this.artistText = footer.querySelector("#player-artist");
     this.toggleButton = footer.querySelector("#btn-toggle");
+    this.shuffleButton = footer.querySelector("#btn-shuffle");
+    this.repeatButton = footer.querySelector("#btn-repeat");
     this.progressFill = footer.querySelector("#progress-fill");
     this.timeCurrent = footer.querySelector("#time-current");
     this.timeTotal = footer.querySelector("#time-total");
@@ -171,12 +186,56 @@ class Player {
     footer
       .querySelector("#btn-next")
       .addEventListener("click", () => this.skip(1));
+
+    //Francesca: attiva/disattiva la riproduzione casuale
+    this.shuffleButton.addEventListener("click", () => {
+      this.isShuffle = !this.isShuffle;
+      this.shuffleButton.classList.toggle("is-active", this.isShuffle);
+      this.shuffleButton.setAttribute("aria-pressed", String(this.isShuffle));
+    });
+
+    //Francesca: attiva/disattiva il loop del brano corrente
+    this.repeatButton.addEventListener("click", () => {
+      this.isRepeat = !this.isRepeat;
+      this.repeatButton.classList.toggle("is-active", this.isRepeat);
+      this.repeatButton.setAttribute("aria-pressed", String(this.isRepeat));
+    });
+
     footer
       .querySelector("#progress-bar")
       .addEventListener("click", (event) => this.seek(clickRatio(event)));
-    footer
-      .querySelector("#volume-bar")
-      .addEventListener("click", (event) => this.setVolume(clickRatio(event)));
+
+    //Francesca: gestione barra volume sia al click singolo sia trascinando il cursore
+   const volumeBar = footer.querySelector("#volume-bar");
+    let isDraggingVolume = false;
+
+    //Francesca: calcola la percentuale orizzontale del cursore sulla barra del volume
+    const updateVolumeFromEvent = (event) => {
+      const rect = volumeBar.getBoundingClientRect();
+      const ratio = (event.clientX - rect.left) / rect.width;
+      this.setVolume(ratio);
+    };
+
+    //Francesca: inizio trascinamento volume (aggancia il puntatore anche se esce leggermente dalla barra)
+    volumeBar.addEventListener("pointerdown", (event) => {
+      isDraggingVolume = true;
+      volumeBar.setPointerCapture(event.pointerId);
+      updateVolumeFromEvent(event);
+    });
+
+    //Francesca: aggiorna il volume in tempo reale mentre si trascina
+    volumeBar.addEventListener("pointermove", (event) => {
+      if (!isDraggingVolume) return;
+      updateVolumeFromEvent(event);
+    });
+
+    //Francesca: fine trascinamento al rilascio del tasto o interruzione del puntatore
+    const stopVolumeDrag = () => {
+      isDraggingVolume = false;
+    };
+
+    volumeBar.addEventListener("pointerup", stopVolumeDrag);
+    volumeBar.addEventListener("pointercancel", stopVolumeDrag);
 
     this.setVolume(0.8);
     // Alessandro: mostra l’ultimo brano ascoltato
@@ -238,6 +297,21 @@ class Player {
 
   // Brano precedente (-1) o successivo (+1) nella coda: ai due capi non fa niente
   skip(step) {
+    if (this.queue.length === 0) return;
+
+    //Francesca: riproduzione casuale dalla coda evitando di ripetere subito lo stesso brano
+    if (this.isShuffle && this.queue.length > 1) {
+      const currentIndex = this.queue.findIndex(
+        (item) => item.id === this.currentTrack?.id,
+      );
+      let randomIndex = currentIndex;
+      while (randomIndex === currentIndex) {
+        randomIndex = Math.floor(Math.random() * this.queue.length);
+      }
+      this.play(this.queue[randomIndex], this.queue);
+      return;
+    }
+
     const index = this.queue.findIndex(
       (item) => item.id === this.currentTrack?.id,
     );
