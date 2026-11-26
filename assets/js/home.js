@@ -39,6 +39,7 @@ const renderRow = (container, tracks) => {
   container.appendChild(grid);
   container.hidden = tracks.length === 0;
   rowTracks.set(container, tracks);
+  player.syncPlayButtons();
 };
 
 /*-----------------------------*/
