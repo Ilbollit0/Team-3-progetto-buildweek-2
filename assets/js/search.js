@@ -1,4 +1,3 @@
-
 /* ============================================================
    search.js — ricerca con debounce
    [ALESSANDRO]
@@ -60,9 +59,7 @@ const toggleSavedFavourite = (item, key) => {
   let favourites = getSavedFavourites(key);
 
   if (isSavedFavourite(item.id, key)) {
-    favourites = favourites.filter(
-      (fav) => fav.id !== item.id,
-    );
+    favourites = favourites.filter((fav) => fav.id !== item.id);
   } else {
     favourites.push(item);
   }
@@ -76,11 +73,7 @@ const toggleSavedFavourite = (item, key) => {
 const createSavedFavButton = (item, key) => {
   const isFav = isSavedFavourite(item.id, key);
 
-  const button = buildElement(
-    "button",
-    "card-fav btn-fav",
-    isFav ? "♥" : "♡",
-  );
+  const button = buildElement("button", "card-fav btn-fav", isFav ? "♥" : "♡");
 
   button.type = "button";
   button.classList.toggle("is-fav", isFav);
@@ -122,10 +115,7 @@ const renderAlbumCard = (album) => {
   );
 
   // [ALESSANDRO] Aggiunge il cuore all'album
-  const favButton = createSavedFavButton(
-    album,
-    STORAGE_KEY_ALBUMS,
-  );
+  const favButton = createSavedFavButton(album, STORAGE_KEY_ALBUMS);
 
   card.appendChild(favButton);
 
@@ -140,10 +130,7 @@ const renderArtistCard = (artist) => {
 
   const imageWrap = buildElement("div", "card-image-wrap");
 
-  const placeholder = buildElement(
-    "div",
-    "artist-placeholder",
-  );
+  const placeholder = buildElement("div", "artist-placeholder");
 
   imageWrap.appendChild(placeholder);
 
@@ -154,10 +141,7 @@ const renderArtistCard = (artist) => {
   );
 
   // [ALESSANDRO] Aggiunge il cuore all'artista
-  const favButton = createSavedFavButton(
-    artist,
-    STORAGE_KEY_ARTISTS,
-  );
+  const favButton = createSavedFavButton(artist, STORAGE_KEY_ARTISTS);
 
   card.appendChild(favButton);
 
@@ -169,9 +153,7 @@ gridTracks.addEventListener("click", (event) => {
   const card = event.target.closest("[data-track-id]");
   if (!card) return;
 
-  const track = tracks.find(
-    (item) => item.id === card.dataset.trackId,
-  );
+  const track = tracks.find((item) => item.id === card.dataset.trackId);
 
   if (!track) return;
 
@@ -211,16 +193,11 @@ gridAlbums.addEventListener("click", (event) => {
   if (favButton) {
     const albumId = card.dataset.albumId;
 
-    const savedAlbum = albums.find(
-      (album) => album.id === albumId,
-    );
+    const savedAlbum = albums.find((album) => album.id === albumId);
 
     if (!savedAlbum) return;
 
-    const isFav = toggleSavedFavourite(
-      savedAlbum,
-      STORAGE_KEY_ALBUMS,
-    );
+    const isFav = toggleSavedFavourite(savedAlbum, STORAGE_KEY_ALBUMS);
 
     favButton.textContent = isFav ? "♥" : "♡";
     favButton.classList.toggle("is-fav", isFav);
@@ -247,16 +224,11 @@ gridArtists.addEventListener("click", (event) => {
   if (favButton) {
     const artistId = card.dataset.artistId;
 
-    const savedArtist = artists.find(
-      (artist) => artist.id === artistId,
-    );
+    const savedArtist = artists.find((artist) => artist.id === artistId);
 
     if (!savedArtist) return;
 
-    const isFav = toggleSavedFavourite(
-      savedArtist,
-      STORAGE_KEY_ARTISTS,
-    );
+    const isFav = toggleSavedFavourite(savedArtist, STORAGE_KEY_ARTISTS);
 
     favButton.textContent = isFav ? "♥" : "♡";
     favButton.classList.toggle("is-fav", isFav);
@@ -321,13 +293,9 @@ const doSearch = async (term) => {
   // Converte i dati nei modelli
   tracks = tracksData.results.map((raw) => new Track(raw));
 
-  albums = albumsData.results.map(
-    (raw) => new Album(raw),
-  );
+  albums = albumsData.results.map((raw) => new Album(raw));
 
-  artists = artistsData.results.map(
-    (raw) => new Artist(raw),
-  );
+  artists = artistsData.results.map((raw) => new Artist(raw));
 
   // Mostra le sezioni che hanno risultati
   rowTracks.hidden = tracks.length === 0;
@@ -369,5 +337,3 @@ if (lastQuery) {
   input.value = lastQuery;
   doSearch(lastQuery);
 }
-
-

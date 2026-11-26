@@ -29,11 +29,11 @@ const rowTracks = new Map();
 
 //griglia dove vanno le card
 const renderRow = (container, tracks) => {
-  //toglie se ce gia 
-  container.querySelector('.row')?.remove();
+  //toglie se ce gia
+  container.querySelector(".row")?.remove();
   //le card
-  const grid = document.createElement('div');
-  grid.classList.add('row', 'g-3');
+  const grid = document.createElement("div");
+  grid.classList.add("row", "g-3");
   tracks.forEach((track) => grid.appendChild(creaCard(track)));
 
   container.appendChild(grid);
@@ -41,14 +41,11 @@ const renderRow = (container, tracks) => {
   rowTracks.set(container, tracks);
 };
 
-
-
-
 /*-----------------------------*/
 
 //VECCHIA CREA CARD
 // function creaCard(song) {
-//   // creo div per card 
+//   // creo div per card
 //   const col = document.createElement('div');
 //   col.classList.add('col-6', 'col-md-4', 'col-lg-3');
 
@@ -66,7 +63,7 @@ const renderRow = (container, tracks) => {
 //   const body = document.createElement('div');
 //   body.classList.add('card-body');
 
-//   //creo nome artista 
+//   //creo nome artista
 //   const artistName = document.createElement('p');
 //   artistName.classList.add('fw-bold', 'mb-2', 'text-white' );
 //   artistName.textContent = song.artist;
@@ -94,7 +91,7 @@ const creaCard = (track) => {
 
   const card = createTrackCard(track);
   col.appendChild(card);
-// nel caso servisse mettewre altezza a card
+  // nel caso servisse mettewre altezza a card
   return col;
 };
 
@@ -112,8 +109,6 @@ const loadSong = async (ricerca) => {
   return data.results.map((raw) => new Track(raw));
 };
 
-
-
 const loadHome = async () => {
   renderRow(recenti, getHistory());
   renderRow(preferiti, getFavourites());
@@ -121,27 +116,25 @@ const loadHome = async () => {
   const results = await Promise.all(SUGGESTIONS.map((s) => loadSong(s.term)));
 
   SUGGESTIONS.forEach((s, i) => {
-    renderRow(document.querySelector(s.selector), results[i])
+    renderRow(document.querySelector(s.selector), results[i]);
   });
 };
 
 loadHome();
 
-
-
 //creo eventi al click
-home.addEventListener('click', (e) => {
-  //card cliccata 
-  const card = e.target.closest('[data-track-id]');
+home.addEventListener("click", (e) => {
+  //card cliccata
+  const card = e.target.closest("[data-track-id]");
   if (!card) return;
   //dov'é la card
-  const container = card.closest('.row').parentElement
+  const container = card.closest(".row").parentElement;
   const tracks = rowTracks.get(container);
 
   const track = tracks.find((item) => item.id === card.dataset.trackId);
   if (!track) return;
   // click sul centro
-  const cntButton = e.target.closest('.btn-fav');
+  const cntButton = e.target.closest(".btn-fav");
   if (e.target.closest(".btn-fav")) {
     toggleFavourite(track);
     renderRow(preferiti, getFavourites());
