@@ -34,7 +34,7 @@ const userKey = (key) =>
 //Francesca: controlla subito se l'utente è loggato; se non siamo già su login.html rimanda al login
 const isLoginPage = window.location.pathname.endsWith("login.html");
 if (!isLoginPage && !sessionStorage.getItem(STORAGE_KEY_CURRENT_USER)) {
-  window.location.replace("login.html");
+  window.location.replace("login");
 }
 
 // 2. Helpers
@@ -557,11 +557,6 @@ const renderSidebarFavs = () => {
   });
   list.replaceChildren(...items);
 };
-
-//Francesca: nella topbar le iniziali del nome, il nome intero nel title
-const pill = document.querySelector(".user-pill");
-pill.title = pill.textContent;
-pill.textContent = pill.textContent.split(" ").map((word) => word[0]).join("");
 
 //Francesca: recupera l'oggetto completo (id e nome) dell'utente attualmente collegato
 const getCurrentUser = () => {

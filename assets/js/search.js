@@ -259,8 +259,8 @@ const doSearch = async (term) => {
   // Identifica la ricerca più recente
   const currentSearchId = ++searchId;
 
-  // Salva l'ultima ricerca
-  localStorage.setItem(STORAGE_KEY_LAST_SEARCH, term);
+  //Francesca: salva l'ultima ricerca associandola all'utente collegato
+localStorage.setItem(userKey(STORAGE_KEY_LAST_SEARCH), term);
 
   // [ALESSANDRO] Svuota i risultati precedenti
   gridTracks.replaceChildren();
