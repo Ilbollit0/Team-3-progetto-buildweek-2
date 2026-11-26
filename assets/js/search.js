@@ -119,22 +119,22 @@ const renderAlbumCard = (album) => {
   gridAlbums.appendChild(card);
 };
 
-// // iTunes non ha le foto degli artisti: le chiede a TheAudioDB per nome
-// const getArtistPhoto = async (name) => {
-//   const data = await fetchJSON(
-//     `${AUDIODB_BASE}/search.php?s=${encodeURIComponent(name)}`,
-//   );
-//   return data.artists?.[0]?.strArtistThumb ?? "";
-// };
+// iTunes non ha le foto degli artisti: le chiede a TheAudioDB per nome
+const getArtistPhoto = async (name) => {
+  const data = await fetchJSON(
+    `${AUDIODB_BASE}/search.php?s=${encodeURIComponent(name)}`,
+  );
+  return data.artists?.[0]?.strArtistThumb ?? "";
+};
 
-// // Copertina di un album dell'artista, se non c'è immagine album
-// const getArtistAlbumCover = async (artistId) => {
-//   const data = await fetchJSON(
-//     `${API_BASE}/lookup?id=${encodeURIComponent(artistId)}&entity=album&limit=1`,
-//   );
-//   const rawAlbum = data.results.find((item) => item.wrapperType === "collection");
-//   return rawAlbum ? bigArt(new Album(rawAlbum).cover) : "";
-// };
+// Copertina di un album dell'artista, se non c'è la foto dell'artista
+const getArtistAlbumCover = async (artistId) => {
+  const data = await fetchJSON(
+    `${API_BASE}/lookup?id=${encodeURIComponent(artistId)}&entity=album&limit=1`,
+  );
+  const rawAlbum = data.results.find((item) => item.wrapperType === "collection");
+  return rawAlbum ? bigArt(new Album(rawAlbum).cover) : "";
+};
 
 // [ALESSANDRO] Crea la card di un artista
 const renderArtistCard = (artist) => {
@@ -142,12 +142,21 @@ const renderArtistCard = (artist) => {
   const card = buildElement("div", "card");
   card.dataset.artistId = artist.id;
 
-  const imageWrap = buildElement("div", "card-image-wrap");
+  const imageWrap = buildElement("div", "card-image-wrap round");
 
-  const placeholder = buildElement("div", "artist-placeholder");
+  // Foto da TheAudioDB; se non c'è, copertina di un suo brano; se no, di un suo album
+  getArtistPhoto(artist.name).then(async (photo) => {
+    const trackCover = tracks.find((track) => track.artistId === artist.id)?.cover;
+    const cover =
+      photo || bigArt(trackCover) || (await getArtistAlbumCover(artist.id));
+    if (!cover) return;
 
-  imageWrap.appendChild(placeholder);
-
+    const img = document.createElement("img");
+    img.src = cover;
+    img.alt = artist.name;
+    img.loading = "lazy";
+    imageWrap.appendChild(img);
+  });
   card.append(
     imageWrap,
     buildElement("p", "card-title", artist.name),
@@ -351,7 +360,8 @@ input.addEventListener("input", (event) => {
   // Recupera il testo scritto
   const term = event.target.value.trim();
 
-  
+  // Salva subito l'ultima ricerca dell'utente collegato
+  localStorage.setItem(userKey(STORAGE_KEY_LAST_SEARCH), term);
 
   // Svuota subito i risultati se il testo è vuoto
   if (!term) {
