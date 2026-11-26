@@ -1,3 +1,4 @@
+
 /* ============================================================
    home.js — costruzione della Home
    ============================================================
@@ -21,6 +22,7 @@ const player = initPage("home");
 const home = document.querySelector(".home");
 const preferiti = document.querySelector("#preferiti");
 
+// [ALESSANDRO] Contenitori dei preferiti
 const preferitiBrani = document.querySelector("#preferiti-brani");
 const preferitiAlbum = document.querySelector("#preferiti-album");
 const preferitiArtisti = document.querySelector("#preferiti-artisti");
@@ -128,16 +130,16 @@ function creaCardAlbum(album) {
   cuore.addEventListener("click", (event) => {
     event.stopPropagation();
 
-    const albumSalvati = JSON.parse(
-      localStorage.getItem("epitunes_favourite_albums") || "[]"
+    const albumSalvati = readList(
+      userKey("epitunes_favourite_albums")
     );
 
     const aggiornati = albumSalvati.filter(
-      (item) => item.id !== album.id
+      (item) => String(item.id) !== String(album.id)
     );
 
     localStorage.setItem(
-      "epitunes_favourite_albums",
+      userKey("epitunes_favourite_albums"),
       JSON.stringify(aggiornati)
     );
 
@@ -154,7 +156,6 @@ function creaCardAlbum(album) {
   return col;
 }
 
-// [ALESSANDRO] Crea le card degli artisti preferiti
 // [ALESSANDRO] Crea le card degli artisti preferiti
 function creaCardArtista(artista) {
   const col = document.createElement("div");
@@ -179,16 +180,16 @@ function creaCardArtista(artista) {
   cuore.addEventListener("click", (event) => {
     event.stopPropagation();
 
-    const artistiSalvati = JSON.parse(
-      localStorage.getItem("epitunes_favourite_artists") || "[]"
+    const artistiSalvati = readList(
+      userKey("epitunes_favourite_artists")
     );
 
     const aggiornati = artistiSalvati.filter(
-      (item) => item.id !== artista.id
+      (item) => String(item.id) !== String(artista.id)
     );
 
     localStorage.setItem(
-      "epitunes_favourite_artists",
+      userKey("epitunes_favourite_artists"),
       JSON.stringify(aggiornati)
     );
 
@@ -219,27 +220,16 @@ const loadSong = async (ricerca) => {
   return data.results.map((raw) => new Track(raw));
 };
 
-const loadHome = async () => {
-  renderRow(recenti, getHistory());
-  renderPreferiti();
-
-  const results = await Promise.all(SUGGESTIONS.map((s) => loadSong(s.term)));
-
-  SUGGESTIONS.forEach((s, i) => {
-    renderRow(document.querySelector(s.selector), results[i]);
-  });
-};
-
 // [ALESSANDRO] Mostra brani, album e artisti preferiti
 const renderPreferiti = () => {
   const brani = getFavourites();
 
-  const album = JSON.parse(
-    localStorage.getItem("epitunes_favourite_albums") || "[]"
+  const album = readList(
+    userKey("epitunes_favourite_albums")
   );
 
-  const artisti = JSON.parse(
-    localStorage.getItem("epitunes_favourite_artists") || "[]"
+  const artisti = readList(
+    userKey("epitunes_favourite_artists")
   );
 
   // Mostra i brani preferiti
@@ -255,6 +245,7 @@ const renderPreferiti = () => {
 
   preferitiAlbum.querySelector(".row")?.remove();
   preferitiAlbum.appendChild(gridAlbum);
+  preferitiAlbum.hidden = album.length === 0;
 
   // Mostra gli artisti preferiti
   const gridArtisti = document.createElement("div");
@@ -266,6 +257,24 @@ const renderPreferiti = () => {
 
   preferitiArtisti.querySelector(".row")?.remove();
   preferitiArtisti.appendChild(gridArtisti);
+  preferitiArtisti.hidden = artisti.length === 0;
+
+  // [ALESSANDRO] Nasconde i preferiti se tutte le liste sono vuote
+  preferiti.hidden =
+    brani.length === 0 &&
+    album.length === 0 &&
+    artisti.length === 0;
+};
+
+const loadHome = async () => {
+  renderRow(recenti, getHistory());
+  renderPreferiti();
+
+  const results = await Promise.all(SUGGESTIONS.map((s) => loadSong(s.term)));
+
+  SUGGESTIONS.forEach((s, i) => {
+    renderRow(document.querySelector(s.selector), results[i]);
+  });
 };
 
 loadHome();
@@ -275,18 +284,34 @@ home.addEventListener("click", (e) => {
   //card cliccata
   const card = e.target.closest("[data-track-id]");
   if (!card) return;
+
   //dov'é la card
-  const container = card.closest(".row").parentElement;
+  const container = card.closest(".row")?.parentElement;
   const tracks = rowTracks.get(container);
 
-  const track = tracks.find((item) => item.id === card.dataset.trackId);
+  if (!tracks) return;
+
+  const track = tracks.find(
+    (item) => String(item.id) === card.dataset.trackId
+  );
+
   if (!track) return;
+
   // click sul centro
   const cntButton = e.target.closest(".btn-fav");
-  if (e.target.closest(".btn-fav")) {
+
+  if (cntButton) {
     toggleFavourite(track);
+
+    // [ALESSANDRO] Aggiorna tutti i preferiti
     renderPreferiti();
-    rowTracks.forEach((rowList, container) => renderRow(container, rowList));
+
+    rowTracks.forEach((rowList, container) => {
+      if (container !== preferitiBrani) {
+        renderRow(container, rowList);
+      }
+    });
+
     return;
   }
 
