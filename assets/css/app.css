@@ -328,24 +328,72 @@ button {
 
 /* ============================ Cerca ============================ */
 
-/* Campo di ricerca */
+/*Francesca: contenitore input ricerca + pulsante X interno*/
 .search-box {
-  margin-top: 8px;
-  margin-bottom: 16px;
+  position: relative;
+  display: inline-flex;
+  align-items: center;
+  width: 100%;
+  max-width: 380px;
 
-  .search-input {
+ #search-input {
     width: 100%;
-    max-width: 480px;
-    padding: 12px 16px;
+    padding: 0.65rem 2.4rem 0.65rem 1.25rem;
+    border: 0;
     border-radius: 999px;
-    border: none;
-    background: var(--bg-input);
-    color: var(--text-input);
-    font-size: 14px;
+    background-color: #ffffff;
+    color: #121212;
+    font-size: 0.9rem;
     outline: none;
+  }
+
+  .search-clear-btn {
+    position: absolute;
+    top: 50%;
+    right: 14px;
+    transform: translateY(-50%);
+    padding: 0 4px;
+    border: 0;
+    background: transparent;
+    color: #555555;
+    font-size: 1.35rem;
+    line-height: 1;
+    cursor: pointer;
+
+    &:hover {
+      color: #000000;
+    }
   }
 }
 
+/*Francesca: pillole delle ricerche recenti nella pagina Cerca*/
+.recent-search-chip {
+  display: inline-flex;
+  align-items: center;
+  gap: 8px;
+  padding: 6px 14px;
+  border-radius: 999px;
+  background-color: #242424;
+  color: #ffffff;
+  border: 1px solid #333333;
+  font-size: 0.9rem;
+  cursor: pointer;
+  transition: background-color 0.15s ease;
+
+  &:hover {
+    background-color: #333333;
+  }
+
+  .chip-remove {
+    color: #999999;
+    font-weight: 700;
+    line-height: 1;
+
+    &:hover {
+      color: #ffffff;
+    }
+  }
+}
 /* ============================ Righe e griglia ============================ */
 
 /* Riga di Home e Cerca: titolo e griglia di card */
@@ -777,10 +825,11 @@ button {
       display: flex;
     }
 
-    .volume-bar {
-      width: 120px;
-      user-select: none;
-      touch-action: none;
+    /*Francesca: barra del volume larga la metà rispetto allo spazio destro*/
+    #volume-bar {
+      width: 50%;
+      max-width: 160px;
+      flex: none;
     }
   }
 
@@ -825,7 +874,7 @@ button {
       .progress-bar:hover &,
       .volume-bar:hover & {
         background: var(--success);
-        
+
         /* Francesca: l passaggio del mouse nella barra compare il pallino */
         &::after {
           opacity: 1;
