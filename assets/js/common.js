@@ -126,14 +126,17 @@ class Player {
     this.queue = [];
     this.isPlaying = false;
 
-    //Francesca: stati attivi per riproduzione casuale (shuffle) e ripetizione brano (repeat)
+    //Francesca: stati attivi per riproduzione casuale (shuffle) e ripetizione brano (repeat), drag della barra canzoni
     this.isShuffle = false;
     this.isRepeat = false;
+    this.isSeeking = false;
 
     // Eventi audio: scrivono negli elementi del footer, che mount() salva prima del primo play.
     // La durata arriva da loadedmetadata perché l'anteprima dura 30 secondi, non quanto il brano;
     // "pause" arriva anche a fine brano, quindi l'icona torna ▶ da sola; poi "ended" passa al successivo
     this.audio.addEventListener("timeupdate", () => {
+      //Francesca: mentre si trascina la barra manualmente, non sovrascrive la posizione del pallino
+      if (this.isSeeking) return;
       const ratio = this.audio.currentTime / this.audio.duration || 0;
       this.progressFill.style.width = `${ratio * 100}%`;
       this.timeCurrent.textContent = formatTime(this.audio.currentTime * 1000);
@@ -201,9 +204,50 @@ class Player {
       this.repeatButton.setAttribute("aria-pressed", String(this.isRepeat));
     });
 
-    footer
-      .querySelector("#progress-bar")
-      .addEventListener("click", (event) => this.seek(clickRatio(event)));
+    //Francesca: gestione barra avanzamento brano sia al click singolo sia trascinando il pallino
+    const progressBar = footer.querySelector("#progress-bar");
+
+    //Francesca: calcola la percentuale (tra 0 e 1) del cursore sulla barra del brano
+    const getProgressRatio = (event) => {
+      const rect = progressBar.getBoundingClientRect();
+      const rawRatio = (event.clientX - rect.left) / rect.width;
+      return Math.min(Math.max(rawRatio, 0), 1);
+    };
+
+    //Francesca: aggiorna subito la grafica della barra e il tempo visualizzato durante il trascinamento
+    const previewProgress = (ratio) => {
+      this.progressFill.style.width = `${ratio * 100}%`;
+      if (this.audio.duration) {
+        this.timeCurrent.textContent = formatTime(
+          this.audio.duration * ratio * 1000,
+        );
+      }
+    };
+
+    //Francesca: inizio trascinamento sulla barra del brano
+    progressBar.addEventListener("pointerdown", (event) => {
+      if (!this.audio.duration) return;
+      this.isSeeking = true;
+      progressBar.setPointerCapture(event.pointerId);
+      previewProgress(getProgressRatio(event));
+    });
+
+    //Francesca: sposta il pallino e aggiorna i secondi mentre si trascina
+    progressBar.addEventListener("pointermove", (event) => {
+      if (!this.isSeeking) return;
+      previewProgress(getProgressRatio(event));
+    });
+
+    //Francesca: al rilascio del mouse applica il nuovo punto di riproduzione all'audio
+    const finishSeek = (event) => {
+      if (!this.isSeeking) return;
+      const ratio = getProgressRatio(event);
+      this.isSeeking = false;
+      this.seek(ratio);
+    };
+
+    progressBar.addEventListener("pointerup", finishSeek);
+    progressBar.addEventListener("pointercancel", finishSeek);
 
     //Francesca: gestione barra volume sia al click singolo sia trascinando il cursore
    const volumeBar = footer.querySelector("#volume-bar");
