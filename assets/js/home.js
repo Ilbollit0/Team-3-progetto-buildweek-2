@@ -20,6 +20,11 @@ const player = initPage("home");
 
 const home = document.querySelector(".home");
 const preferiti = document.querySelector("#preferiti");
+
+const preferitiBrani = document.querySelector("#preferiti-brani");
+const preferitiAlbum = document.querySelector("#preferiti-album");
+const preferitiArtisti = document.querySelector("#preferiti-artisti");
+
 const recenti = document.querySelector("#recenti");
 const rock = document.querySelector("#rock");
 const pop = document.querySelector("#pop");
@@ -96,6 +101,110 @@ const creaCard = (track) => {
   return col;
 };
 
+// [ALESSANDRO] Crea le card degli album preferiti
+function creaCardAlbum(album) {
+  const col = document.createElement("div");
+  col.classList.add("col-6", "col-md-4", "col-lg-3");
+
+  const card = document.createElement("div");
+  card.classList.add("card", "h-100");
+
+  const img = document.createElement("img");
+  img.src = bigArt(album.cover);
+  img.alt = album.title;
+  img.classList.add("card-img-top");
+
+  const titolo = document.createElement("p");
+  titolo.textContent = album.title;
+
+  card.append(img, titolo);
+
+  // [ALESSANDRO] Cuore rosso per gli album preferiti
+  const cuore = document.createElement("button");
+  cuore.type = "button";
+  cuore.className = "card-fav btn-fav is-fav";
+  cuore.textContent = "♥";
+
+  cuore.addEventListener("click", (event) => {
+    event.stopPropagation();
+
+    const albumSalvati = JSON.parse(
+      localStorage.getItem("epitunes_favourite_albums") || "[]"
+    );
+
+    const aggiornati = albumSalvati.filter(
+      (item) => item.id !== album.id
+    );
+
+    localStorage.setItem(
+      "epitunes_favourite_albums",
+      JSON.stringify(aggiornati)
+    );
+
+    renderPreferiti();
+  });
+
+  card.appendChild(cuore);
+  col.appendChild(card);
+
+  card.addEventListener("click", () => {
+    window.location.href = "album.html?id=" + album.id;
+  });
+
+  return col;
+}
+
+// [ALESSANDRO] Crea le card degli artisti preferiti
+// [ALESSANDRO] Crea le card degli artisti preferiti
+function creaCardArtista(artista) {
+  const col = document.createElement("div");
+  col.classList.add("col-6", "col-md-4", "col-lg-3");
+
+  const card = document.createElement("div");
+  card.classList.add("card", "h-100");
+
+  const titolo = document.createElement("p");
+  titolo.classList.add("card-title");
+  titolo.textContent = artista.name;
+
+  card.appendChild(titolo);
+
+  // [ALESSANDRO] Cuore rosso per gli artisti preferiti
+  const cuore = document.createElement("button");
+  cuore.type = "button";
+  cuore.className = "card-fav btn-fav is-fav";
+  cuore.textContent = "♥";
+  cuore.setAttribute("aria-label", "Togli artista dai preferiti");
+
+  cuore.addEventListener("click", (event) => {
+    event.stopPropagation();
+
+    const artistiSalvati = JSON.parse(
+      localStorage.getItem("epitunes_favourite_artists") || "[]"
+    );
+
+    const aggiornati = artistiSalvati.filter(
+      (item) => item.id !== artista.id
+    );
+
+    localStorage.setItem(
+      "epitunes_favourite_artists",
+      JSON.stringify(aggiornati)
+    );
+
+    renderPreferiti();
+  });
+
+  card.appendChild(cuore);
+  col.appendChild(card);
+
+  card.addEventListener("click", () => {
+    window.location.href = "artist.html?id=" + artista.id;
+  });
+
+  return col;
+}
+
 // una ricerca per riga, con il contenitore che la mostra
 const SUGGESTIONS = [
   { term: "rock", selector: "#rock" },
@@ -112,13 +221,51 @@ const loadSong = async (ricerca) => {
 
 const loadHome = async () => {
   renderRow(recenti, getHistory());
-  renderRow(preferiti, getFavourites());
+  renderPreferiti();
 
   const results = await Promise.all(SUGGESTIONS.map((s) => loadSong(s.term)));
 
   SUGGESTIONS.forEach((s, i) => {
     renderRow(document.querySelector(s.selector), results[i]);
   });
+};
+
+// [ALESSANDRO] Mostra brani, album e artisti preferiti
+const renderPreferiti = () => {
+  const brani = getFavourites();
+
+  const album = JSON.parse(
+    localStorage.getItem("epitunes_favourite_albums") || "[]"
+  );
+
+  const artisti = JSON.parse(
+    localStorage.getItem("epitunes_favourite_artists") || "[]"
+  );
+
+  // Mostra i brani preferiti
+  renderRow(preferitiBrani, brani);
+
+  // Mostra gli album preferiti
+  const gridAlbum = document.createElement("div");
+  gridAlbum.classList.add("row", "g-3");
+
+  album.forEach((item) => {
+    gridAlbum.appendChild(creaCardAlbum(item));
+  });
+
+  preferitiAlbum.querySelector(".row")?.remove();
+  preferitiAlbum.appendChild(gridAlbum);
+
+  // Mostra gli artisti preferiti
+  const gridArtisti = document.createElement("div");
+  gridArtisti.classList.add("row", "g-3");
+
+  artisti.forEach((item) => {
+    gridArtisti.appendChild(creaCardArtista(item));
+  });
+
+  preferitiArtisti.querySelector(".row")?.remove();
+  preferitiArtisti.appendChild(gridArtisti);
 };
 
 loadHome();
@@ -138,7 +285,7 @@ home.addEventListener("click", (e) => {
   const cntButton = e.target.closest(".btn-fav");
   if (e.target.closest(".btn-fav")) {
     toggleFavourite(track);
-    renderRow(preferiti, getFavourites());
+    renderPreferiti();
     rowTracks.forEach((rowList, container) => renderRow(container, rowList));
     return;
   }
