@@ -20,58 +20,32 @@
   </head>
 
   <body class="bg-black text-white overflow-auto">
-    <main
-      class="container min-vh-100 d-flex align-items-center justify-content-center py-4">
-      <div
-        class="card bg-dark border-secondary-subtle rounded-4 shadow-lg p-4 p-md-5 w-100"
-        style="max-width: 460px">
+    <main class="container min-vh-100 d-flex align-items-center justify-content-center py-4">
+      <div class="card bg-dark border-secondary-subtle rounded-4 shadow-lg p-4 p-md-5 w-100" style="max-width: 520px">
         <div class="card-body p-0">
           <!--Francesca: logo EpiTunes-->
           <div class="d-flex align-items-center justify-content-center gap-2 mb-4">
             <span
-              class="badge bg-warning text-dark fw-black fs-5 px-2 py-1 rounded-2"
-              >E</span>
+              class="badge bg-warning text-dark fw-black fs-5 px-2 py-1 rounded-2">E</span>
             <span class="fs-4 fw-bold text-white">EpiTunes</span>
           </div>
 
           <!--Francesca: pulsanti Bootstrap per passare tra Accedi e Registrati-->
-          <ul
-            class="nav nav-pills nav-fill bg-black p-1 rounded-pill mb-4"
-            id="auth-tabs"
-            role="tablist">
+          <ul class="nav nav-pills nav-fill bg-black p-1 rounded-pill mb-5" id="auth-tabs" role="tablist">
             <li class="nav-item" role="presentation">
-              <button
-                class="nav-link active rounded-pill fw-semibold text-white"
-                id="tab-login-btn"
-                data-bs-toggle="pill"
-                data-bs-target="#pane-login"
-                type="button"
-                role="tab"
-                aria-controls="pane-login"
-                aria-selected="true">
+              <button class="nav-link active rounded-pill fw-semibold text-white" id="tab-login-btn" data-bs-toggle="pill" data-bs-target="#pane-login" type="button" role="tab" aria-controls="pane-login" aria-selected="true">
                 Accedi
               </button>
             </li>
             <li class="nav-item" role="presentation">
-              <button
-                class="nav-link rounded-pill fw-semibold text-white"
-                id="tab-register-btn"
-                data-bs-toggle="pill"
-                data-bs-target="#pane-register"
-                type="button"
-                role="tab"
-                aria-controls="pane-register"
-                aria-selected="false">
+              <button class="nav-link rounded-pill fw-semibold text-white" id="tab-register-btn" data-bs-toggle="pill" data-bs-target="#pane-register" type="button" role="tab" aria-controls="pane-register" aria-selected="false">
                 Registrati
               </button>
             </li>
           </ul>
 
           <!--Francesca: riquadro messaggio di errore o conferma-->
-          <div
-            id="auth-alert"
-            class="alert alert-danger py-2 px-3 small d-none"
-            role="alert">
+          <div id="auth-alert" class="alert alert-danger py-2 px-3 small d-none" role="alert">
           </div>
 
           <div class="tab-content">
@@ -81,7 +55,7 @@
               id="pane-login"
               role="tabpanel"
               aria-labelledby="tab-login-btn">
-              <form id="login-form" class="d-flex flex-column gap-3">
+              <form id="login-form" class="d-flex flex-column gap-4">
                 <div>
                   <label
                     for="login-email"
@@ -136,7 +110,7 @@
               id="pane-register"
               role="tabpanel"
               aria-labelledby="tab-register-btn">
-              <form id="register-form" class="d-flex flex-column gap-3">
+              <form id="register-form" class="d-flex flex-column gap-4">
                 <div class="row g-2">
                   <div class="col-6">
                     <label
@@ -148,7 +122,7 @@
                       type="text"
                       id="reg-first-name"
                       class="form-control bg-black text-white border-secondary py-2"
-                      placeholder="Francesca"
+                      placeholder="es. Mario"
                       required/>
                   </div>
                   <div class="col-6">
@@ -161,7 +135,7 @@
                       type="text"
                       id="reg-last-name"
                       class="form-control bg-black text-white border-secondary py-2"
-                      placeholder="Alesi"
+                      placeholder="es. Verdi"
                       required/>
                   </div>
                 </div>
@@ -188,22 +162,14 @@
 
                 <div>
                   <label
-                    for="reg-password"
-                    class="form-label text-secondary small fw-semibold">
+                    for="reg-password" class="form-label text-secondary small fw-semibold">
                     Password
                   </label>
                   <div class="input-group">
-                    <span
-                      class="input-group-text bg-black border-secondary text-secondary">
+                    <span class="input-group-text bg-black border-secondary text-secondary">
                       <i class="fa-solid fa-lock"></i>
                     </span>
-                    <input
-                      type="password"
-                      id="reg-password"
-                      class="form-control bg-black text-white border-secondary py-2"
-                      placeholder="Crea una password (min. 6 caratteri)"
-                      minlength="6"
-                      required/>
+                    <input type="password" id="reg-password" class="form-control bg-black text-white border-secondary py-2" placeholder="Crea una password (min. 6 caratteri)" minlength="6" required/>
                   </div>
                 </div>
 
