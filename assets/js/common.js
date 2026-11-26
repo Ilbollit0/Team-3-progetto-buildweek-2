@@ -16,6 +16,8 @@
 // 1. Costanti
 
 const API_BASE = "https://itunes.apple.com";
+//Seconda API per copertina artisti in search.
+const AUDIODB_BASE = "https://www.theaudiodb.com/api/v1/json/123";
 const STORAGE_KEY_HISTORY = "epitunes_history";
 const STORAGE_KEY_FAVOURITES = "epitunes_favourites";
 const STORAGE_KEY_LAST_SEARCH = "epitunes_last_search";
@@ -541,3 +543,5 @@ const initPage = (activePage) => {
   window.player = player;
   return player;
 };
+
+
