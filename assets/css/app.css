@@ -53,8 +53,9 @@ body {
   margin: 0;
   background: var(--bg-base);
   color: var(--text-primary);
-  font-family: -apple-system, BlinkMacSystemFont, "Segoe UI", Roboto,
-    "Helvetica Neue", Arial, sans-serif;
+  font-family:
+    -apple-system, BlinkMacSystemFont, "Segoe UI", Roboto, "Helvetica Neue",
+    Arial, sans-serif;
   font-size: 14px;
   overflow: hidden;
 }
@@ -84,18 +85,13 @@ button {
     "player";
   height: 100vh;
 
-  /* md: sidebar stretta, solo icone */
-  @media (min-width: 768px) {
-    grid-template-columns: 80px 1fr;
+  /* Gabriel: telefono e tablet con la barra in alto; lg (PC): sidebar completa a sinistra */
+  @media (min-width: 992px) {
+    grid-template-columns: 240px 1fr;
     grid-template-rows: 1fr 90px;
     grid-template-areas:
       "sidebar main"
       "player  player";
-  }
-
-  /* lg: sidebar completa */
-  @media (min-width: 992px) {
-    grid-template-columns: 240px 1fr;
   }
 }
 
@@ -109,19 +105,59 @@ button {
 
 /* ============================ Sidebar ============================ */
 
-/* Gabriel: solo icone da md, completa da lg. Luca: su mobile barra con logo, Home e Cerca */
+/* Gabriel: telefono e tablet barra con logo e hamburger, completa da lg. Luca: su mobile barra con logo, Home e Cerca */
 .sidebar {
   grid-area: sidebar;
   display: flex;
+  flex-wrap: wrap;
   align-items: center;
+  justify-content: space-between;
   gap: 16px;
   background: var(--bg-sidebar);
   padding: 8px 16px;
   overflow-y: auto;
 
-  @media (min-width: 768px) {
+  @media (min-width: 992px) {
     display: block;
     padding: 24px 16px;
+  }
+
+  /* Gabriel: hamburger a destra della barra, su telefono e tablet */
+  .menu-btn {
+    display: grid;
+    place-items: center;
+    width: 40px;
+    height: 40px;
+    border: none;
+    border-radius: var(--radius-sm);
+    background: transparent;
+    color: var(--text-primary);
+    font-size: 20px;
+
+    &:hover {
+      background: var(--bg-elev-hover);
+    }
+
+    @media (min-width: 992px) {
+      display: none;
+    }
+  }
+
+  /* Gabriel: menu sotto la barra su telefono e tablet (lo apre l'hamburger); da lg sempre visibile */
+  .sidebar-menu {
+    flex-basis: 100%;
+    max-height: 60vh;
+    overflow-y: auto;
+
+    @media (min-width: 992px) {
+      max-height: none;
+      overflow: visible;
+
+      /* vince su .collapse:not(.show) di Bootstrap, che lo nasconderebbe */
+      &.collapse {
+        display: block;
+      }
+    }
   }
 
   /* Logo: il nome compare da lg */
@@ -134,7 +170,7 @@ button {
     font-size: 18px;
     letter-spacing: 0.5px;
 
-    @media (min-width: 768px) {
+    @media (min-width: 992px) {
       padding: 0 8px 24px;
     }
 
@@ -149,43 +185,32 @@ button {
       font-weight: 900;
     }
 
+    /* Gabriel: il nome si vede sempre, nella barra e nella sidebar */
     .brand-text {
-      display: none;
-
-      @media (min-width: 992px) {
-        display: inline;
-      }
+      display: inline;
     }
   }
 
-  /* Navigazione: Home e Cerca; i testi si vedono su mobile e da lg */
+  /* Navigazione: Home e Cerca in colonna; i testi si vedono su mobile e da lg */
   .sidebar-nav {
     display: flex;
+    flex-direction: column;
     gap: 4px;
+    margin-bottom: 8px;
 
-    @media (min-width: 768px) {
-      flex-direction: column;
+    @media (min-width: 992px) {
       margin-bottom: 24px;
     }
 
     a {
       display: flex;
       align-items: center;
-      justify-content: center;
+      justify-content: flex-start;
       gap: 14px;
       padding: 8px 12px;
       border-radius: var(--radius-sm);
       color: var(--text-secondary);
       font-weight: 600;
-
-      @media (min-width: 768px) {
-        padding: 10px 0;
-      }
-
-      @media (min-width: 992px) {
-        justify-content: flex-start;
-        padding: 8px 12px;
-      }
 
       &:hover {
         color: var(--text-primary);
@@ -202,42 +227,27 @@ button {
         width: 22px;
         text-align: center;
       }
-
-      /* Luca: testi nascosti solo nella sidebar a icone di md */
-      span:not(.ico) {
-        @media (min-width: 768px) and (max-width: 991.98px) {
-          display: none;
-        }
-      }
     }
   }
 
-  /* Preferiti: titolo e lista, solo da lg */
+  /* Preferiti: titolo e lista, nel menu di telefono e tablet e nella sidebar da lg */
   .sidebar-section-title {
-    display: none;
+    display: block;
     text-transform: uppercase;
     font-size: 11px;
     letter-spacing: 1px;
     color: var(--text-secondary);
     padding: 16px 12px 8px;
     margin: 0;
-
-    @media (min-width: 992px) {
-      display: block;
-    }
   }
 
   .sidebar-list {
-    display: none;
+    display: flex;
     flex-direction: column;
     gap: 2px;
     padding: 0 4px;
     list-style: none;
     margin: 0;
-
-    @media (min-width: 992px) {
-      display: flex;
-    }
 
     li {
       padding: 6px 8px;
