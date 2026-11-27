@@ -144,24 +144,26 @@ const renderRecentSearches = () => {
 // [ALESSANDRO] Recupera i preferiti salvati
 const getSavedFavourites = (key) => readList(userKey(key));
 
+
+
 // [ALESSANDRO] Controlla se un album o artista è preferito
 const isSavedFavourite = (id, key) =>
-  getSavedFavourites(key).some((item) => item.id === id);
-
+  getSavedFavourites(key).some(
+    (item) => String(item.id) === String(id)
+  );
 // [ALESSANDRO] Aggiunge o rimuove un preferito
 const toggleSavedFavourite = (item, key) => {
   let favourites = getSavedFavourites(key);
-
   if (isSavedFavourite(item.id, key)) {
-    favourites = favourites.filter(
-      (fav) => fav.id !== item.id,
-    );
-  } else {
-    favourites.push(item);
-  }
+  favourites = favourites.filter(
+    (fav) => String(fav.id) !== String(item.id),
+  );
+} else {
+  favourites.push(item);
+}
 
   localStorage.setItem(userKey(key), JSON.stringify(favourites));
-
+  renderAllSidebarFavs();
   return isSavedFavourite(item.id, key);
 };
 

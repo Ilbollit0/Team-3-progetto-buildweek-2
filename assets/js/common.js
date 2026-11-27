@@ -470,8 +470,8 @@ const toggleFavourite = (track) => {
   const others = getFavourites().filter((item) => item.id !== track.id);
   const favourites = wasFavourite ? others : [track, ...others];
   localStorage.setItem(userKey(STORAGE_KEY_FAVOURITES), JSON.stringify(favourites));
-  //Luca: aggiorna subito la sidebar, da qualunque pagina arrivi il cuore
-  renderSidebarFavs();
+ //Luca: aggiorna subito la sidebar, da qualunque pagina arrivi il cuore
+renderAllSidebarFavs();
   return !wasFavourite;
 };
 
@@ -549,7 +549,7 @@ const renderSidebar = (activePage) => {
     link.classList.toggle("active", link.dataset.page === activePage);
   });
   //Luca: riempie la lista dei preferiti appena creata
-  renderSidebarFavs();
+renderAllSidebarFavs();
 };
 
 //Luca: preferiti nella sidebar, un <li> col titolo per brano, con data-track-id come card e righe (event delegation)
@@ -564,6 +564,74 @@ const renderSidebarFavs = () => {
   });
   list.replaceChildren(...items);
 };
+
+
+ // [ALESSANDRO] Mostra brani, album e artisti nella sidebar
+const renderAllSidebarFavs = () => {
+  const list = document.querySelector("#sidebar-favs");
+  if (!list) return;
+
+  const brani = getFavourites();
+  const album = readList(userKey("epitunes_favourite_albums"));
+  const artisti = readList(userKey("epitunes_favourite_artists"));
+
+  list.replaceChildren();
+
+  // [ALESSANDRO] Crea il titolo di una categoria
+  const aggiungiTitolo = (testo) => {
+    const li = document.createElement("li");
+    li.textContent = testo;
+    li.className = "fw-bold text-white mt-3 mb-1";
+    list.appendChild(li);
+  };
+
+  // [ALESSANDRO] Mostra i brani preferiti
+  if (brani.length > 0) {
+    aggiungiTitolo("Brani");
+
+    brani.forEach((track) => {
+      const li = document.createElement("li");
+      li.textContent = track.title;
+      li.dataset.trackId = track.id;
+      list.appendChild(li);
+    });
+  }
+
+  // [ALESSANDRO] Mostra gli album preferiti
+  if (album.length > 0) {
+    aggiungiTitolo("Album");
+
+    album.forEach((item) => {
+      const li = document.createElement("li");
+      li.textContent = item.title;
+      li.style.cursor = "pointer";
+
+      li.addEventListener("click", () => {
+        window.location.href = "album.html?id=" + item.id;
+      });
+
+      list.appendChild(li);
+    });
+  }
+
+  // [ALESSANDRO] Mostra gli artisti preferiti
+  if (artisti.length > 0) {
+    aggiungiTitolo("Artisti");
+
+    artisti.forEach((item) => {
+      const li = document.createElement("li");
+      li.textContent = item.name;
+      li.style.cursor = "pointer";
+
+      li.addEventListener("click", () => {
+        window.location.href = "artist.html?id=" + item.id;
+      });
+
+      list.appendChild(li);
+    });
+  }
+};
+
 
 //Francesca: recupera l'oggetto completo (id e nome) dell'utente attualmente collegato
 const getCurrentUser = () => {

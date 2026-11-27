@@ -144,6 +144,7 @@ function creaCardAlbum(album) {
     );
 
     renderPreferiti();
+    renderAllSidebarFavs();
   });
 
   card.appendChild(cuore);
@@ -194,6 +195,7 @@ function creaCardArtista(artista) {
     );
 
     renderPreferiti();
+    renderAllSidebarFavs();
   });
 
   card.appendChild(cuore);
