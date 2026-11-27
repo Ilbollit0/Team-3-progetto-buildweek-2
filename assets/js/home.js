@@ -318,7 +318,11 @@ home.addEventListener("click", (e) => {
   if (player.currentTrack?.id === track.id) {
     player.togglePlay();
   } else {
-    player.play(track, tracks);
+    // Unisce tutti i brani caricati nelle varie sezioni della Home (senza doppioni)
+    const allHomeTracks = Array.from(rowTracks.values())
+      .flat()
+      .filter((t, index, self) => index === self.findIndex((x) => x.id === t.id));
+    player.play(track, allHomeTracks);
     renderRow(recenti, getHistory());
   }
 });

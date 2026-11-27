@@ -304,13 +304,14 @@ class Player {
 
   // Alessandro: recupera l’ultimo brano senza riprodurlo
   restoreLastTrack() {
+    const history = getHistory();
     const lastTrack = getHistory()[0];
     if (!lastTrack?.previewUrl) return;
 
     //Francesca: tolto innerHTML che era presente nello start
 
     this.currentTrack = lastTrack;
-    this.queue = [lastTrack];
+    this.queue = history.filter((item) => item.previewUrl);
     this.audio.preload = "metadata";
     this.audio.src = lastTrack.previewUrl;
 
@@ -357,6 +358,12 @@ class Player {
 
   // Brano precedente (-1) o successivo (+1) nella coda: ai due capi non fa niente
   skip(step) {
+    // Se la coda ha 1 solo brano, prova a riempirla con la cronologia
+    if (this.queue.length <= 1) {
+      const fallback = getHistory().filter((item) => item.previewUrl);
+      if (fallback.length > 1) this.queue = fallback;
+    }
+
     if (this.queue.length === 0) return;
 
     //Francesca: riproduzione casuale dalla coda evitando di ripetere subito lo stesso brano
