@@ -21,10 +21,10 @@ Non c'è niente da installare né da compilare: sono cinque pagine HTML, un fogl
 | Persona | Ruolo | Parti principali |
 | --- | --- | --- |
 | Luca | Team Leader e JS | Preferiti e cronologia, riga del brano, precedente e successivo nel player, preferiti nella sidebar, riordino del CSS, documenti di progetto, README e presentazione |
-| Gabriel | Git manager e HTML/CSS | Repo, branch e merge su `main`, struttura comune delle pagine, CSS comune e responsive con il menu a scomparsa, formattazione con Prettier |
-| Giovanbattista | HTML/CSS e JS | Home (`index.html`, il suo CSS e `home.js`), CSS della Cerca, foto degli artisti, album nella pagina Artista, login con Francesca |
-| Francesca | HTML/CSS e JS | Album e Artista: HTML, CSS, `album.js` e `artist.js`; sidebar e player scritti nell'HTML, freccia indietro, shuffle e ripeti, barre da trascinare, login (`login.html`, `login.js`), ricerche recenti e X nel campo della Cerca |
-| Alessandro | JS | `Player`, card del brano, Cerca (`search.js`), preferiti di album e artisti, preferiti per categoria in Home |
+| Gabriel | Git manager e HTML/CSS | Repo, branch e merge su `main`, struttura comune delle pagine, CSS comune e responsive con il menu a scomparsa, formattazione con Prettier, riordino finale di `app.css` |
+| Giovanbattista | HTML/CSS e JS | Home (`index.html`, il suo CSS e `home.js`), CSS della Cerca, foto degli artisti, album nella pagina Artista, login con Francesca, nuovo logo |
+| Francesca | HTML/CSS e JS | Album e Artista: HTML, CSS, `album.js` e `artist.js`; sidebar e player scritti nell'HTML, freccia indietro, shuffle e ripeti, barre da trascinare, login (`login.html`, `login.js`) con il nuovo logo e i colori dell'app, modale del profilo, ricerche recenti e X nel campo della Cerca |
+| Alessandro | JS | `Player`, card del brano, Cerca (`search.js`), preferiti di album e artisti, preferiti per categoria in Home, con la foto degli artisti preferiti |
 
 Chi ha fatto ogni singola voce, e quando, sta nel *Backlog* di [Project management](Project%20management.md).
 
@@ -153,7 +153,7 @@ Gli id diventano stringhe, come quelli che arrivano da `dataset` e dalla query s
 
 | Parte | Cosa fa |
 | --- | --- |
-| Controllo dell'utente, `userKey`, `getCurrentUser`, `renderUserPill` | In cima al file: se nessuno è collegato si va a `login.html`. `userKey` aggiunge l'id dell'utente alle chiavi di localStorage, così ognuno ha i suoi dati. Nella topbar le iniziali aprono un menu con il nome e «Esci» |
+| Controllo dell'utente, `userKey`, `getCurrentUser`, `renderUserPill` | In cima al file: se nessuno è collegato si va a `login.html`. `userKey` aggiunge l'id dell'utente alle chiavi di localStorage, così ognuno ha i suoi dati. Nella topbar le iniziali aprono un menu con il nome e «Esci»; il nome apre la modale del profilo (Bootstrap), con iniziali, nome ed email, creata con `createElement` |
 | `fetchJSON`, `bigArt`, `formatTime`, `debounce`, `buildElement` | Strumenti comuni: chiamata all'API, copertina 600×600 al posto della 100×100, millisecondi in «m:ss», ricerca che parte 400 ms dopo l'ultimo tasto, elemento con classe e testo |
 | `Track`, `Album`, `Artist` | I modelli |
 | `Player` | Suona le anteprime nell'`<audio>` della pagina e aggiorna il footer. `play(track, queue)` riceve anche la coda, cioè i brani della riga o della tracklist cliccata: precedente, successivo, shuffle e ripeti si muovono lì dentro, e a fine brano parte il successivo. Barra del brano e volume si regolano con un clic o trascinando |
@@ -198,19 +198,17 @@ Le chiavi dei dati finiscono con l'id dell'utente (`_<id>`), aggiunto da `userKe
 
 ## 🧩 CSS — `app.css`
 
-Bootstrap 5.3 si carica prima di `app.css`, quindi a parità di selettore vincono le nostre regole. Bootstrap fa la griglia delle card della Home e le classi di spaziatura; `app.css` fa il tema scuro e tutto il resto, in un solo file ordinato come la pagina: token, base, layout, sidebar, topbar, pagine, righe e griglia, card, hero, tracklist, player.
+Bootstrap 5.3 si carica prima di `app.css`, quindi a parità di selettore vincono le nostre regole. Bootstrap fa la griglia delle card della Home e le classi di spaziatura; `app.css` fa il tema scuro e tutto il resto, in un solo file ordinato come la pagina: token, base, pattern condivisi, logo, layout, sidebar, topbar, pagine, righe e griglia, card, hero, tracklist, player, login e, in fondo, le media query.
+
+Le regole uguali in più punti stanno una volta sola, nei **pattern condivisi**: testo su una riga coi puntini, immagini che riempiono il riquadro, bottoni tondi. Le pillole del login prendono il verde ridefinendo le variabili `--bs-*` di Bootstrap.
 
 ### CSS annidato
 
-L'indentazione ricalca l'HTML, e ogni `@media` sta dentro il blocco che modifica:
+L'indentazione ricalca l'HTML. Le **media query stanno tutte in fondo**, prima `md` (768px) e poi `lg` (992px), coi selettori completi:
 
 ```css
 .sidebar {
   display: flex;
-
-  @media (min-width: 992px) {
-    display: block;
-  }
 
   .sidebar-nav {
     a {
@@ -218,6 +216,13 @@ L'indentazione ricalca l'HTML, e ogni `@media` sta dentro il blocco che modifica
         color: var(--text-primary);
       }
     }
+  }
+}
+
+/* in fondo al file */
+@media (min-width: 992px) {
+  .sidebar {
+    display: block;
   }
 }
 ```
@@ -243,8 +248,8 @@ La consegna vuole la sidebar assente su mobile e solo icone su tablet. Noi la ch
 | Sidebar | `#000000` |
 | Testo | `#ffffff` |
 | Testo secondario | `#b3b3b3` |
-| Accento, logo | `#f7d800`, il giallo Epicode |
-| Pulsante play | `#1ed760` |
+| Accento: play, logo, shuffle e ripeti attivi, bottoni e pillola attiva del login | `#1ed760`, il verde |
+| Fondo del logo | `#f5efe6`, con la «E» verde e il font Science Gothic |
 | Cuore dei preferiti | `#e25555` |
 
 ---
@@ -293,6 +298,9 @@ La consegna vuole la sidebar assente su mobile e solo icone su tablet. Noi la ch
 - ✅ Preferiti divisi per categoria in Home: brani, album, artisti.
 - ✅ Click su un preferito in Home: il brano parte, l'album o l'artista apre la sua pagina.
 - ✅ Ricerche recenti e brani cercati di recente nella Cerca, con la X per svuotare il campo.
+- ✅ Artisti preferiti in Home con la foto, non più solo col nome: da TheAudioDB o, se manca, la copertina di un suo album.
+- ✅ Modale del profilo dal menu dell'utente, con iniziali, nome ed email.
+- ✅ Nuovo logo (cerchio con la «E», «EpiTunes» col font Science Gothic e la E e la T verdi) e colori dell'app: l'accento è passato dal giallo Epicode al verde.
 - ⬜ Playlist per utente.
 
 ---

@@ -165,6 +165,11 @@ Allo stand-up di giovedì 26/11 gli extra sono stati ridistribuiti tra tutti.
 | Giovedì (step 7) | Francesca + Giovanbattista | `login.html`, `login.js` e `common.js`: login, cioè registrazione e accesso con email e password, utente collegato in sessionStorage, iniziali con «Esci» nella `user-pill`, preferiti, cronologia e ultima ricerca salvati per utente (`userKey`) | Fatto |
 | Giovedì (step 7) | Francesca | `search.html`, `search.js` e `app.css`: X per svuotare il campo, ricerche recenti come pillole (salvate con Invio, fino a 8) e brani cercati di recente, per utente | Fatto |
 | Giovedì (step 7), per ultimo | Francesca + Giovanbattista | `common.js` (`renderSidebar`): playlist per utente nella sidebar | Deciso di non farla |
+| Giovedì (step 7) | Giovanbattista | HTML delle pagine e `app.css`: nuovo logo, cerchio con la «E» e «EpiTunes» col font Science Gothic, E e T verdi | Fatto |
+| Venerdì (step 8) | Francesca | `common.js`: modale del profilo (Bootstrap), aperta dal nome nel menu dell'utente, con iniziali, nome ed email, creata con `createElement` | Fatto |
+| Venerdì (step 8) | Francesca | `login.html` e `app.css`: logo e bottoni del login coi nuovi colori; l'accento dell'app passa dal giallo Epicode al verde | Fatto |
+| Venerdì (step 8) | Alessandro | `home.js`: artisti preferiti in Home con la foto e non più solo col nome (TheAudioDB o, se manca, copertina di un suo album) | Fatto |
+| Venerdì (step 8) | Gabriel | `app.css`: riordino, cioè regole ripetute in un posto solo, regole inutilizzate tolte, media query tutte in fondo; pillole del login verdi con le variabili `--bs-*` | Fatto |
 
 ### Rischi
 

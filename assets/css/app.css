@@ -1,49 +1,34 @@
 /* ============================================================
    EpiTunes — CSS dell'app
-   Layout a tre zone (sidebar, main, player) con Grid, tema scuro
-   ispirato a Spotify, accenti gialli Epicode. Bootstrap si carica
-   prima di questo file: a parità di selettore vincono queste regole.
+   Layout a tre zone (sidebar, main, player), tema scuro ispirato
+   a Spotify. Bootstrap si carica prima di questo file: a parità
+   di selettore vincono queste regole.
 
    RESPONSIVE (mobile-first)
    - Stile base = mobile (sotto i 768px)
-   - @media (min-width: 768px) = md, tablet
-   - @media (min-width: 992px) = lg, desktop
-   Le media query stanno dentro il blocco che modificano.
-
-   CSS annidato: l'indentazione segue l'HTML.
-   Ordine: token, base, layout, sidebar, topbar, pagine, cerca,
-   righe e griglia, card, hero, tracklist, player, caricamento.
+   - In fondo al file, tutte insieme: prima md (768px), poi lg (992px)
    ============================================================ */
 
 /* ============================ Token ============================ */
-/*font*/
 @import url("https://fonts.googleapis.com/css2?family=Science+Gothic:wght@100..900&display=swap");
 
-/* Colori, raggi e ombre del tema scuro */
 :root {
   --bg-base: #121212;
   --bg-elev: #181818;
   --bg-elev-hover: #282828;
-  --bg-sidebar: #000000;
-  --bg-player: #181818;
-  --bg-input: #ffffff;
-  --text-primary: #ffffff;
+  --bg-sidebar: #000;
+  --text-primary: #fff;
   --text-secondary: #b3b3b3;
-  --text-input: #000000;
-  --accent: #f7d800; /* giallo Epicode */
-  --accent-dark: #d6ba00;
   --success: #1ed760; /* verde "play" */
   --danger: #e25555;
   --border: #2a2a2a;
   --radius-sm: 6px;
   --radius-md: 10px;
-  --radius-lg: 16px;
   --shadow: 0 6px 24px rgba(0, 0, 0, 0.5);
 }
 
 /* ============================ Base ============================ */
 
-/* Reset */
 * {
   box-sizing: border-box;
 }
@@ -55,23 +40,97 @@ body {
   margin: 0;
   background: var(--bg-base);
   color: var(--text-primary);
-  font-family:
-    -apple-system, BlinkMacSystemFont, "Segoe UI", Roboto, "Helvetica Neue",
-    Arial, sans-serif;
+  font-family: -apple-system, BlinkMacSystemFont, "Segoe UI", Roboto,
+    "Helvetica Neue", Arial, sans-serif;
   font-size: 14px;
   overflow: hidden;
 }
 
-/* Link senza sottolineatura, col colore del contesto */
 a {
   color: inherit;
   text-decoration: none;
 }
 
-/* Bottoni col font della pagina */
 button {
   font-family: inherit;
   cursor: pointer;
+}
+
+/* ============================ Pattern condivisi ============================ */
+
+/* Testo su una riga, con i puntini se è troppo lungo */
+.sidebar-list li,
+.card-title,
+.card-sub,
+.track-title,
+.player-title,
+.player-artist {
+  overflow: hidden;
+  text-overflow: ellipsis;
+  white-space: nowrap;
+}
+
+/* Immagini che riempiono il loro riquadro */
+.card-image-wrap img,
+.album-cover img,
+.player-cover img {
+  width: 100%;
+  height: 100%;
+  object-fit: cover;
+  display: block;
+}
+
+/* Bottoni tondi con l'icona al centro */
+.brand-mark,
+.nav-btn,
+.card-play,
+.card-fav,
+.btn-play-big,
+.btn-play {
+  border-radius: 50%;
+  display: grid;
+  place-items: center;
+}
+
+/* Copertina tonda (artisti) */
+.card-image-wrap.round,
+.album-cover.round {
+  border-radius: 50%;
+}
+
+/* ============================ Logo (sidebar e login) ============================ */
+
+.brand-mark {
+  width: 28px;
+  height: 28px;
+  background: #f5efe6;
+  color: var(--success);
+  font-weight: 900;
+  font-family: "Science Gothic", sans-serif;
+  /* vince sulla classe rounded di Bootstrap, che ha già !important */
+  border-radius: 50% !important;
+}
+
+.brand-e,
+.brand-t {
+  color: var(--success);
+}
+
+/* Gabriel: il nome si vede sempre, nella barra e nella sidebar */
+.brand-text {
+  display: inline;
+  font-family: "Science Gothic", sans-serif;
+}
+
+/* Logo nel Login */
+.auth-brand {
+  font-size: 24px;
+  letter-spacing: 0.5px;
+
+  .brand-mark {
+    width: 34px;
+    height: 34px;
+  }
 }
 
 /* ============================ Layout 3 zone ============================ */
@@ -86,15 +145,6 @@ button {
     "main"
     "player";
   height: 100vh;
-
-  /* Gabriel: telefono e tablet con la barra in alto; lg (PC): sidebar completa a sinistra */
-  @media (min-width: 992px) {
-    grid-template-columns: 240px 1fr;
-    grid-template-rows: 1fr 90px;
-    grid-template-areas:
-      "sidebar main"
-      "player  player";
-  }
 }
 
 /* Main: l'unica zona che scorre */
@@ -119,11 +169,6 @@ button {
   padding: 8px 16px;
   overflow-y: auto;
 
-  @media (min-width: 992px) {
-    display: block;
-    padding: 24px 16px;
-  }
-
   /* Gabriel: hamburger a destra della barra, su telefono e tablet */
   .menu-btn {
     display: grid;
@@ -139,10 +184,6 @@ button {
     &:hover {
       background: var(--bg-elev-hover);
     }
-
-    @media (min-width: 992px) {
-      display: none;
-    }
   }
 
   /* Gabriel: menu sotto la barra su telefono e tablet (lo apre l'hamburger); da lg sempre visibile */
@@ -150,76 +191,27 @@ button {
     flex-basis: 100%;
     max-height: 60vh;
     overflow-y: auto;
-
-    @media (min-width: 992px) {
-      max-height: none;
-      overflow: visible;
-
-      /* vince su .collapse:not(.show) di Bootstrap, che lo nasconderebbe */
-      &.collapse {
-        display: block;
-      }
-    }
   }
 
-  /* Logo: il nome compare da lg */
   .brand {
     display: flex;
     align-items: center;
     gap: 10px;
-    padding: 0;
     font-weight: 700;
     font-size: 18px;
     letter-spacing: 0.5px;
-
-    @media (min-width: 992px) {
-      padding: 0 8px 24px;
-    }
-
-    .brand-mark {
-      width: 28px;
-      height: 28px;
-      border-radius: 6px;
-      background: #f5efe6;
-      color: #1ed760;
-      display: grid;
-      place-items: center;
-      font-weight: 900;
-      /*modifiche stile*/
-      border-radius: 50% !important;
-      font-family: "Science Gothic", sans-serif;
-    }
-
-    /*cambio logo */
-    /**/
-
-    .brand-e,
-    .brand-t {
-      color: #1ed760;
-    }
-
-    /* Gabriel: il nome si vede sempre, nella barra e nella sidebar */
-    .brand-text {
-      display: inline;
-      font-family: "Science Gothic", sans-serif;
-    }
   }
 
-  /* Navigazione: Home e Cerca in colonna; i testi si vedono su mobile e da lg */
+  /* Navigazione: Home e Cerca in colonna */
   .sidebar-nav {
     display: flex;
     flex-direction: column;
     gap: 4px;
     margin-bottom: 8px;
 
-    @media (min-width: 992px) {
-      margin-bottom: 24px;
-    }
-
     a {
       display: flex;
       align-items: center;
-      justify-content: flex-start;
       gap: 14px;
       padding: 8px 12px;
       border-radius: var(--radius-sm);
@@ -268,9 +260,6 @@ button {
       font-size: 13px;
       color: var(--text-secondary);
       border-radius: 4px;
-      white-space: nowrap;
-      overflow: hidden;
-      text-overflow: ellipsis;
 
       &:hover {
         color: var(--text-primary);
@@ -294,6 +283,8 @@ button {
   justify-content: space-between;
   padding: 14px 24px;
 
+
+  
   .topbar-nav {
     display: flex;
     gap: 8px;
@@ -303,7 +294,6 @@ button {
       display: none;
       width: 32px;
       height: 32px;
-      border-radius: 50%;
       border: none;
       background: rgba(0, 0, 0, 0.6);
       color: #fff;
@@ -311,7 +301,7 @@ button {
       line-height: 1;
 
       .main:has(.album-page, .artist-page) &[aria-label="Indietro"] {
-        display: block;
+        display: grid;
       }
     }
   }
@@ -332,7 +322,6 @@ button {
 
 /* ============================ Pagine ============================ */
 
-/* Margini interni delle quattro pagine */
 .home,
 .search,
 .album-page,
@@ -355,8 +344,8 @@ button {
     padding: 0.65rem 2.4rem 0.65rem 1.25rem;
     border: 0;
     border-radius: 999px;
-    background-color: #ffffff;
-    color: #121212;
+    background: #fff;
+    color: var(--bg-base);
     font-size: 0.9rem;
     outline: none;
   }
@@ -369,13 +358,12 @@ button {
     padding: 0 4px;
     border: 0;
     background: transparent;
-    color: #555555;
+    color: #555;
     font-size: 1.35rem;
     line-height: 1;
-    cursor: pointer;
 
     &:hover {
-      color: #000000;
+      color: #000;
     }
   }
 }
@@ -387,27 +375,28 @@ button {
   gap: 8px;
   padding: 6px 14px;
   border-radius: 999px;
-  background-color: #242424;
-  color: #ffffff;
-  border: 1px solid #333333;
+  background: #242424;
+  color: #fff;
+  border: 1px solid #333;
   font-size: 0.9rem;
   cursor: pointer;
   transition: background-color 0.15s ease;
 
   &:hover {
-    background-color: #333333;
+    background: #333;
   }
 
   .chip-remove {
-    color: #999999;
+    color: #999;
     font-weight: 700;
     line-height: 1;
 
     &:hover {
-      color: #ffffff;
+      color: #fff;
     }
   }
 }
+
 /* ============================ Righe e griglia ============================ */
 
 /* Riga di Home e Cerca: titolo e griglia di card */
@@ -420,15 +409,10 @@ button {
     font-weight: 700;
   }
 
-  /* Gabriel: da md card più larghe */
   .grid {
     display: grid;
     grid-template-columns: repeat(auto-fill, minmax(140px, 1fr));
     gap: 16px;
-
-    @media (min-width: 768px) {
-      grid-template-columns: repeat(auto-fill, minmax(180px, 1fr));
-    }
   }
 }
 
@@ -450,7 +434,6 @@ button {
     background: var(--bg-elev-hover);
   }
 
-  /* Copertina quadrata, tonda con .round */
   .card-image-wrap {
     position: relative;
     width: 100%;
@@ -459,35 +442,18 @@ button {
     overflow: hidden;
     margin-bottom: 12px;
     background: #000;
-
-    &.round {
-      border-radius: 50%;
-    }
-
-    img {
-      width: 100%;
-      height: 100%;
-      object-fit: cover;
-      display: block;
-    }
   }
 
   .card-title {
     font-weight: 700;
     font-size: 14px;
     margin: 0 0 4px;
-    overflow: hidden;
-    text-overflow: ellipsis;
-    white-space: nowrap;
   }
 
   .card-sub {
     color: var(--text-secondary);
     font-size: 12px;
     margin: 0;
-    overflow: hidden;
-    text-overflow: ellipsis;
-    white-space: nowrap;
   }
 
   /* Play: sale e compare al passaggio sulla card */
@@ -497,24 +463,16 @@ button {
     bottom: 82px;
     width: 48px;
     height: 48px;
-    border-radius: 50%;
     background: var(--success);
     color: #000;
     border: none;
     font-size: 20px;
-    display: grid;
-    place-items: center;
     box-shadow: var(--shadow);
     opacity: 0;
     transform: translateY(8px);
     transition:
       opacity 0.2s,
       transform 0.2s;
-
-    .card:hover & {
-      opacity: 1;
-      transform: translateY(0);
-    }
   }
 
   /* Cuore: compare al passaggio, resta acceso sui preferiti */
@@ -524,24 +482,26 @@ button {
     right: 8px;
     width: 32px;
     height: 32px;
-    border-radius: 50%;
     background: rgba(0, 0, 0, 0.5);
     color: #fff;
     border: none;
     font-size: 16px;
-    display: grid;
-    place-items: center;
     opacity: 0;
     transition: opacity 0.2s;
-
-    .card:hover & {
-      opacity: 1;
-    }
 
     &.is-fav {
       opacity: 1;
       color: var(--danger);
     }
+  }
+
+  &:hover .card-play {
+    opacity: 1;
+    transform: translateY(0);
+  }
+
+  &:hover .card-fav {
+    opacity: 1;
   }
 }
 
@@ -556,12 +516,6 @@ button {
   align-items: flex-start;
   padding: 24px 0 16px;
 
-  @media (min-width: 768px) {
-    flex-direction: row;
-    align-items: flex-end;
-  }
-
-  /* Copertina: grande da md */
   .album-cover {
     width: 160px;
     height: 160px;
@@ -570,21 +524,8 @@ button {
     background: #000;
     box-shadow: var(--shadow);
     flex-shrink: 0;
-
-    @media (min-width: 768px) {
-      width: 220px;
-      height: 220px;
-    }
-
-    img {
-      width: 100%;
-      height: 100%;
-      object-fit: cover;
-      display: block;
-    }
   }
 
-  /* Testi: tipo, titolo, sottotitolo */
   .hero-meta {
     display: flex;
     flex-direction: column;
@@ -594,16 +535,16 @@ button {
 
   .hero-kicker {
     font-size: 12px;
+    font-weight: 700;
     text-transform: uppercase;
     letter-spacing: 1px;
-    font-weight: 700;
   }
 
   .hero-title {
     font-size: clamp(32px, 6vw, 72px);
     font-weight: 900;
-    margin: 0;
     line-height: 1.05;
+    margin: 0;
   }
 
   .hero-sub {
@@ -613,7 +554,7 @@ button {
   }
 }
 
-/* Azioni sotto l'hero: Play grande e cuore */
+/* Azioni sotto l'hero: Play grande */
 .hero-actions {
   display: flex;
   align-items: center;
@@ -623,32 +564,15 @@ button {
   .btn-play-big {
     width: 56px;
     height: 56px;
-    border-radius: 50%;
     background: var(--success);
     color: #000;
     border: none;
     font-size: 24px;
   }
-
-  .btn-fav-big {
-    width: 36px;
-    height: 36px;
-    border-radius: 50%;
-    background: transparent;
-    border: 1px solid var(--text-secondary);
-    color: var(--text-secondary);
-    font-size: 18px;
-
-    &.is-fav {
-      color: var(--danger);
-      border-color: var(--danger);
-    }
-  }
 }
 
 /* ============================ Tracklist ============================ */
 
-/* Tracklist dell'album */
 .tracklist {
   margin-top: 8px;
 }
@@ -679,9 +603,6 @@ button {
 
   .track-title {
     font-weight: 600;
-    overflow: hidden;
-    text-overflow: ellipsis;
-    white-space: nowrap;
   }
 
   .track-time {
@@ -706,18 +627,13 @@ button {
 /* Gabriel: player mobile-first. Mobile: brano e controlli; da md tre colonne col volume */
 .player {
   grid-area: player;
-  background: var(--bg-player);
+  background: var(--bg-elev);
   border-top: 1px solid var(--border);
   padding: 12px 16px;
   display: grid;
   grid-template-columns: 1fr 1fr;
   align-items: center;
   gap: 8px;
-
-  @media (min-width: 768px) {
-    grid-template-columns: 1fr 2fr 1fr;
-    gap: 16px;
-  }
 
   /* Brano in corso: copertina, titolo, artista */
   .player-track {
@@ -733,35 +649,22 @@ button {
       background: #000;
       overflow: hidden;
       flex-shrink: 0;
-
-      img {
-        width: 100%;
-        height: 100%;
-        object-fit: cover;
-        display: block;
-      }
     }
 
     .player-meta {
       min-width: 0;
+    }
 
-      .player-title {
-        font-size: 13px;
-        font-weight: 600;
-        white-space: nowrap;
-        overflow: hidden;
-        text-overflow: ellipsis;
-        margin: 0;
-      }
+    .player-title {
+      font-size: 13px;
+      font-weight: 600;
+      margin: 0;
+    }
 
-      .player-artist {
-        font-size: 11px;
-        color: var(--text-secondary);
-        white-space: nowrap;
-        overflow: hidden;
-        text-overflow: ellipsis;
-        margin: 0;
-      }
+    .player-artist {
+      font-size: 11px;
+      color: var(--text-secondary);
+      margin: 0;
     }
   }
 
@@ -792,6 +695,7 @@ button {
         &.is-active {
           color: var(--success);
         }
+
         /* Francesca: puntino verde sotto l'icona attiva come su Spotify */
         &.is-active::after {
           content: "";
@@ -809,7 +713,6 @@ button {
       .btn-play {
         width: 36px;
         height: 36px;
-        border-radius: 50%;
         background: #fff;
         color: #000;
         border: none;
@@ -835,10 +738,6 @@ button {
     justify-content: flex-end;
     gap: 10px;
 
-    @media (min-width: 768px) {
-      display: flex;
-    }
-
     /*Francesca: barra del volume larga la metà rispetto allo spazio destro*/
     #volume-bar {
       width: 50%;
@@ -854,6 +753,7 @@ button {
     height: 4px;
     background: #4d4d4d;
     border-radius: 2px;
+    /* .progress-bar di Bootstrap ha overflow: hidden, che taglierebbe il pallino */
     overflow: visible;
     cursor: pointer;
     position: relative;
@@ -878,75 +778,123 @@ button {
         width: 12px;
         height: 12px;
         border-radius: 50%;
-        background: #ffffff;
+        background: #fff;
         box-shadow: 0 2px 6px rgba(0, 0, 0, 0.5);
         opacity: 0;
         pointer-events: none;
         transition: opacity 0.15s ease;
       }
+    }
 
-      .progress-bar:hover &,
-      .volume-bar:hover & {
-        background: var(--success);
+    &:hover .progress-fill,
+    &:hover .volume-fill {
+      background: var(--success);
 
-        /* Francesca: l passaggio del mouse nella barra compare il pallino */
-        &::after {
-          opacity: 1;
-        }
+      /* Francesca: l passaggio del mouse nella barra compare il pallino */
+      &::after {
+        opacity: 1;
       }
     }
   }
 }
 
-/* ============================ Caricamento e vuoto ============================ */
+/* ============================ Caricamento e login ============================ */
 
-/* Messaggi di caricamento e di lista vuota */
-.loader,
-.empty {
+.loader {
   padding: 32px;
   text-align: center;
   color: var(--text-secondary);
 }
 
-/* Logo nel Login */
-.auth-brand {
-  font-size: 24px;
-  letter-spacing: 0.5px;
-
-  .brand-mark {
-    width: 34px;
-    height: 34px;
-    border-radius: 50%;
-    background: #f5efe6;
-    color: #1ed760;
-    display: grid;
-    place-items: center;
-    font-weight: 900;
-    font-family: "Science Gothic", sans-serif;
-  }
-
-  .brand-e,
-  .brand-t {
-    color: #1ed760;
-  }
-
-  .brand-text {
-    display: inline;
-    font-family: "Science Gothic", sans-serif;
-  }
-}
-
 /*Francesca: bottoni Accedi e Crea account */
 .btn-epitunes {
-  background-color: var(--success);
+  background: var(--success);
   border-color: var(--success);
-  color: #000000;
-  transition: background-color 0.15s ease, transform 0.1s ease;
+  color: #000;
+  transition:
+    background-color 0.15s ease,
+    transform 0.1s ease;
 
   &:hover,
   &:focus {
-    background-color: #1fdf64;
+    background: #1fdf64;
     border-color: #1fdf64;
-    color: #000000;
+    color: #000;
+  }
+}
+
+/* Gabriel: pillole del login (Accedi / Registrati): testo bianco, l'attiva verde con testo nero */
+#auth-tabs {
+  --bs-nav-link-color: var(--text-primary);
+  --bs-nav-link-hover-color: var(--text-primary);
+  --bs-nav-pills-link-active-bg: var(--success);
+  --bs-nav-pills-link-active-color: #000;
+}
+
+/* ============================ Media query ============================ */
+
+/* md, tablet: card più larghe, hero affiancato, player a tre colonne col volume */
+@media (min-width: 768px) {
+  .row .grid {
+    grid-template-columns: repeat(auto-fill, minmax(180px, 1fr));
+  }
+
+  .album-hero,
+  .artist-hero {
+    flex-direction: row;
+    align-items: flex-end;
+  }
+
+  .album-hero .album-cover,
+  .artist-hero .album-cover {
+    width: 220px;
+    height: 220px;
+  }
+
+  .player {
+    grid-template-columns: 1fr 2fr 1fr;
+    gap: 16px;
+  }
+
+  .player .player-right {
+    display: flex;
+  }
+}
+
+/* lg, PC: sidebar completa a sinistra, senza hamburger */
+@media (min-width: 992px) {
+  .app {
+    grid-template-columns: 240px 1fr;
+    grid-template-rows: 1fr 90px;
+    grid-template-areas:
+      "sidebar main"
+      "player  player";
+  }
+
+  .sidebar {
+    display: block;
+    padding: 24px 16px;
+  }
+
+  .sidebar .menu-btn {
+    display: none;
+  }
+
+  .sidebar .sidebar-menu {
+    max-height: none;
+    overflow: visible;
+  }
+
+  /* vince su .collapse:not(.show) di Bootstrap, che lo nasconderebbe */
+  .sidebar .sidebar-menu.collapse {
+    display: block;
+  }
+
+  .sidebar .brand {
+    padding: 0 8px 24px;
+  }
+
+  .sidebar .sidebar-nav {
+    margin-bottom: 24px;
   }
 }
