@@ -586,16 +586,29 @@ const renderAllSidebarFavs = () => {
   };
 
   // [ALESSANDRO] Mostra i brani preferiti
-  if (brani.length > 0) {
-    aggiungiTitolo("Brani");
+ 
+if (brani.length > 0) {
+  aggiungiTitolo("Brani");
 
-    brani.forEach((track) => {
-      const li = document.createElement("li");
-      li.textContent = track.title;
-      li.dataset.trackId = track.id;
-      list.appendChild(li);
+  brani.forEach((track) => {
+    const li = document.createElement("li");
+    li.textContent = track.title;
+    li.dataset.trackId = track.id;
+    li.style.cursor = "pointer";
+
+    // [ALESSANDRO] Riproduce il brano cliccato nella sidebar
+    li.addEventListener("click", () => {
+      if (window.player.currentTrack?.id === track.id) {
+        window.player.togglePlay();
+      } else {
+        window.player.play(track, brani);
+      }
     });
-  }
+
+    list.appendChild(li);
+  });
+}
+
 
   // [ALESSANDRO] Mostra gli album preferiti
   if (album.length > 0) {
