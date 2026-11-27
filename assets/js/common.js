@@ -590,18 +590,81 @@ const renderUserPill = (user) => {
   btn.setAttribute("data-bs-toggle", "dropdown");
   btn.setAttribute("aria-expanded", "false");
 
-  //Francesca: menu a tendina scuro con il nome completo dell'utente e il pulsante di logout
+  //Francesca: voce cliccabile bianca nel dropdown utente che apre la modale profilo
   const menu = document.createElement("ul");
   menu.className = "dropdown-menu dropdown-menu-end dropdown-menu-dark shadow";
 
   const headerLi = document.createElement("li");
-  headerLi.appendChild(
-    buildElement(
-      "span",
-      "dropdown-item-text small text-secondary fw-semibold",
-      user.name,
-    ),
+  const profileBtn = buildElement(
+    "button",
+    "dropdown-item text-white fw-semibold",
+    user.name,
   );
+  profileBtn.type = "button";
+  profileBtn.setAttribute("data-bs-toggle", "modal");
+  profileBtn.setAttribute("data-bs-target", "#user-profile-modal");
+  headerLi.appendChild(profileBtn);
+
+  //Francesca: crea la modale profilo utente tramite DOM (senza innerHTML) se non esiste ancora
+  if (!document.querySelector("#user-profile-modal")) {
+    const modal = buildElement("div", "modal fade");
+    modal.id = "user-profile-modal";
+    modal.tabIndex = -1;
+    modal.setAttribute("aria-labelledby", "userProfileModalLabel");
+    modal.setAttribute("aria-hidden", "true");
+
+    const dialog = buildElement("div", "modal-dialog modal-dialog-centered");
+    const content = buildElement(
+      "div",
+      "modal-content bg-dark text-white border-secondary",
+    );
+
+    // Header modale
+    const header = buildElement("div", "modal-header border-secondary");
+    const title = buildElement("h5", "modal-title fw-bold", "Profilo utente");
+    title.id = "userProfileModalLabel";
+
+    const closeX = buildElement("button", "btn-close btn-close-white");
+    closeX.type = "button";
+    closeX.setAttribute("data-bs-dismiss", "modal");
+    closeX.setAttribute("aria-label", "Chiudi");
+    header.append(title, closeX);
+
+    // Body modale
+    const body = buildElement("div", "modal-body text-center py-4");
+    const avatar = buildElement(
+      "div",
+      "rounded-circle bg-success text-dark fw-bold d-inline-flex align-items-center justify-content-center mb-3",
+      initials,
+    );
+    avatar.style.width = "64px";
+    avatar.style.height = "64px";
+    avatar.style.fontSize = "1.4rem";
+
+    const fullName = buildElement("h4", "fw-bold mb-1", user.name);
+    const subtitle = buildElement(
+      "p",
+      "text-secondary small mb-0",
+      user.email || "Account EpiTunes",
+    );
+    body.append(avatar, fullName, subtitle);
+
+    // Footer modale
+    const footer = buildElement("div", "modal-footer border-secondary");
+    const closeBtn = buildElement(
+      "button",
+      "btn btn-outline-light btn-sm",
+      "Chiudi",
+    );
+    closeBtn.type = "button";
+    closeBtn.setAttribute("data-bs-dismiss", "modal");
+    footer.appendChild(closeBtn);
+
+    content.append(header, body, footer);
+    dialog.appendChild(content);
+    modal.appendChild(dialog);
+    document.body.appendChild(modal);
+  }
 
   const dividerLi = document.createElement("li");
   const hr = document.createElement("hr");
