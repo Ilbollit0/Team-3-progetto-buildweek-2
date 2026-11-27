@@ -158,6 +158,8 @@ function creaCardAlbum(album) {
 }
 
 // [ALESSANDRO] Crea le card degli artisti preferiti
+
+ // [ALESSANDRO] Crea le card degli artisti preferiti
 function creaCardArtista(artista) {
   const col = document.createElement("div");
   col.classList.add("col-6", "col-md-4", "col-lg-3");
@@ -165,10 +167,47 @@ function creaCardArtista(artista) {
   const card = document.createElement("div");
   card.classList.add("card", "h-100");
 
+  // [ALESSANDRO] Contenitore dell'immagine dell'artista
+  const imageWrap = document.createElement("div");
+  imageWrap.classList.add("card-image-wrap", "round");
+
+  const img = document.createElement("img");
+  img.alt = artista.name;
+  img.loading = "lazy";
+
+  // [ALESSANDRO] Cerca la foto dell'artista
+  fetchJSON(
+    `${AUDIODB_BASE}/search.php?s=${encodeURIComponent(artista.name)}`
+  ).then(async (data) => {
+    let foto = data.artists?.[0]?.strArtistThumb;
+
+    // Se manca la foto, cerca la copertina di un album
+    if (!foto) {
+      const albumData = await fetchJSON(
+        `${API_BASE}/lookup?id=${artista.id}&entity=album&limit=1`
+      );
+
+      const album = albumData.results?.find(
+        (item) => item.wrapperType === "collection"
+      );
+
+      if (album) {
+        foto = bigArt(album.artworkUrl100);
+      }
+    }
+
+    if (foto) {
+      img.src = foto;
+    }
+  });
+
+  imageWrap.appendChild(img);
+
   const titolo = document.createElement("p");
   titolo.classList.add("card-title");
   titolo.textContent = artista.name;
 
+  card.appendChild(imageWrap);
   card.appendChild(titolo);
 
   // [ALESSANDRO] Cuore rosso per gli artisti preferiti
@@ -207,6 +246,7 @@ function creaCardArtista(artista) {
 
   return col;
 }
+
 
 // una ricerca per riga, con il contenitore che la mostra
 const SUGGESTIONS = [
