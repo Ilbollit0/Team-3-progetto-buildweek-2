@@ -17,7 +17,7 @@
 
 /* ============================ Token ============================ */
 /*font*/
-@import url('https://fonts.googleapis.com/css2?family=Science+Gothic:wght@100..900&display=swap');
+@import url("https://fonts.googleapis.com/css2?family=Science+Gothic:wght@100..900&display=swap");
 
 /* Colori, raggi e ombre del tema scuro */
 :root {
@@ -180,29 +180,28 @@ button {
       width: 28px;
       height: 28px;
       border-radius: 6px;
-      background: #F5EFE6;
-      color:  #1ED760;
+      background: #f5efe6;
+      color: #1ed760;
       display: grid;
       place-items: center;
       font-weight: 900;
       /*modifiche stile*/
       border-radius: 50% !important;
-      font-family: 'Science Gothic', sans-serif;
-
+      font-family: "Science Gothic", sans-serif;
     }
 
     /*cambio logo */
     /**/
 
-.brand-e ,.brand-t{
-  color: #1ED760;
-}
-
+    .brand-e,
+    .brand-t {
+      color: #1ed760;
+    }
 
     /* Gabriel: il nome si vede sempre, nella barra e nella sidebar */
     .brand-text {
       display: inline;
-      font-family: 'Science Gothic', sans-serif;
+      font-family: "Science Gothic", sans-serif;
     }
   }
 
@@ -351,7 +350,7 @@ button {
   width: 100%;
   max-width: 380px;
 
- #search-input {
+  #search-input {
     width: 100%;
     padding: 0.65rem 2.4rem 0.65rem 1.25rem;
     border: 0;
@@ -909,7 +908,45 @@ button {
   color: var(--text-secondary);
 }
 
+/* Logo nel Login */
+.auth-brand {
+  font-size: 24px;
+  letter-spacing: 0.5px;
 
+  .brand-mark {
+    width: 34px;
+    height: 34px;
+    border-radius: 50%;
+    background: #f5efe6;
+    color: #1ed760;
+    display: grid;
+    place-items: center;
+    font-weight: 900;
+    font-family: "Science Gothic", sans-serif;
+  }
 
+  .brand-e,
+  .brand-t {
+    color: #1ed760;
+  }
 
- 
+  .brand-text {
+    display: inline;
+    font-family: "Science Gothic", sans-serif;
+  }
+}
+
+/*Francesca: bottoni Accedi e Crea account */
+.btn-epitunes {
+  background-color: var(--success);
+  border-color: var(--success);
+  color: #000000;
+  transition: background-color 0.15s ease, transform 0.1s ease;
+
+  &:hover,
+  &:focus {
+    background-color: #1fdf64;
+    border-color: #1fdf64;
+    color: #000000;
+  }
+}
